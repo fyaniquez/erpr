@@ -1,10 +1,8 @@
 //! src/startup.rs
 
-use crate::configuration::Settings;
-use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
-use std::net::TcpListener;
 use crate::rutas::visitante::home::get::home;
+use actix_web_static_files::ResourceFiles;
 
 /*
  * author: fyaniquez
@@ -12,7 +10,7 @@ use crate::rutas::visitante::home::get::home;
  * purpose: encapsulado de la aplicación 
  * para su arranque en producción y pruebas
  */
-
+/*
 pub struct Application {
     port: u16,
     server: Server,
@@ -39,15 +37,20 @@ impl Application {
         self.server.await
     }
 }
+*/
+include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
-async fn run(listener: TcpListener, base_url: String) 
--> Result<Server, anyhow::Error> {
-    let server = HttpServer::new(move || {
+pub async fn run() 
+-> std::io::Result<()> {
+    HttpServer::new(move || {
+        let generated = generate();
         App::new()
             .route("/", web::get().to(home))
-            .app_data(base_url.clone())
+            .service(ResourceFiles::new("/", generated)
+                .do_not_resolve_defaults())
     })
-    .listen(listener)?
-    .run();
-    Ok(server)
+    //.listen(listener)?
+    .bind("127.0.0.1:8000")?
+    .run()
+    .await
 }
