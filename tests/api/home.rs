@@ -1,21 +1,23 @@
 //! tests/home.rs
 
 use std::net::TcpListener;
+use crate::helpers;
 
-fn spawn_app() {
-    let listener = TcpListener::bind("127.0.0.1:8000").expect("falla al crear listener");
-    let server = erpr::run(listener).expect("Failed to bind address");
-    let _ = tokio::spawn(server);
-}
+/*
+ * author: fyaniquez
+ * date: 12/10/2022
+ * purpose: test de paginas que no requieren autenticación
+ */
+
 #[tokio::test]
 async fn home_works() {
     // inicializa
-    spawn_app();
+    let address = helpers::spawn_app();
     let client = reqwest::Client::new();
 
     // ejecuta
     let response = client
-        .get("http://127.0.0.1:8000/home")
+        .get(format!("{}/home", &address))
         .send()
         .await
         .expect("El request /home fallo");

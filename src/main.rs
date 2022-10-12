@@ -1,6 +1,6 @@
 //! src/main.rs
 
-use erpr::run;
+use erpr::startup::run;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
