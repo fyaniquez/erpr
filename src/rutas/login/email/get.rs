@@ -1,17 +1,15 @@
 //! src/rutas/login/email/get.rs
+//! author: fyaniquez
+//! date: 30/09/2022
+//! purpose: muestra el formulario de login con email
 
 use actix_web::Result as AwResult;
 use actix_web::get;
 use maud::DOCTYPE;
 use maud::{html, Markup};
-/*
- * author: fyaniquez
- * date: 30/09/2022
- * purpose: muestra el formulario de login con email
- */
 
-#[get("/login_email")]
-pub async fn login_email() -> AwResult<Markup> {
+#[get("/login_email_form")]
+pub async fn login_email_form() -> AwResult<Markup> {
     Ok(html! {
     (DOCTYPE)
     html lang="es" {
@@ -23,25 +21,31 @@ pub async fn login_email() -> AwResult<Markup> {
             meta name="viewport" content="with=device-width, initial-scale=1.0";
             link rel="icon" type="image/x-icon" href="/img/favicon.ico";
             title { "Don coco" }
-            link rel="stylesheet" href="/css/home.css";
+            link rel="stylesheet" href="/css/login.css";
         }
         body {
-            .principal {
-                header {
-                    img .header-logo src="/img/logo.png";
-                    .header-nav {
-                        a href="/" { "Ingresar" } }
-                    .header-nav {
-                        a href="/" { "Registrarse" } }
-                }
-                main {
-                    section {
-                        h1 { "login email" }
+            .main {
+                .login-principal {
+                    img .login-logo src="/img/logo.png";
+                    h1 .login-titulo {"Iniciar Sesión"}
+                    form method="POST" action="/login_email" {
+                        .login-control {
+                            input .login-input-estilo type="email"
+                                name="email" id="email" required
+                                placeholder="Correo electrónico";
+                        }
+                        .login-info {
+                            p { "Si no tiene un usuario "
+                                a #registrar href="/usuario_registro"
+                                    {"Regístrese"}
+                            }
+                        }
+                        button .login-boton type="submit" { "Siguiente" }
                     }
                 }
-                footer {
-                    time datetime="2022-10-01 20:00";
-                }
+            }
+            footer {
+                time datetime="2022-10-01 20:00";
             }
         }
     }
