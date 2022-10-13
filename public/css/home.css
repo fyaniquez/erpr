@@ -1,22 +1,13 @@
-* {
-    margin: 0px;
-    padding: 0px;
-    box-sizing: border-box;
-}
-html  {
-    font-family: 'Source sans pro', sans-serif;
-    font-size: 15px;
-    color: #404040;
-    -ms-text-size-adjust: 100%;
-        -webkit-text-size-adjust: 100%
+/*
+ * author: fyaniquez
+ * date 12/10/2022
+ * purpose: estilos de pagina estática inicial
+ */
 
-}
-.principal {
-    position: relative;
-}
+@import "helper.css";
 
 /* cabecera */
-header {
+.header {
     height:50px;
     line-height: 50px;
     background-color: white;
@@ -41,6 +32,3 @@ header {
     color: black;
 }
 /* fin cabecera */
-main {
-    background-color: #f5f5f5;
-}

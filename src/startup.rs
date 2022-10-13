@@ -5,9 +5,9 @@
 //! para su arranque en producción y pruebas
 
 use actix_web::dev::Server;
-use actix_web::{web, App, HttpResponse, HttpServer};
-use crate::rutas::public::home::get as HomeGet;
-use crate::rutas::login::email::get as EmailGet;
+use actix_web::{App, HttpServer};
+use crate::rutas::public::home;
+use crate::rutas::login;
 use actix_web_static_files::ResourceFiles;
 use std::net::TcpListener;
 
@@ -19,8 +19,11 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     let server = HttpServer::new(|| {
         let generated = generate();
         App::new()
-        .service(HomeGet::home)
-        .service(EmailGet::login_email_form)
+        .service(home::get::home)
+        .service(login::email::get::login_email_form)
+        .service(login::email::post::login_email)
+        .service(login::pass::get::login_pass_form)
+        .service(login::pass::post::login_pass)
         .service(ResourceFiles::new("/", generated)
             .do_not_resolve_defaults())
     })

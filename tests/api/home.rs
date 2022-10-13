@@ -1,13 +1,9 @@
 //! tests/home.rs
+//! author: fyaniquez
+//! date: 12/10/2022
+//! purpose: test de paginas que no requieren autenticación
 
-use std::net::TcpListener;
 use crate::helpers;
-
-/*
- * author: fyaniquez
- * date: 12/10/2022
- * purpose: test de paginas que no requieren autenticación
- */
 
 #[tokio::test]
 async fn home_works() {
@@ -17,10 +13,10 @@ async fn home_works() {
 
     // ejecuta
     let response = client
-        .get(format!("{}/home", &address))
+        .get(format!("{}/", &address))
         .send()
         .await
-        .expect("El request /home fallo");
+        .expect("El request / fallo");
 
     // comprueba
     assert!(response.status().is_success());

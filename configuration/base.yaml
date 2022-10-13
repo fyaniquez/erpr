@@ -1,0 +1,11 @@
+application:
+  port: 8000
+  host: 0.0.0.0
+  hmac_secret: "el destino no es cosa de magia, es cosa de trabajo"
+database:
+  host: "127.0.0.1"
+  port: 5432
+  user: "erp"
+  password: "el10culalu"
+  database: "erprustdb"
+  require_ssl: false

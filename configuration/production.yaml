@@ -1,0 +1,10 @@
+application:
+  host: 127.0.0.1
+  port: 8000
+database:
+  host: "127.0.0.1"
+  port: 5432
+  user: "erp"
+  password: "el10culalu"
+  database: "erprustdb"
+  require_ssl: false

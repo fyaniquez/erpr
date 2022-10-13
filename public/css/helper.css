@@ -1,0 +1,25 @@
+/*
+ * css/helper.css
+ * author: fyaniquez
+ * date: 12/10/2022
+ * purpose: estilos comunes
+ */
+
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+html  {
+    font-family: 'Source sans pro', sans-serif;
+    font-size: 15px;
+    color: #404040;
+    -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%
+}
+
+html, body {
+    height: 100%;
+    background-color: beige;
+}
