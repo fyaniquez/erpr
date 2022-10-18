@@ -8,15 +8,16 @@ use crate::helpers;
 #[tokio::test]
 async fn home_works() {
     // inicializa
-    let address = helpers::spawn_app();
+    let test_app = helpers::spawn_app().await;
     let client = reqwest::Client::new();
+    let app = format!("{}/", &test_app.app_address);
 
     // ejecuta
     let response = client
-        .get(format!("{}/", &address))
+        .get(&app)
         .send()
         .await
-        .expect("El request / fallo");
+        .expect(&format!("El request {} fallo", app));
 
     // comprueba
     assert!(response.status().is_success());

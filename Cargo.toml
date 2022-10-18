@@ -24,6 +24,7 @@ static-files = "0.2.3"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls", "cookies"] }
 env_logger = "0.9.1"
+chrono = { version = "0.4.22", features = ["serde"] }
 
 [dependencies.sqlx]
 version = "0.6" 
