@@ -1,0 +1,108 @@
+/*
+ * author: fyaniquez
+ * date 12/10/2022
+ * purpose: estilos comunes para formulario
+ */
+
+@import "helper.css";
+
+/* cabecera */
+.cabecera {
+  height: 50px;
+  line-height: 50px;
+  background-color: var(--bgc);
+  padding: 0 40px 0 40px;
+  box-shadow: 0 5px 5px #c0c0c0;
+}
+
+.cabecera-logo {
+  padding: 5px 0 5px 0;
+}
+
+.cabecera-spacer {
+  display: inline;
+}
+
+.cabecera-nav {
+  padding: 5px 20px 5px 0;
+  float: right;
+}
+
+.cabecera-nav a {
+  text-decoration: none;
+  color: var(--sec);
+}
+
+.cabecera-nav a:hover {
+  color: var(--pri);
+}
+
+/* fin cabecera */
+label {
+  /*  display: block;*/
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea,
+select {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  font-size: 1rem;
+  height: auto;
+  margin: 0;
+  outline: 0;
+  padding: 1rem;
+  width: 100%;
+  background-color: #ffffff;
+  color: var(--sec);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+  margin-bottom: 30px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin: 0 0.25rem 0.5rem 0;
+}
+
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="date"]:hover,
+input[type="datetime"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover,
+input[type="search"]:hover,
+input[type="tel"]:hover,
+input[type="time"]:hover,
+input[type="url"]:hover,
+textarea:hover,
+select:hover {
+  border: 1px solid transparent;
+  box-shadow: 0 0 5px 0 var(--sec);
+  color: var(--sec);
+}
+
+select {
+  padding: 0.75rem;
+  height: 2rem;
+  border-radius: 2px;
+}
+
+fieldset {
+  margin-bottom: 30px;
+  border: none;
+}
+
+legend {
+  font-size: 1.4em;
+  margin-bottom: 10px;
+}

@@ -10,18 +10,11 @@ use crate::layout;
 
 #[get("/")]
 pub async fn home() -> AwResult<Markup> {
-    layout::principal::crea("Don coco", "home.css", contenido())
+    layout::form::crea("Don coco", "home.css", None, contenido())
 }
 
 /// contenido de la página
 fn contenido() -> Markup { html! {
-    .header {
-        img .header-logo src="/img/logo.png";
-        .header-nav {
-            a href="/login_email_form" { "Ingresar" } }
-        .header-nav {
-            a href="/" { "Registrarse" } }
-    }
     .main {
         section {
         }

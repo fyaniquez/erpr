@@ -8,6 +8,8 @@
 //! APP_ENVIRONMENT=local/production establece cual es el ambiente
 
 use std::env::current_dir;
+use secrecy::Secret;
+use secrecy::ExposeSecret;
 
 /// Reunión de parametros
 #[derive(serde::Deserialize)]
@@ -21,18 +23,29 @@ pub struct Settings {
 #[derive(serde::Deserialize)]
 pub struct DatabaseSettings {
     pub user: String,
-    pub password: String,
+    pub password: Secret<String>,
     pub port: u16,
     pub host: String,
-    pub database: String,
+    pub name: String,
 }
 
 impl DatabaseSettings {
-    pub fn connection_string(&self) -> String {
-        format!(
+    pub fn connection_string(&self) -> Secret<String> {
+        Secret::new(format!(
             "postgres://{}:{}@{}:{}/{}",
-            self.user, self.password, self.host, self.port, self.database
-        )
+            self.user, 
+            self.password.expose_secret(), 
+            self.host, self.port, self.name
+        ))
+    }
+    pub fn connection_string_without_db(&self) -> Secret<String> {
+        Secret::new(format!(
+            "postgres://{}:{}@{}:{}",
+            self.user, 
+            self.password.expose_secret(), 
+            self.host, 
+            self.port
+        ))
     }
 }
 

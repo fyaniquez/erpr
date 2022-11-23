@@ -32,3 +32,16 @@
     color: black;
 }
 /* fin cabecera */
+/* form */
+.form-control {
+    display: block;
+    border-bottom: solid 1px black;
+    padding: 10px 0 5px;
+}
+.form-input-estilo {
+    border: 0;
+}
+.form-input-estilo:focus {
+    outline: none;
+}
+/* fin form */

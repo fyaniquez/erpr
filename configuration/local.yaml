@@ -3,4 +3,9 @@ application:
   port: 0
   base_url: "http://127.0.0.1"
 database:
+  host: "127.0.0.1"
+  port: 5454
+  user: "postgres"
+  password: "password"
+  name: "erprustest"
   require_ssl: false

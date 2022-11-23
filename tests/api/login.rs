@@ -52,9 +52,9 @@ async fn login_email_retorna_200_si_data_ok_en_email_form() {
         "fyaniquez@gmail.com")
     .fetch_one(&test_app.db_pool)
     .await
-    .expect("Error al recuperar usaurio");
+    .expect("Error al recuperar usuario");
 
-    assert_eq!(saved.email, Some(String::from("fyaniquez@gmail.com")));
+    assert_eq!(saved.email.unwrap(), String::from("fyaniquez@gmail.com"));
 }
 
 #[tokio::test]

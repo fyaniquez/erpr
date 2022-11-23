@@ -4,34 +4,40 @@
 //! purpose: encapsulado de la aplicación
 //! para su arranque en producción y pruebas
 
+use crate::rutas::login;
+use crate::rutas::public::home;
+use crate::rutas::usuario;
+use crate::rutas::capitulo;
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
-use crate::rutas::public::home;
-use crate::rutas::login;
 use actix_web_static_files::ResourceFiles;
-use std::net::TcpListener;
 use sqlx::PgPool;
+use std::net::TcpListener;
+use tracing_actix_web::TracingLogger;
 
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
-/// arranca servidor http, adjunta endpoints del api, 
+/// arranca servidor http, adjunta endpoints del api,
 /// directorio de páginas estaticas
-pub fn run(
-    listener: TcpListener,
-    db_pool: PgPool
-) -> Result<Server, std::io::Error> {
+pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         let generated = generate();
         App::new()
-        .service(home::get::home)
-        .service(login::email::get::login_email_form)
-        .service(login::email::post::login_email)
-        .service(login::pass::get::login_pass_form)
-        .service(login::pass::post::login_pass)
-        .service(ResourceFiles::new("/", generated)
-            .do_not_resolve_defaults())
-        .app_data(db_pool.clone())
+            .service(home::get::home)
+            .service(login::email::get::login_email_form)
+            .service(login::email::post::login_email)
+            .service(login::pass::get::login_pass_form)
+            .service(login::pass::post::login_pass)
+            .service(usuario::email::get::usuario_email_form)
+            .service(usuario::email::post::usuario_email)
+            .service(capitulo::lista::get::capitulo_lista_form)
+            .service(capitulo::crea::get::capitulo_crea_form)
+            .service(capitulo::crea::post::capitulo_crea)
+            .service(ResourceFiles::new("/", generated)
+                .do_not_resolve_defaults())
+            .app_data(db_pool.clone())
+            .wrap(TracingLogger::default())
     })
     .listen(listener)?
     .run();

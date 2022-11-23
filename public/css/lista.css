@@ -1,0 +1,130 @@
+/*
+ * css/lista.css
+ * author: fyaniquez
+ * date: 12/10/2022
+ * purpose: estilos para lista paginada
+ */
+
+@import "helper.css";
+
+/* cabecera */
+.cabecera {
+    height: 50px;
+    line-height: 50px;
+    background-color: var(--bgc);
+    padding: 0 40px 0 40px;
+    box-shadow: 0 5px 5px #c0c0c0;
+}
+
+.cabecera-logo {
+    padding: 5px 0 5px 0;
+}
+
+.cabecera-spacer {
+    display: inline;
+}
+
+.cabecera-nav {
+    padding: 5px 20px 5px 0;
+    float: right;
+}
+
+.cabecera-nav a {
+    text-decoration: none;
+    color: var(--sec);
+}
+
+.cabecera-nav a:hover {
+    color: var(--pri);
+}
+
+/* fin cabecera */
+
+/* lista */
+.lista-box {
+    width: 600px;
+    padding: 40px;
+    background-color: var(--bgc);
+    box-shadow: 3px 2px 5px 1px #969696;
+    display: table;
+}
+
+.lista-titulo {
+    font-size: 1.563rem;
+    color: var(--bt1);
+}
+
+.lista-cabecera {
+    display: flex;
+    justify-content: space-betweenn;
+    background-color: var(--pri);
+    color: white;
+}
+
+.lista {
+    background-color: white;
+}
+
+.lista-items {
+    list-style: none;
+}
+
+.lista-item {
+    display: flex;
+    justify-content: space-betweenn;
+    border-bottom: solid 1 black;
+    align-items: center;
+}
+
+.lista-item:nth-child(odd) {
+    background-color: white;
+}
+
+.lista-item:nth-child(even) {
+    background-color: var(--bgct);
+}
+
+.nombre {
+    width: 30%;
+}
+
+.descripcion {
+    width: 70%;
+}
+
+/* fin lista */
+
+/* barra de paginado */
+.paginado-barra {
+    width: 600px;
+    padding: 5px;
+    background-color: white;
+    box-shadow: 3px 2px 5px 1px #969696;
+    display: inline-block;
+}
+
+.paginas {
+    width: 100%;
+}
+
+.paginas span {
+    color: var(--sec);
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    font-size: 0.75rem;
+}
+
+/* Style the active/current link */
+.paginas .active {
+    background-color: var(--pri);
+    color: white;
+}
+
+/* Add a grey background color on mouse-over */
+.paginas span:hover:not(.active) {
+    background-color: #ddd;
+}
+
+/* fin barra de paginado */
