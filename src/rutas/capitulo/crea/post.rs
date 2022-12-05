@@ -1,4 +1,4 @@
-//! src/rutas/capitulo/alta/post.rs
+//! src/rutas/capitulo/crea/post.rs
 //! author: fyaniquez
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de capitulo
@@ -9,10 +9,9 @@ use crate::domain::{
     CapituloNuevo,
 };
 use actix_web::http::StatusCode;
-use actix_web::{post, web, HttpResponse, ResponseError};
+use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
-use uuid::Uuid;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
@@ -47,10 +46,13 @@ pub async fn capitulo_crea(
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, CapituloError> {
     let capitulo = form.0.try_into().map_err(CapituloError::Validacion)?;
-    let capitulo_id = capitulo_inserta(&pool, &capitulo)
+    let id = capitulo_inserta(&pool, &capitulo)
         .await
         .context("Error al insertar capitulo en la BD")?;
-    Ok(HttpResponse::Ok().finish())
+    let url_ver =  format!("/capitulo/{}", id);
+    Ok(HttpResponse::Found()
+        .insert_header((header::LOCATION, url_ver))
+        .finish())
 }
 
 // errores considerados para alta de capitulos
@@ -82,17 +84,15 @@ impl ResponseError for CapituloError {
 pub async fn capitulo_inserta(
     pool: &PgPool,
     capitulo_nuevo: &CapituloNuevo,
-) -> Result<Uuid, sqlx::Error> {
-    let row = sqlx::query!(
-r#"INSERT INTO capitulos (nombre, descripcion)
-   VALUES ($1, $2)
-   RETURNING capitulo_id"#,
-        capitulo_nuevo.nombre.as_ref(),
-        capitulo_nuevo.descripcion.as_ref(),
+) -> Result<i64, sqlx::Error> {
+    let (id,) = sqlx::query_as(
+"INSERT INTO capitulos (nombre, descripcion) VALUES ($1, $2) RETURNING id",
     )
+    .bind(capitulo_nuevo.nombre.as_ref())
+    .bind(capitulo_nuevo.descripcion.as_ref())
     .fetch_one(pool)
     .await?;
-    Ok(row.capitulo_id)
+    Ok(id)
 }
 
 pub fn error_chain_fmt(

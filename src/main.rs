@@ -3,7 +3,6 @@
 use erpr::startup::run;
 use erpr::configuration::get_configuration;
 use std::net::TcpListener;
-use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
 use erpr::telemetry::{get_subscriber, init_subscriber};
 use std::io::stdout;

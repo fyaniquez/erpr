@@ -32,8 +32,21 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(usuario::email::get::usuario_email_form)
             .service(usuario::email::post::usuario_email)
             .service(capitulo::lista::get::capitulo_lista_form)
+            .service(capitulo::ve::get::capitulo_ve)
             .service(capitulo::crea::get::capitulo_crea_form)
             .service(capitulo::crea::post::capitulo_crea)
+            .service(capitulo::cambia::get::capitulo_cambia_form)
+            .service(capitulo::cambia::post::capitulo_cambia)
+            .service(capitulo::borra::delete::capitulo_borra)
+            .service(capitulo::json::get::capitulo_json)
+            //.service(Files::new("/public", "./public")
+                //.path_filter(|path, _| {
+                    //if path.extension() == "js" {
+                        //self.header("mime-type", http::mime::JAVASCRIPT);
+                    //}
+                    //true
+                //})
+
             .service(ResourceFiles::new("/", generated)
                 .do_not_resolve_defaults())
             .app_data(db_pool.clone())

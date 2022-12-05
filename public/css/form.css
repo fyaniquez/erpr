@@ -13,6 +13,11 @@
     box-shadow: 3px 2px 5px 1px #969696;
     display: table;
 }
+.form-cabecera {
+    font-size: 1.563rem;
+    color: var(--bt1);
+}
+
 .form-titulo {
     font-size: 1.563rem;
     color: var(--bt1);
@@ -53,4 +58,22 @@
 }
 .form-submit:focus {
     outline: none;
+}
+.form-lista {
+    float: right;
+}
+.form-lista:link {
+  text-decoration: none;
+}
+
+.form-lista:visited {
+  text-decoration: none;
+}
+
+.form-lista:hover {
+  text-decoration: underline;
+}
+
+.form-lista:active {
+  text-decoration: underline;
 }

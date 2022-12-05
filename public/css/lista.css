@@ -116,6 +116,23 @@
     font-size: 0.75rem;
 }
 
+.pagina-boton {
+    width: 100px;
+    height: 3rem;
+    margin-top: 0.75rem;
+    padding: 0 1rem;
+    color: var(--bgc);
+    text-align: center;
+    background-color: var(--bt1);
+    cursor: pointer;
+}
+.pagina-boton:hover {
+    background-color: var(--bt2);
+}
+.pagina-boton:focus {
+    outline: none;
+}
+
 /* Style the active/current link */
 .paginas .active {
     background-color: var(--pri);

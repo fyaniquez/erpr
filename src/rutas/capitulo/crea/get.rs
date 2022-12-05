@@ -10,20 +10,19 @@ use crate::layout;
 
 #[get("/capitulo")]
 pub async fn capitulo_crea_form() -> AwResult<Markup> {
-    layout::form::crea("Crear capitulo", "form.css", None, contenido())
+    layout::form::crea(
+        "Capítulo", "/capitulos", "form.css", Some("form.js"), contenido())
 }
 
 fn contenido() -> Markup { html! {
-    .form-box {
-        form-titulo { "CAPITULO" }
-        form method="POST" action="/capitulo" {
-            label for="nombre" {"Nombre:" }
-            input type="text" name="nombre" id="nombre" required
-                placeholder="Nombre capítulo";
-            label for="descripcion" {"Descripción:" }
-            textarea name="descripcion" id="descripcion" required
-                placeholder="Descripción" rows="3" { " " }
-            button .form-submit type="submit" { "Crear" }
-        }
+    form method="POST" action="/capitulo" {
+        label for="nombre" {"Nombre:" }
+        input type="text" name="nombre" id="nombre" required
+            placeholder="Nombre capítulo";
+        label for="descripcion" {"Descripción:" }
+        textarea name="descripcion" id="descripcion" required
+            placeholder="Descripción" rows="3" { " " }
+        button #crea .form-submit type="submit" { "Crear" }
+        button #cancela .form-submit type="button" { "Cancelar" }
     }
 }}

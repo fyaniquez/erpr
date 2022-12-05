@@ -3,12 +3,11 @@
 //! date: 21/10/2022
 //! purpose: muestra el formulario de lista paginada de capitulos
 
-use crate::layout;
 use crate::layout::lista_paginada;
 use crate::layout::lista_paginada::Paginado;
+use crate::modelo::capitulo::Capitulo;
 use actix_web::get;
 use actix_web::http::StatusCode;
-use actix_web::Result as AwResult;
 use actix_web::{web, HttpResponse, ResponseError};
 use anyhow::Context;
 use maud::{html, Markup};
@@ -30,24 +29,30 @@ pub async fn capitulo_lista_form(
         .await
         .context("Error al leer capitulos de la BD")?;
     paginado.total_filas = Some(total_filas);
-    let pagina = lista_paginada::crea("Capitulos", "lista.css", Some("lista.js"), &paginado, contenido(filas));
+    let pagina = lista_paginada::crea(
+        "Capitulos",
+        "lista.css",
+        Some("lista.js"),
+        &paginado,
+        contenido(filas),
+    );
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // modelo
 // obtiene un fragmento de la tabla de capitulos en la base de datos
 #[tracing::instrument(name = "Lista capitulos", skip(pool))]
-pub async fn lista(pool: &PgPool, paginado: &Paginado) -> Result<(Vec<Fila>, i32), sqlx::Error> {
+pub async fn lista(pool: &PgPool, paginado: &Paginado) -> Result<(Vec<Capitulo>, i32), sqlx::Error> {
     const SELECT: &str = "SELECT id, nombre, descripcion FROM capitulos";
     let qry = paginado.get_qry(SELECT);
-    let filas: Vec<Fila> = sqlx::query_as(qry.as_ref()).fetch_all(pool).await?;
+    let filas: Vec<Capitulo> = sqlx::query_as(qry.as_ref()).fetch_all(pool).await?;
     let qry_count = paginado.get_qry_count(SELECT);
     let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref()).fetch_one(pool).await?;
     Ok((filas, nro_filas.0 as i32))
 }
 
 // vista
-fn contenido(filas: Vec<Fila>) -> Option<Markup> {
+fn contenido(filas: Vec<Capitulo>) -> Option<Markup> {
     if filas.len() < 1 {
         return None;
     }
@@ -61,7 +66,7 @@ fn contenido(filas: Vec<Fila>) -> Option<Markup> {
                 }
                 .lista-items {
                 @for fila in filas.into_iter() {
-                    .lista-item #{(fila.id)} {
+                    .lista-item #{(fila.id.unwrap())} {
                         span .nombre {(fila.nombre)}
                         span .descripcion {(fila.descripcion)}
                     }
@@ -93,13 +98,6 @@ impl ResponseError for CapituloError {
             CapituloError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-#[derive(sqlx::FromRow)]
-pub struct Fila {
-    id: i64,
-    nombre: String,
-    descripcion: String,
 }
 
 pub fn error_chain_fmt(

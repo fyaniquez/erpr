@@ -28,3 +28,6 @@ tags
 # -->> vscode <<--
 .vscode/*
 !.vscode/launch.json
+
+# folder autogenerado para archivos estaticos
+static_packages/node_modules

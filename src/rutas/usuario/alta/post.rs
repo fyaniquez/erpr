@@ -54,7 +54,7 @@ pub async fn usuario_alta(
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, UsuarioError> {
     let usuario = form.0.try_into().map_err(UsuarioError::Validacion)?;
-    let usuario_id = usuario_inserta(&pool, &usuario)
+    let _usuario_id = usuario_inserta(&pool, &usuario)
         .await
         .context("Error al insertar usuario en la BD")?;
     Ok(HttpResponse::Ok().finish())

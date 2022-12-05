@@ -20,6 +20,7 @@ CREATE SEQUENCE public.capitulos_id_seq
 ALTER TABLE public.capitulos_id_seq OWNER TO erp;
 ALTER SEQUENCE public.capitulos_id_seq OWNED BY public.capitulos.id;
 ALTER TABLE ONLY public.capitulos ALTER COLUMN id SET DEFAULT nextval('public.capitulos_id_seq'::regclass);
+SELECT pg_catalog.setval('public.capitulos_id_seq', 24, true);
 
 -- datos
 INSERT INTO public.capitulos (nombre, created_at, updated_at, descripcion, id) VALUES ('Abarrotes', '2021-03-21 17:09:45.106883', '2021-03-21 17:09:45.106883', 'Artículos alimenticios, como conservas alimenticias, especias y otros', 1);

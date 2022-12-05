@@ -10,7 +10,7 @@ use crate::layout;
 
 #[get("/")]
 pub async fn home() -> AwResult<Markup> {
-    layout::form::crea("Don coco", "home.css", None, contenido())
+    layout::form::crea("Don coco", "Bienvenido", "home.css", None, contenido())
 }
 
 /// contenido de la página

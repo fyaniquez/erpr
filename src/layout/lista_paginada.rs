@@ -128,16 +128,16 @@ pub struct PaginadoInt<T> {
 }
 
 // Barra con los parametros de búsqueda
-fn barra_busqueda(Paginado: &Paginado, filtro_bar: Markup) -> Markup {
+fn barra_busqueda(paginado: &Paginado, filtro_bar: Markup) -> Markup {
     html! {
         searchbar {
             .longitud_bar {
                 label for="longitud" { "Mostrar " }
                 select name="longitud" id="longitud" {
-                    option selected[Paginado.longitud=="10"] {"10"}
-                    option selected[Paginado.longitud=="25"] {"25"}
-                    option selected[Paginado.longitud=="50"] {"50"}
-                    option selected[Paginado.longitud=="todos"] {"todos"}
+                    option selected[paginado.longitud=="10"] {"10"}
+                    option selected[paginado.longitud=="25"] {"25"}
+                    option selected[paginado.longitud=="50"] {"50"}
+                    option selected[paginado.longitud=="todos"] {"todos"}
                 }
                 span {" registros"}
             }
@@ -147,23 +147,28 @@ fn barra_busqueda(Paginado: &Paginado, filtro_bar: Markup) -> Markup {
 }
 
 // barra con los controles para avanzar por páginas
-fn barra_paginado(paginado: &Paginado) -> Markup {
+fn barra_paginado(contenido: bool, paginado: &Paginado) -> Markup {
     html! {
         .paginado-barra #pagebar {
+            @if contenido {
             #paginas .paginas {
                 span .pagina #primero { "<<" }
                 span .pagina #previo { "<" }
-                @for p in paginado.get_inferior()..=paginado.get_superior(paginado.total_filas.unwrap()) {
-                     @if p == paginado.get_pagina() {
-                         span .pagina .active #actual {(p)}
-                     } @else {
-                         span .pagina #pagina {(p)}
-                     }
+                @for p in paginado.get_inferior()..=
+                    paginado.get_superior(paginado.total_filas.unwrap()) {
+                    @if p == paginado.get_pagina() {
+                        span .pagina .active #actual {(p)}
+                    } @else {
+                        span .pagina #pagina {(p)}
+                    }
                 }
                 span .pagina #siguiente { ">" }
                 span .pagina #ultimo
-                    data-index=(paginado.get_nro_paginas(paginado.total_filas.unwrap())) { ">> " }
-           }
+                    data-index=(
+                        paginado.get_nro_paginas(
+                            paginado.total_filas.unwrap())) { ">> " }
+           }}
+           button .pagina-boton #agrega type="button" value="agregar" { "+" }
         }
     }
 }
@@ -179,7 +184,8 @@ pub fn crea(
     //nro_filas: i32,
     contenido: Option<Markup>,
 ) -> AwResult<Markup> {
-    Ok(layout::principal::crea(titulo, estilo, script, combina(contenido, paginado)).unwrap())
+    Ok(layout::principal::crea(
+        titulo, estilo, script, combina(contenido, paginado)).unwrap())
 }
 
 // combina el contenido construido por el cliente
@@ -194,9 +200,14 @@ fn combina(contenido: Option<Markup>, paginado: &Paginado) -> Markup {
                 a href="/" { "Registrarse" } }
         }
         .principal {
-            @if !contenido.is_none() {
-                (contenido.unwrap())
-                (barra_paginado(paginado))
+            @match contenido {
+                Some(contenido) => {
+                    (contenido)
+                    (barra_paginado(true, paginado))
+                },
+                None => {
+                    (barra_paginado(false, paginado))
+                },
             }
         }
             //h1 .main {(titulo)}

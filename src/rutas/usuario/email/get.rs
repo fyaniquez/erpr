@@ -10,7 +10,7 @@ use crate::layout;
 
 #[get("/usuario_email")]
 pub async fn usuario_email_form() -> AwResult<Markup> {
-    layout::form::crea("Crear cuenta", "login.css", None, contenido())
+    layout::form::crea("Usuario", "/usuarios", "login.css", None, contenido())
 }
 
 fn contenido() -> Markup { html! {
