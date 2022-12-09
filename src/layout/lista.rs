@@ -168,7 +168,7 @@ fn barra_paginado(contenido: bool, paginado: &Paginado) -> Markup {
                         paginado.get_nro_paginas(
                             paginado.total_filas.unwrap())) { ">> " }
            }}
-           button .pagina-boton #agrega type="button" value="agregar" { "+" }
+           button .pagina-boton #crea type="button" value="agregar" { "+" }
         }
     }
 }
@@ -176,30 +176,41 @@ fn barra_paginado(contenido: bool, paginado: &Paginado) -> Markup {
 // crea un marco funcional para el Paginado de listas
 pub fn crea(
     titulo: &str,
+    atras: &str,
     estilo: &str,
     script: Option<&str>,
-    //errores: Option<&str>,
     paginado: &Paginado,
+    //errores: Option<&str>,
     //filtro_bar: Markup,
     //nro_filas: i32,
     contenido: Option<Markup>,
 ) -> AwResult<Markup> {
-    Ok(layout::principal::crea(
-        titulo, estilo, script, combina(contenido, paginado)).unwrap())
+    let formulario = combina(titulo, atras, contenido, paginado);
+    layout::principal::crea(titulo, estilo, script, formulario)
 }
 
 // combina el contenido construido por el cliente
 // con el layout para listas
-fn combina(contenido: Option<Markup>, paginado: &Paginado) -> Markup {
-    html! {
-        .cabecera {
-            img .cabecera-logo src="/img/logo.png";
-            .cabecera-nav {
-                a href="/login_email_form" { "Ingresar" } }
-            .cabecera-nav {
-                a href="/" { "Registrarse" } }
-        }
-        .principal {
+fn combina(
+    titulo: &str,
+    atras: &str,
+    contenido: Option<Markup>, 
+    paginado: &Paginado
+) -> Markup { html! {
+    .cabecera {
+        img .cabecera-logo src="/img/logo.png";
+        .cabecera-nav {
+            a href="/login_email_form" { "Ingresar" } }
+        .cabecera-nav {
+            a href="/" { "Registrarse" } }
+    }
+    .principal {
+        .lista-box {
+            .lista-cabecera {
+             span .form-titulo {(titulo)}
+                a .form-atras #atras href=(atras) { 
+                    img src="/img/lista-24.png"; }
+            }
             @match contenido {
                 Some(contenido) => {
                     (contenido)
@@ -210,6 +221,8 @@ fn combina(contenido: Option<Markup>, paginado: &Paginado) -> Markup {
                 },
             }
         }
+    }
+}}
             //h1 .main {(titulo)}
             //@if !contenido.is_none() {
                 //(barra_busqueda(Paginado, filtro_bar))
@@ -219,5 +232,3 @@ fn combina(contenido: Option<Markup>, paginado: &Paginado) -> Markup {
                     //span.error-text {(errores)}
                 //}
             //}
-    }
-}

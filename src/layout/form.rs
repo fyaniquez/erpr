@@ -10,18 +10,18 @@ use crate::layout;
 /// combina el layout con los parámetros y contenido
 pub fn crea(
     titulo: &str,
-    lista: &str,
+    atras: &str,
     estilo: &str,
     script: Option<&str>,
     contenido: Markup
 ) -> AwResult<Markup> { 
-    let formulario = combina(titulo, lista, contenido);
+    let formulario = combina(titulo, atras, contenido);
     layout::principal::crea(titulo, estilo, script, formulario)
 }
 
 // combina el contenido construido por el cliente
 // con el layout para formularios
-fn combina(titulo: &str, lista: &str, contenido: Markup) -> Markup { html! {
+fn combina(titulo: &str, atras: &str, contenido: Markup) -> Markup { html! {
     .cabecera {
         img .cabecera-logo src="/img/logo.png";
         .cabecera-nav {
@@ -33,7 +33,7 @@ fn combina(titulo: &str, lista: &str, contenido: Markup) -> Markup { html! {
         .form-box {
             .form-cabecera {
                 span .form-titulo {(titulo)}
-                a .form-lista #lista href=(lista) { 
+                a .form-atras #atras href=(atras) { 
                     img src="/img/lista-24.png"; }
             }
             (contenido) 

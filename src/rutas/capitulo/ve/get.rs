@@ -20,9 +20,11 @@ pub async fn capitulo_ve(
     let (id,) = path.into_inner();
     let capitulo = obtiene(&pool, id).await
         .context("Error al leer capitulo")?;
+
     let pagina = layout::form::crea(
         "Capítulo", "/capitulos", 
-        "form.css", Some("ve.js"), contenido(capitulo));
+        "form.css", Some("capitulo/ve.js"), contenido(capitulo));
+
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
@@ -32,7 +34,7 @@ fn contenido(capitulo: Capitulo) -> Markup { html! {
     .form-field #nombre {(capitulo.nombre)}
     .form-label {"Descripción:" }
     .form-field #descripcion {(capitulo.descripcion)}
-    button .form-submit #categorias type="button" { "Categorias" }
+    button .form-submit #hijos type="button" { "Categorias" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}
@@ -43,7 +45,8 @@ fn contenido(capitulo: Capitulo) -> Markup { html! {
 pub async fn obtiene(
     pool: &PgPool, id: i64
 ) -> Result<Capitulo, sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, descripcion FROM capitulos WHERE id=$1";
+    const SELECT: &str 
+        = "SELECT id, nombre, descripcion FROM capitulos WHERE id=$1";
     let fila: Capitulo = sqlx::query_as(SELECT.as_ref())
         .bind(id)
         .fetch_one(pool)

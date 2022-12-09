@@ -4,11 +4,11 @@
 //! purpose: borra un capitulo
 
 use crate::modelo::capitulo::CapituloError;
-use actix_web::{http::header, delete, web, HttpResponse};
+use actix_web::{delete, web, HttpResponse};
 use sqlx::PgPool;
 use anyhow::Context;
 
-#[tracing::instrument(name="Ve capitulo", skip(pool))]
+#[tracing::instrument(name="borra capitulo", skip(pool))]
 #[delete("/capitulo/{id}")]
 pub async fn capitulo_borra(
     path: web::Path<(i64,)>,
@@ -17,9 +17,7 @@ pub async fn capitulo_borra(
     let (id,) = path.into_inner();
     let _row = borra(&pool, id).await
         .context("Error al borrar capitulo")?;
-    Ok(HttpResponse::Found()
-        .insert_header((header::LOCATION, "/capitulos")).finish()
-    )
+    Ok(HttpResponse::Ok().finish())
 }
 
 pub async fn borra(pool: &PgPool, id: i64) -> Result<(), sqlx::Error> {

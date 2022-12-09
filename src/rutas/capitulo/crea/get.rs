@@ -1,4 +1,4 @@
-//! src/rutas/capitulo/alta/get.rs
+//! src/rutas/capitulo/crea/get.rs
 //! author: fyaniquez
 //! date: 21/10/2022
 //! purpose: muestra el formulario de alta de capitulo
@@ -11,7 +11,8 @@ use crate::layout;
 #[get("/capitulo")]
 pub async fn capitulo_crea_form() -> AwResult<Markup> {
     layout::form::crea(
-        "Capítulo", "/capitulos", "form.css", Some("form.js"), contenido())
+        "Capítulo", "/capitulos", "form.css", 
+        Some("capitulo/crea.js"), contenido())
 }
 
 fn contenido() -> Markup { html! {

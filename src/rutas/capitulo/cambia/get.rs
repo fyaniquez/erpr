@@ -21,7 +21,7 @@ pub async fn capitulo_cambia_form(
         .context("Error al leer capítulo")?;
     let pagina = layout::form::crea(
         "Capítulo", "/capitulos", "form.css", 
-        Some("form_cambia.js"), contenido(&capitulo));
+        Some("/capitulo/cambia.js"), contenido(&capitulo));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
@@ -40,8 +40,11 @@ fn contenido(capitulo: &Capitulo) -> Markup { html! {
 // modelo
 // obtiene un capitulo de la base de datos
 #[tracing::instrument(name = "ve capitulo", skip(pool))]
-pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Capitulo, sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, descripcion FROM capitulos WHERE id=$1";
+pub async fn obtiene(
+    pool: &PgPool, id: i64
+) -> Result<Capitulo, sqlx::Error> {
+    const SELECT: &str 
+        = "SELECT id, nombre, descripcion FROM capitulos WHERE id=$1";
     let fila: Capitulo = sqlx::query_as(SELECT.as_ref())
         .bind(id)
         .fetch_one(pool)

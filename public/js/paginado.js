@@ -40,15 +40,9 @@ const onClickPaginas = (e) => {
     }
 };
 
-// llama al formulario de alta de capitulo
-const onClickAgrega = (e) => {
-    var url = `${window.origin}/capitulo`;
-    window.location.replace(encodeURI(url));
-}
-
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadPaginado = () => {
     paginas.addEventListener("click", onClickPaginas);
-    agrega.addEventListener("click", onClickAgrega);
 }
+
 document.readyState === "complete" ? onLoadPaginado() : addEventListener("load", onLoadPaginado);

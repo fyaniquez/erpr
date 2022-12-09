@@ -3,8 +3,8 @@
 //! date: 21/10/2022
 //! purpose: muestra el formulario de lista paginada de capitulos
 
-use crate::layout::lista_paginada;
-use crate::layout::lista_paginada::Paginado;
+use crate::layout;
+use crate::layout::lista::Paginado;
 use crate::modelo::capitulo::Capitulo;
 use actix_web::get;
 use actix_web::http::StatusCode;
@@ -29,12 +29,11 @@ pub async fn capitulo_lista_form(
         .await
         .context("Error al leer capitulos de la BD")?;
     paginado.total_filas = Some(total_filas);
-    let pagina = lista_paginada::crea(
-        "Capitulos",
-        "lista.css",
-        Some("lista.js"),
-        &paginado,
-        contenido(filas),
+
+    let pagina = layout::lista::crea(
+        "Capitulos", "/",
+        "lista.css", Some("capitulo/lista.js"),
+        &paginado, contenido(filas),
     );
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
@@ -45,9 +44,12 @@ pub async fn capitulo_lista_form(
 pub async fn lista(pool: &PgPool, paginado: &Paginado) -> Result<(Vec<Capitulo>, i32), sqlx::Error> {
     const SELECT: &str = "SELECT id, nombre, descripcion FROM capitulos";
     let qry = paginado.get_qry(SELECT);
-    let filas: Vec<Capitulo> = sqlx::query_as(qry.as_ref()).fetch_all(pool).await?;
+    let filas: Vec<Capitulo> = sqlx::query_as(qry.as_ref())
+        .fetch_all(pool).await?;
+
     let qry_count = paginado.get_qry_count(SELECT);
-    let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref()).fetch_one(pool).await?;
+    let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
+        .fetch_one(pool).await?;
     Ok((filas, nro_filas.0 as i32))
 }
 

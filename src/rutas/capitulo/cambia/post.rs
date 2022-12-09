@@ -67,7 +67,7 @@ pub async fn capitulo_actualiza(
     id: i64,
 ) -> Result<(), sqlx::Error> {
     let _ = sqlx::query!(
-"UPDATE capitulos SET nombre=$1, descripcion=$2 WHERE id=$3",
+        "UPDATE capitulos SET nombre=$1, descripcion=$2 WHERE id=$3",
         &capitulo.nombre,
         &capitulo.descripcion,
         id,

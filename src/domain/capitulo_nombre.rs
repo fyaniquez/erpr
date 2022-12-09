@@ -1,6 +1,6 @@
 //! src/domain/capitulo_nombre.rs
 //! author: fyaniquez
-//! date: 29/10/2022
+//! date: 06/12/2022
 //! validaciones de un nombre de capitulo
 //! la longitud máxima es de 32 caracteres
 
