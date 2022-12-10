@@ -9,7 +9,7 @@ use maud::{html, Markup};
 use crate::layout;
 
 #[get("/capitulo")]
-pub async fn capitulo_crea_form() -> AwResult<Markup> {
+pub async fn muestra() -> AwResult<Markup> {
     layout::form::crea(
         "Capítulo", "/capitulos", "form.css", 
         Some("capitulo/crea.js"), contenido())

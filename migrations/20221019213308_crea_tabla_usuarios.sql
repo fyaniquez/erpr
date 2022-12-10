@@ -34,6 +34,7 @@ VALUES (2, 'Favio Yañiquez', '2710988016', 'fyaniquez@gmail.com', 'pendiente', 
 SELECT pg_catalog.setval('public.usuarios_id_seq', 3, true);
 
 -- constraints
+-- trigger para insert
 CREATE OR REPLACE FUNCTION usuarios_insert_prepara() 
    RETURNS TRIGGER 
    LANGUAGE PLPGSQL
@@ -49,3 +50,19 @@ CREATE TRIGGER insert_prepara
     BEFORE INSERT ON usuarios
     FOR EACH ROW
     EXECUTE FUNCTION usuarios_insert_prepara();
+
+-- trigger para update
+CREATE OR REPLACE FUNCTION usuarios_update_prepara() 
+   RETURNS TRIGGER 
+   LANGUAGE PLPGSQL
+AS $$
+BEGIN
+	NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER update_prepara
+    BEFORE UPDATE ON usuarios
+    FOR EACH ROW
+    EXECUTE FUNCTION usuarios_update_prepara();

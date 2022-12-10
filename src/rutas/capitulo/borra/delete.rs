@@ -10,7 +10,7 @@ use anyhow::Context;
 
 #[tracing::instrument(name="borra capitulo", skip(pool))]
 #[delete("/capitulo/{id}")]
-pub async fn capitulo_borra(
+pub async fn procesa(
     path: web::Path<(i64,)>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, CapituloError> {

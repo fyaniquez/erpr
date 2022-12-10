@@ -10,7 +10,7 @@ use anyhow::Context;
 
 #[tracing::instrument(name="capitulo json", skip(pool))]
 #[get("/capitulo/{id}.json")]
-pub async fn capitulo_json(
+pub async fn muestra(
     path: web::Path<(i64,)>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, CapituloError> {

@@ -9,7 +9,7 @@ use maud::{html, Markup};
 use crate::layout;
 
 #[get("/pais")]
-pub async fn formulario() -> AwResult<Markup> {
+pub async fn muestra() -> AwResult<Markup> {
     layout::form::crea(
         "País", "/paises", "form.css", 
         Some("pais/crea.js"), contenido())

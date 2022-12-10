@@ -60,10 +60,12 @@ fi
 cp -r $JS/$1 $JS/$3
 
 ## ajusta startup
-echo ".service(${3}::lista::get::formulario)" >> ${ACTUAL}/src/startup.rs
-echo ".service(${3}::ve::get::pantalla)" >> ${ACTUAL}/src/startup.rs
-echo ".service(${3}::crea::get::formulario)" >> ${ACTUAL}/src/startup.rs
-echo ".service(${3}::crea::post::proceso)" >> ${ACTUAL}/src/startup.rs
-echo ".service(${3}::cambia::get::formulario)" >> ${ACTUAL}/src/startup.rs
-echo ".service(${3}::cambia::post::proceso)" >> ${ACTUAL}/src/startup.rs
-echo ".service(${3}::borra::delete::proceso)" >> ${ACTUAL}/src/startup.rs
+sed "s/OBJETO/$3/" scripts/startup.mod > scripts/startup.vi
+vi -s scripts/startup.vi src/startup.rs
+echo ".service(${3}::lista::get::muestra)" >> src/startup.rs
+echo ".service(${3}::ve::get::muestra)" >> src/startup.rs
+echo ".service(${3}::crea::get::muestra)" >> src/startup.rs
+echo ".service(${3}::crea::post::procesa)" >> src/startup.rs
+echo ".service(${3}::cambia::get::muestra)" >> src/startup.rs
+echo ".service(${3}::cambia::post::procesa)" >> src/startup.rs
+echo ".service(${3}::borra::delete::procesa)" >> src/startup.rs

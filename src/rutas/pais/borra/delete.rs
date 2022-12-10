@@ -10,7 +10,7 @@ use anyhow::Context;
 
 #[tracing::instrument(name="borra pais", skip(pool))]
 #[delete("/pais/{id}")]
-pub async fn proceso(
+pub async fn procesa(
     path: web::Path<(i64,)>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, PaisError> {

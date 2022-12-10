@@ -1,7 +1,7 @@
 //! src/rutas/categoria/cambia/get.rs
 //! author: fyaniquez
 //! date: 7/10/2022
-//! purpose: muestra el formulario de modificacion de categoria
+//! purpose: muestra el muestra() de modificacion de categoria
 
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
@@ -12,7 +12,7 @@ use anyhow::Context;
 
 #[tracing::instrument(name="Cambia categoria", skip(pool))]
 #[get("/categoria/{id}/cambia")]
-pub async fn categoria_cambia_form(
+pub async fn muestra(
     pool: web::Data<PgPool>,
     path: web::Path<(i64,)>,
 ) -> Result<HttpResponse, CategoriaError> {

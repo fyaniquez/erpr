@@ -18,7 +18,7 @@ const LOCAL_MAYUSCULA: &str = "País";
 // controlador
 #[tracing::instrument(name="Ve pais", skip(pool))]
 #[get("/pais/{id}")]
-pub async fn pantalla(
+pub async fn muestra(
     path: web::Path<(i64,)>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, PaisError> {

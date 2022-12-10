@@ -43,7 +43,7 @@ impl TryFrom<FormData> for Pais {
     )
 )]
 #[post("/pais/{id}")]
-pub async fn proceso(
+pub async fn procesa(
     path: web::Path<(i64,)>, 
     form: web::Form<FormData>, 
     pool: web::Data<PgPool>

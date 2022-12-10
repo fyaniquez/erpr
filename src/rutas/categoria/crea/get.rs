@@ -14,7 +14,7 @@ pub struct QueryData {
 }
 
 #[get("/categoria")]
-pub async fn categoria_crea_form(
+pub async fn muestra(
     query: web::Query<QueryData>, 
 ) -> AwResult<Markup> {
     layout::form::crea(

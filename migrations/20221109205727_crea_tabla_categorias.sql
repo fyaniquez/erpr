@@ -371,3 +371,19 @@ CREATE TRIGGER insert_prepara
     FOR EACH ROW
     EXECUTE FUNCTION categorias_insert_prepara();
 
+-- trigger para preparar el update
+CREATE OR REPLACE FUNCTION categorias_update_prepara() 
+   RETURNS TRIGGER 
+   LANGUAGE PLPGSQL
+AS $$
+BEGIN
+	NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER update_prepara
+    BEFORE UPDATE ON categorias
+    FOR EACH ROW
+    EXECUTE FUNCTION categorias_update_prepara();
+

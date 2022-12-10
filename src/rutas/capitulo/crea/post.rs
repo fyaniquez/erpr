@@ -41,7 +41,7 @@ impl TryFrom<FormData> for CapituloNuevo {
     )
 )]
 #[post("/capitulo")]
-pub async fn capitulo_crea(
+pub async fn procesa(
     form: web::Form<FormData>, 
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, CapituloError> {

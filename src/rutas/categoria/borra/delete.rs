@@ -10,7 +10,7 @@ use anyhow::Context;
 
 #[tracing::instrument(name="borra categoria", skip(pool))]
 #[delete("/categoria/{id}")]
-pub async fn categoria_borra(
+pub async fn procesa(
     path: web::Path<(i64,)>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, CategoriaError> {

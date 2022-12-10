@@ -43,7 +43,7 @@ impl TryFrom<FormData> for Capitulo {
     )
 )]
 #[post("/capitulo/{id}")]
-pub async fn capitulo_cambia(
+pub async fn procesa(
     path: web::Path<(i64,)>, 
     form: web::Form<FormData>, 
     pool: web::Data<PgPool>

@@ -13,7 +13,7 @@ use anyhow::Context;
 // controlador
 #[tracing::instrument(name="Ve capitulo", skip(pool))]
 #[get("/capitulo/{id}")]
-pub async fn capitulo_ve(
+pub async fn muestra(
     path: web::Path<(i64,)>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, CapituloError> {

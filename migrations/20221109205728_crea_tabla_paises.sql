@@ -58,3 +58,19 @@ CREATE TRIGGER insert_prepara
     FOR EACH ROW
     EXECUTE FUNCTION paises_insert_prepara();
 
+-- trigger para preparar el update 
+CREATE OR REPLACE FUNCTION paises_update_prepara() 
+   RETURNS TRIGGER 
+   LANGUAGE PLPGSQL
+AS $$
+BEGIN
+	NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER update_prepara
+    BEFORE UPDATE ON paises
+    FOR EACH ROW
+    EXECUTE FUNCTION paises_update_prepara();
+

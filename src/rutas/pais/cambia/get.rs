@@ -20,7 +20,7 @@ use anyhow::Context;
 
 #[tracing::instrument(name="Cambia pais", skip(pool))]
 #[get("/pais/{id}/cambia")]
-pub async fn formulario(
+pub async fn muestra(
 
 
     pool: web::Data<PgPool>,

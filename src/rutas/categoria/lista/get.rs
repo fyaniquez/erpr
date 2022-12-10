@@ -17,7 +17,7 @@ use sqlx::PgPool;
 // controlador
 #[tracing::instrument(name = "Lista de categorias", skip(pool))]
 #[get("/capitulo/{id}/categorias")]
-pub async fn categoria_lista_form(
+pub async fn muestra(
     path: web::Path<(i64,)>, 
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,

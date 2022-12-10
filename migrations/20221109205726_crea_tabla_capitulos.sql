@@ -66,3 +66,19 @@ CREATE TRIGGER insert_prepara
     FOR EACH ROW
     EXECUTE FUNCTION capitulos_insert_prepara();
 
+-- trigger para preparar el update
+CREATE OR REPLACE FUNCTION capitulos_update_prepara() 
+   RETURNS TRIGGER 
+   LANGUAGE PLPGSQL
+AS $$
+BEGIN
+	NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER update_prepara
+    BEFORE UPDATE ON capitulos
+    FOR EACH ROW
+    EXECUTE FUNCTION capitulos_update_prepara();
+

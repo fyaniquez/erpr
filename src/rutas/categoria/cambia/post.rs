@@ -38,7 +38,7 @@ impl TryFrom<FormData> for Categoria {
     )
 )]
 #[post("/categoria/{id}")]
-pub async fn categoria_cambia(
+pub async fn procesa(
     path: web::Path<(i64,)>, 
     form: web::Form<FormData>, 
     pool: web::Data<PgPool>

@@ -1,7 +1,7 @@
 //! src/rutas/capitulo/lista/get.rs
 //! author: fyaniquez
 //! date: 21/10/2022
-//! purpose: muestra el formulario de lista paginada de capitulos
+//! purpose: muestra el muestra() de lista paginada de capitulos
 
 use crate::layout;
 use crate::layout::lista::Paginado;
@@ -16,7 +16,7 @@ use sqlx::PgPool;
 // controlador
 #[tracing::instrument(name = "Lista de capitulos", skip(pool))]
 #[get("/capitulos")]
-pub async fn capitulo_lista_form(
+pub async fn muestra(
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, CapituloError> {

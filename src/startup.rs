@@ -4,12 +4,17 @@
 //! purpose: encapsulado de la aplicación
 //! para su arranque en producción y pruebas
 
+// objetos
 use crate::rutas::capitulo;
 use crate::rutas::categoria;
-use crate::rutas::pais;
 use crate::rutas::login;
-use crate::rutas::public::home;
+use crate::rutas::marca;
+use crate::rutas::pais;
+use crate::rutas::unidad;
 use crate::rutas::usuario;
+// fin-objetos
+
+use crate::rutas::public::home;
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
 use actix_web_static_files::ResourceFiles;
@@ -31,31 +36,44 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(login::email::post::login_email)
             .service(login::pass::get::login_pass_form)
             .service(login::pass::post::login_pass)
-            .service(pais::lista::get::formulario)
-            .service(pais::ve::get::pantalla)
             .service(usuario::email::get::usuario_email_form)
             .service(usuario::email::post::usuario_email)
-            .service(capitulo::lista::get::capitulo_lista_form)
-            .service(capitulo::ve::get::capitulo_ve)
-            .service(capitulo::crea::get::capitulo_crea_form)
-            .service(capitulo::crea::post::capitulo_crea)
-            .service(capitulo::cambia::get::capitulo_cambia_form)
-            .service(capitulo::cambia::post::capitulo_cambia)
-            .service(capitulo::borra::delete::capitulo_borra)
-            .service(capitulo::json::get::capitulo_json)
-            .service(categoria::lista::get::categoria_lista_form)
-            .service(categoria::ve::get::categoria_ve)
-            .service(categoria::crea::get::categoria_crea_form)
-            .service(categoria::crea::post::categoria_crea)
-            .service(categoria::cambia::get::categoria_cambia_form)
-            .service(categoria::cambia::post::categoria_cambia)
-            .service(categoria::borra::delete::categoria_borra)
-            .service(pais::crea::get::formulario)
-            .service(pais::crea::post::proceso)
-            .service(pais::cambia::get::formulario)
-            .service(pais::cambia::post::proceso)
-            .service(pais::borra::delete::proceso)
-           
+            .service(capitulo::lista::get::muestra)
+            .service(capitulo::ve::get::muestra)
+            .service(capitulo::crea::get::muestra)
+            .service(capitulo::crea::post::procesa)
+            .service(capitulo::cambia::get::muestra)
+            .service(capitulo::cambia::post::procesa)
+            .service(capitulo::borra::delete::procesa)
+            .service(capitulo::json::get::muestra)
+            .service(categoria::lista::get::muestra)
+            .service(categoria::ve::get::muestra)
+            .service(categoria::crea::get::muestra)
+            .service(categoria::crea::post::procesa)
+            .service(categoria::cambia::get::muestra)
+            .service(categoria::cambia::post::procesa)
+            .service(categoria::borra::delete::procesa)
+            .service(pais::lista::get::muestra)
+            .service(pais::ve::get::muestra)
+            .service(pais::crea::get::muestra)
+            .service(pais::crea::post::procesa)
+            .service(pais::cambia::get::muestra)
+            .service(pais::cambia::post::procesa)
+            .service(pais::borra::delete::procesa)
+            .service(unidad::lista::get::muestra)
+            .service(unidad::ve::get::muestra)
+            .service(unidad::crea::get::muestra)
+            .service(unidad::crea::post::procesa)
+            .service(unidad::cambia::get::muestra)
+            .service(unidad::cambia::post::procesa)
+            .service(unidad::borra::delete::procesa)
+            .service(marca::lista::get::muestra)
+            .service(marca::ve::get::muestra)
+            .service(marca::crea::get::muestra)
+            .service(marca::crea::post::procesa)
+            .service(marca::cambia::get::muestra)
+            .service(marca::cambia::post::procesa)
+            .service(marca::borra::delete::procesa)
             //.service(Files::new("/public", "./public")
             //.path_filter(|path, _| {
             //if path.extension() == "js" {

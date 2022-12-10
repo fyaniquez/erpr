@@ -21,7 +21,7 @@ const ERROR_QRY: &str = "Error al leer paises de la BD";
 // controlador
 #[tracing::instrument(name = "Lista de paises", skip(pool))]
 #[get("/paises")]
-pub async fn formulario(
+pub async fn muestra(
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, PaisError> {

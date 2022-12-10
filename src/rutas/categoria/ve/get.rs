@@ -13,7 +13,7 @@ use anyhow::Context;
 // controlador
 #[tracing::instrument(name="Ve categoria", skip(pool))]
 #[get("/categoria/{id}")]
-pub async fn categoria_ve(
+pub async fn muestra(
     path: web::Path<(i64,)>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, CategoriaError> {

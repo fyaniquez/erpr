@@ -12,7 +12,7 @@ use anyhow::Context;
 
 #[tracing::instrument(name="Cambia capitulo", skip(pool))]
 #[get("/capitulo/{id}/cambia")]
-pub async fn capitulo_cambia_form(
+pub async fn muestra(
     pool: web::Data<PgPool>,
     path: web::Path<(i64,)>,
 ) -> Result<HttpResponse, CapituloError> {

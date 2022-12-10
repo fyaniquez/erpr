@@ -38,7 +38,7 @@ impl TryFrom<FormData> for CategoriaNuevo {
     )
 )]
 #[post("/categoria")]
-pub async fn categoria_crea(
+pub async fn procesa(
     form: web::Form<FormData>, 
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, CategoriaError> {

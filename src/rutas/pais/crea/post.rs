@@ -41,7 +41,7 @@ impl TryFrom<FormData> for PaisNuevo {
     )
 )]
 #[post("/pais")]
-pub async fn proceso(
+pub async fn procesa(
     form: web::Form<FormData>, 
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, PaisError> {
