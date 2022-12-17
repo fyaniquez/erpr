@@ -3,8 +3,8 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de categoria
 
-use crate::domain::CategoriaNombre;
-use crate::modelo::categoria::{Categoria, CategoriaError};
+use crate::domain::categoria::Nombre;
+use crate::domain::categoria::{Categoria, CategoriaError};
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;
@@ -19,7 +19,7 @@ pub struct FormData {
 impl TryFrom<FormData> for Categoria {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = CategoriaNombre::parse(form_data.nombre)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
         Ok( Self{ 
             id: None, 
             nombre: String::from(nombre.as_ref()), 

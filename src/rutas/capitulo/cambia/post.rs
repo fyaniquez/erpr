@@ -3,11 +3,11 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de capitulo
 
-use crate::domain::{
-    CapituloNombre, 
-    CapituloDescripcion,
+use crate::domain::capitulo::{
+    Nombre, 
+    Descripcion,
 };
-use crate::modelo::capitulo::{Capitulo, CapituloError};
+use crate::domain::capitulo::{Capitulo, CapituloError};
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;
@@ -23,8 +23,8 @@ pub struct FormData {
 impl TryFrom<FormData> for Capitulo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = CapituloNombre::parse(form_data.nombre)?;
-        let descripcion = CapituloDescripcion::parse(form_data.descripcion)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
+        let descripcion = Descripcion::parse(form_data.descripcion)?;
         Ok( Self{ 
             id:None, 
             nombre: String::from(nombre.as_ref()), 

@@ -3,7 +3,7 @@
 //! date: 21/10/2022
 //! purpose: borra un pais
 
-use crate::modelo::pais::PaisError;
+use crate::domain::pais::PaisError;
 use actix_web::{delete, web, HttpResponse};
 use sqlx::PgPool;
 use anyhow::Context;

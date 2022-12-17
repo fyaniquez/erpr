@@ -4,16 +4,11 @@
 //! purpose: muestra un pais
 
 use crate::layout;
-use crate::modelo::pais::{Pais, PaisError};
+use crate::domain::pais::{Pais, PaisError};
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use sqlx::PgPool;
 use anyhow::Context;
-
-const OBJETO: &str = "pais";
-const OBJETOS: &str = "paises";
-const LOCAL: &str = "país";
-const LOCAL_MAYUSCULA: &str = "País";
 
 // controlador
 #[tracing::instrument(name="Ve pais", skip(pool))]
@@ -24,11 +19,11 @@ pub async fn muestra(
 ) -> Result<HttpResponse, PaisError> {
     let (id,) = path.into_inner();
     let pais = obtiene(&pool, id).await
-        .context(format!("Error al leer {}", LOCAL))?;
+        .context("Error al leer paises de la BD")?;
 
     let pagina = layout::form::crea(
-        LOCAL_MAYUSCULA, &format!("/{}", OBJETOS), 
-        "form.css", Some(&format!("{}/ve.js", OBJETO)), 
+        "País", "/paises", 
+        "form.css", Some("pais/ve.js"), 
         contenido(pais));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
@@ -40,7 +35,7 @@ fn contenido(pais: Pais) -> Markup { html! {
     .form-field #nombre {(pais.nombre)}
     .form-label {"Sigla:" }
     .form-field #sigla {(pais.sigla)}
-    button .form-submit #hijos type="button" { "Fábricas" }
+    button .form-submit #sublista type="button" { "Fábricas" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}

@@ -18,7 +18,7 @@ pub async fn muestra(
     query: web::Query<QueryData>, 
 ) -> AwResult<Markup> {
     layout::form::crea(
-        "Capítulo", 
+        "Categoría", 
         format!("/capitulo/{}/categorias", query.capitulo).as_ref(), 
         "form.css", Some("categoria/crea.js"), contenido(query.capitulo))
 }

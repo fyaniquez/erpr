@@ -5,7 +5,7 @@
 
 use crate::layout;
 use crate::layout::lista::Paginado;
-use crate::modelo::marca::Marca;
+use crate::domain::marca::Marca;
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};
@@ -31,7 +31,7 @@ pub async fn muestra(
     paginado.total_filas = Some(total_filas);
 
     let pagina = layout::lista::crea(
-        "marcas",
+        "Marcas",
         "/",
         "lista.css",
         Some("marca/lista.js"),

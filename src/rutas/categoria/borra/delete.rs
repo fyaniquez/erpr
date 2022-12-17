@@ -3,7 +3,7 @@
 //! date: 21/10/2022
 //! purpose: borra un categoria
 
-use crate::modelo::categoria::CategoriaError;
+use crate::domain::categoria::CategoriaError;
 use actix_web::{delete, web, HttpResponse};
 use sqlx::PgPool;
 use anyhow::Context;

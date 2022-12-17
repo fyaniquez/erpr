@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS public.usuarios
     email TEXT NOT NULL UNIQUE,
     password_digest TEXT,
     estado TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT usuarios_pkey PRIMARY KEY (id)
 );
 

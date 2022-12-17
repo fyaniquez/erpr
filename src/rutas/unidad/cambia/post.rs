@@ -3,11 +3,11 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de unidad
 
-use crate::domain::{
-    UnidadNombre, 
-    UnidadSigla,
+use crate::domain::unidad::{
+    Nombre, 
+    Sigla,
 };
-use crate::modelo::unidad::{Unidad, UnidadError};
+use crate::domain::unidad::{Unidad, UnidadError};
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;
@@ -23,8 +23,8 @@ pub struct FormData {
 impl TryFrom<FormData> for Unidad {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = UnidadNombre::parse(form_data.nombre)?;
-        let sigla = UnidadSigla::parse(form_data.sigla)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
+        let sigla = Sigla::parse(form_data.sigla)?;
         Ok( Self{ 
             id:None, 
             nombre: String::from(nombre.as_ref()), 

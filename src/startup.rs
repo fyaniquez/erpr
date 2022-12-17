@@ -7,11 +7,15 @@
 // objetos
 use crate::rutas::capitulo;
 use crate::rutas::categoria;
+use crate::rutas::fabrica;
 use crate::rutas::login;
 use crate::rutas::marca;
 use crate::rutas::pais;
 use crate::rutas::unidad;
 use crate::rutas::usuario;
+use crate::rutas::producto;
+use crate::rutas::empresa;
+use crate::rutas::catalogo;
 // fin-objetos
 
 use crate::rutas::public::home;
@@ -74,6 +78,35 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(marca::cambia::get::muestra)
             .service(marca::cambia::post::procesa)
             .service(marca::borra::delete::procesa)
+            .service(fabrica::lista::get::muestra)
+            .service(fabrica::ve::get::muestra)
+            .service(fabrica::crea::get::muestra)
+            .service(fabrica::crea::post::procesa)
+            .service(fabrica::cambia::get::muestra)
+            .service(fabrica::cambia::post::procesa)
+            .service(fabrica::borra::delete::procesa)
+            .service(producto::lista::get::muestra)
+            .service(producto::ve::get::muestra)
+            .service(producto::crea::get::muestra)
+            .service(producto::crea::post::procesa)
+            .service(producto::cambia::get::muestra)
+            .service(producto::cambia::post::procesa)
+            .service(producto::borra::delete::procesa)
+            .service(empresa::lista::get::muestra)
+            .service(empresa::ve::get::muestra)
+            .service(empresa::crea::get::muestra)
+            .service(empresa::crea::post::procesa)
+            .service(empresa::cambia::get::muestra)
+            .service(empresa::cambia::post::procesa)
+            .service(empresa::borra::delete::procesa)
+            .service(catalogo::lista::get::muestra)
+            .service(catalogo::ve::get::muestra)
+            .service(catalogo::crea::get::muestra)
+            .service(catalogo::crea::post::procesa)
+            .service(catalogo::cambia::get::muestra)
+            .service(catalogo::cambia::post::procesa)
+            .service(catalogo::borra::delete::procesa)
+            // fin-servicios
             //.service(Files::new("/public", "./public")
             //.path_filter(|path, _| {
             //if path.extension() == "js" {

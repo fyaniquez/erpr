@@ -3,8 +3,8 @@
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea categoria
 
-use crate::domain::CategoriaNombre;
-use crate::domain::CategoriaNuevo;
+use crate::domain::categoria::Nombre;
+use crate::domain::categoria::Nuevo;
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
@@ -18,10 +18,10 @@ pub struct FormData {
 }
 
 // valida y contruye el objeto FormData
-impl TryFrom<FormData> for CategoriaNuevo {
+impl TryFrom<FormData> for Nuevo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = CategoriaNombre::parse(form_data.nombre)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
         // todo simplificar las siguientes 2 lineas en una sola
         let capitulo_id = form_data.capitulo_id;
         Ok( Self{ nombre, capitulo_id})
@@ -81,7 +81,7 @@ impl ResponseError for CategoriaError {
 #[tracing::instrument(name = "Inserta categoria", skip(categoria_nuevo, pool))]
 pub async fn categoria_inserta(
     pool: &PgPool,
-    categoria_nuevo: &CategoriaNuevo,
+    categoria_nuevo: &Nuevo,
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
 "INSERT INTO categorias (nombre, capitulo_id) VALUES ($1, $2) RETURNING id",

@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS public.capitulos
     id bigint NOT NULL,
     nombre TEXT NOT NULL UNIQUE,
     descripcion TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT capitulos_pkey PRIMARY KEY (id)
 );
 

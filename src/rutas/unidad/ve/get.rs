@@ -4,7 +4,7 @@
 //! purpose: muestra un unidad
 
 use crate::layout;
-use crate::modelo::unidad::{Unidad, UnidadError};
+use crate::domain::unidad::{Unidad, UnidadError};
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use sqlx::PgPool;
@@ -40,7 +40,7 @@ fn contenido(unidad: Unidad) -> Markup { html! {
     .form-field #nombre {(unidad.nombre)}
     .form-label {"Sigla:" }
     .form-field #sigla {(unidad.sigla)}
-    button .form-submit #hijos type="button" { "Productos" }
+    button .form-submit #sublista type="button" { "Productos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}

@@ -5,18 +5,13 @@
 
 use crate::layout;
 use crate::layout::lista::Paginado;
-use crate::modelo::pais::Pais;
+use crate::domain::pais::Pais;
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};
 use anyhow::Context;
 use maud::{html, Markup};
 use sqlx::PgPool;
-
-const OBJETO: &str = "pais";
-const OBJETOS: &str = "paises";
-const LOCAL_MAYUSCULAS: &str = "Paises";
-const ERROR_QRY: &str = "Error al leer paises de la BD";
 
 // controlador
 #[tracing::instrument(name = "Lista de paises", skip(pool))]
@@ -31,12 +26,12 @@ pub async fn muestra(
         paginado.orden = "nombre".to_string();
     }
     let (filas, total_filas) = lista(&pool, &paginado)
-        .await.context(ERROR_QRY)?;
+        .await.context("Error al leer fabricas de la BD")?;
     paginado.total_filas = Some(total_filas);
 
     let pagina = layout::lista::crea(
-        OBJETOS, "/",
-        "lista.css", Some(&format!("{}/lista.js", OBJETO)),
+        "Paises", "/",
+        "lista.css", Some("pais/lista.js"),
         &paginado, contenido(filas),
     );
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
@@ -64,7 +59,7 @@ fn contenido(filas: Vec<Pais>) -> Option<Markup> {
     }
     Some(html! {
         .lista-box {
-            .lista-titulo { (LOCAL_MAYUSCULAS) }
+            .lista-titulo { ("Paises") }
             .lista {
                 .lista-cabecera {
                     span .nombre {"Nombre"}

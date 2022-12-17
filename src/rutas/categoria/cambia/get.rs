@@ -7,7 +7,7 @@ use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use crate::layout;
 use sqlx::PgPool;
-use crate::modelo::categoria::{Categoria, CategoriaError};
+use crate::domain::categoria::{Categoria, CategoriaError};
 use anyhow::Context;
 
 #[tracing::instrument(name="Cambia categoria", skip(pool))]

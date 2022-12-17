@@ -3,7 +3,7 @@
 //! date: 21/10/2022
 //! purpose: borra un unidad
 
-use crate::modelo::unidad::UnidadError;
+use crate::domain::unidad::UnidadError;
 use actix_web::{delete, web, HttpResponse};
 use sqlx::PgPool;
 use anyhow::Context;

@@ -4,7 +4,7 @@
 //! purpose: muestra un marca
 
 use crate::layout;
-use crate::modelo::marca::{Marca, MarcaError};
+use crate::domain::marca::{Marca, MarcaError};
 use actix_web::{get, web, HttpResponse};
 use anyhow::Context;
 use maud::{html, Markup};
@@ -38,7 +38,7 @@ fn contenido(marca: Marca) -> Markup {
     html! {
         .form-label {"Nombre:" }
         .form-field #nombre {(marca.nombre)}
-        button .form-submit #hijos type="button" { "Fábricas" }
+        button .form-submit #sublista type="button" { "Fábricas" }
         button .form-submit #cambia type="button" { "Cambiar" }
         button .form-submit #borra type="button" { "Borrar" }
     }

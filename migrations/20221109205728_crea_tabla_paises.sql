@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS public.paises
     id bigint NOT NULL,
     sigla TEXT NOT NULL UNIQUE,
     nombre TEXT NOT NULL UNIQUE,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT paises_pkey PRIMARY KEY (id)
 );
 

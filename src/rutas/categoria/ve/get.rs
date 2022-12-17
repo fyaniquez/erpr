@@ -4,7 +4,7 @@
 //! purpose: muestra una categoria
 
 use crate::layout;
-use crate::modelo::categoria::{Categoria, CategoriaError};
+use crate::domain::categoria::{Categoria, CategoriaError};
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use sqlx::PgPool;
@@ -31,7 +31,7 @@ pub async fn muestra(
 fn contenido(categoria: Categoria) -> Markup { html! {
     .form-label {"Nombre:" }
     .form-field #nombre {(categoria.nombre)}
-    button .form-submit #hijos type="button" { "Marcas" }
+    button .form-submit #sublista type="button" { "Marcas" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}

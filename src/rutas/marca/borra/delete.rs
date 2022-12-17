@@ -3,7 +3,7 @@
 //! date: 21/10/2022
 //! purpose: borra un marca
 
-use crate::modelo::marca::MarcaError;
+use crate::domain::marca::MarcaError;
 use actix_web::{delete, web, HttpResponse};
 use sqlx::PgPool;
 use anyhow::Context;

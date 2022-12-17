@@ -5,8 +5,8 @@
 
 use crate::layout::lista;
 use crate::layout::lista::Paginado;
-use crate::modelo::capitulo::Capitulo;
-use crate::modelo::categoria::Categoria;
+use crate::domain::capitulo::{Capitulo, obtiene};
+use crate::domain::categoria::{Categoria, lista_paginada};
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};
@@ -29,7 +29,7 @@ pub async fn muestra(
         paginado.orden = "nombre".to_string();
     }
 
-    let (filas, total_filas) = lista(&pool, &paginado, capitulo_id)
+    let (filas, total_filas) = lista_paginada(&pool, &paginado, capitulo_id)
         .await
         .context("Error al leer categorias de la BD")?;
     paginado.total_filas = Some(total_filas);
@@ -48,29 +48,6 @@ pub async fn muestra(
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
-// modelo
-// obtiene un fragmento de la tabla de categorias en la base de datos
-#[tracing::instrument(name = "Lista categorias", skip(pool))]
-pub async fn lista(
-    pool: &PgPool, 
-    paginado: &Paginado, 
-    capitulo_id: i64
-) -> Result<(Vec<Categoria>, i32), sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, capitulo_id FROM categorias where capitulo_id = $1";
-    
-    let qry = paginado.get_qry(SELECT);
-    let filas: Vec<Categoria> = sqlx::query_as(qry.as_ref())
-        .bind(capitulo_id)
-        .fetch_all(pool).await?;
-
-    let qry_count = paginado.get_qry_count(SELECT);
-    let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
-        .bind(capitulo_id)
-        .fetch_one(pool).await?;
-
-    Ok((filas, nro_filas.0 as i32))
-}
-
 // vista
 fn contenido(filas: Vec<Categoria>, capitulo: &Capitulo) -> Option<Markup> {
     if filas.len() < 1 {
@@ -86,7 +63,7 @@ fn contenido(filas: Vec<Categoria>, capitulo: &Capitulo) -> Option<Markup> {
                 .lista-items {
                 @for fila in filas.into_iter() {
                     .lista-item #{(fila.id.unwrap())} {
-                        span .nombre {(fila.nombre)}
+                        span .nombre-largo {(fila.nombre)}
                     }
                 }}
             }
@@ -129,18 +106,4 @@ pub fn error_chain_fmt(
         current = cause.source();
     }
     Ok(())
-}
-
-// modelo
-// obtiene un capitulo de la base de datos
-#[tracing::instrument(name = "ve capitulo", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Capitulo, sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, descripcion FROM capitulos WHERE id=$1";
-    let fila: Capitulo = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
 }

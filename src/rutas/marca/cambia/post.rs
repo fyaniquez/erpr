@@ -3,8 +3,8 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de marca
 
-use crate::domain::MarcaNombre;
-use crate::modelo::marca::{Marca, MarcaError};
+use crate::domain::marca::Nombre;
+use crate::domain::marca::{Marca, MarcaError};
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;
@@ -19,7 +19,7 @@ pub struct FormData {
 impl TryFrom<FormData> for Marca {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = MarcaNombre::parse(form_data.nombre)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
         Ok( Self{ 
             id:None, 
             nombre: String::from(nombre.as_ref()), })

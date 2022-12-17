@@ -3,7 +3,7 @@
 //! date: 21/10/2022
 //! purpose: borra un capitulo
 
-use crate::modelo::capitulo::CapituloError;
+use crate::domain::capitulo::CapituloError;
 use actix_web::{delete, web, HttpResponse};
 use sqlx::PgPool;
 use anyhow::Context;

@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS public.categorias
     id BIGINT NOT NULL,
     nombre TEXT NOT NULL,
     capitulo_id BIGINT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT categorias_pkey PRIMARY KEY (id)
 );
 

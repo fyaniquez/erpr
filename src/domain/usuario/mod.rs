@@ -1,0 +1,13 @@
+mod usuario;
+mod apellido;
+mod documento;
+mod email;
+mod nombre;
+mod nuevo;
+pub use usuario::Usuario;
+pub use usuario::UsuarioError;
+pub use apellido::Apellido;
+pub use documento::Documento;
+pub use email::Email;
+pub use nombre::Nombre;
+pub use nuevo::Nuevo;

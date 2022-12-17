@@ -7,7 +7,7 @@ use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use crate::layout;
 use sqlx::PgPool;
-use crate::modelo::capitulo::{Capitulo, CapituloError};
+use crate::domain::capitulo::{Capitulo, CapituloError};
 use anyhow::Context;
 
 #[tracing::instrument(name="Cambia capitulo", skip(pool))]

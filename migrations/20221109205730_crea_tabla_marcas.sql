@@ -1,11 +1,12 @@
 -- marcas, tabla de 
 -- abreviacion MAR
+
 CREATE TABLE IF NOT EXISTS public.marcas
 (
     id bigint NOT NULL,
     nombre TEXT NOT NULL UNIQUE,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT marcas_pkey PRIMARY KEY (id)
 );
 

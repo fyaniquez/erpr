@@ -7,7 +7,7 @@ use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use crate::layout;
 use sqlx::PgPool;
-use crate::modelo::marca::{Marca, MarcaError};
+use crate::domain::marca::{Marca, MarcaError};
 use anyhow::Context;
 
 #[tracing::instrument(name="Cambia marca", skip(pool))]

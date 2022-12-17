@@ -3,10 +3,10 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de capitulo
 
-use crate::domain::{
-    CapituloNombre, 
-    CapituloDescripcion,
-    CapituloNuevo,
+use crate::domain::capitulo::{
+    Nombre, 
+    Descripcion,
+    Nuevo,
 };
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
@@ -21,11 +21,11 @@ pub struct FormData {
 }
 
 // valida y contruye el objeto FormData
-impl TryFrom<FormData> for CapituloNuevo {
+impl TryFrom<FormData> for Nuevo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = CapituloNombre::parse(form_data.nombre)?;
-        let descripcion = CapituloDescripcion::parse(form_data.descripcion)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
+        let descripcion = Descripcion::parse(form_data.descripcion)?;
         Ok( Self{ nombre, descripcion, })
     }
 }
@@ -83,7 +83,7 @@ impl ResponseError for CapituloError {
 #[tracing::instrument(name = "Inserta capitulo", skip(capitulo_nuevo, pool))]
 pub async fn capitulo_inserta(
     pool: &PgPool,
-    capitulo_nuevo: &CapituloNuevo,
+    capitulo_nuevo: &Nuevo,
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
 "INSERT INTO capitulos (nombre, descripcion) VALUES ($1, $2) RETURNING id",

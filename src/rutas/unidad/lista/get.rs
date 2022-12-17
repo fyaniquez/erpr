@@ -5,7 +5,7 @@
 
 use crate::layout;
 use crate::layout::lista::Paginado;
-use crate::modelo::unidad::Unidad;
+use crate::domain::unidad::Unidad;
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};

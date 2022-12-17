@@ -3,9 +3,9 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de marca
 
-use crate::domain::{
-    MarcaNombre, 
-    MarcaNuevo,
+use crate::domain::marca::{
+    Nombre, 
+    Nuevo,
 };
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
@@ -19,10 +19,10 @@ pub struct FormData {
 }
 
 // valida y contruye el objeto FormData
-impl TryFrom<FormData> for MarcaNuevo {
+impl TryFrom<FormData> for Nuevo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = MarcaNombre::parse(form_data.nombre)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
         Ok( Self{ nombre })
     }
 }
@@ -79,7 +79,7 @@ impl ResponseError for MarcaError {
 #[tracing::instrument(name = "Inserta marca", skip(marca_nuevo, pool))]
 pub async fn marca_inserta(
     pool: &PgPool,
-    marca_nuevo: &MarcaNuevo,
+    marca_nuevo: &Nuevo,
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
         r#"INSERT INTO marcas (nombre) 

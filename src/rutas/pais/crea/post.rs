@@ -3,10 +3,10 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de pais
 
-use crate::domain::{
-    PaisNombre, 
-    PaisSigla,
-    PaisNuevo,
+use crate::domain::pais::{
+    Nombre, 
+    Sigla,
+    Nuevo,
 };
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
@@ -21,11 +21,11 @@ pub struct FormData {
 }
 
 // valida y contruye el objeto FormData
-impl TryFrom<FormData> for PaisNuevo {
+impl TryFrom<FormData> for Nuevo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = PaisNombre::parse(form_data.nombre)?;
-        let sigla = PaisSigla::parse(form_data.sigla)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
+        let sigla = Sigla::parse(form_data.sigla)?;
         Ok( Self{ nombre, sigla, })
     }
 }
@@ -83,7 +83,7 @@ impl ResponseError for PaisError {
 #[tracing::instrument(name = "Inserta pais", skip(pais_nuevo, pool))]
 pub async fn pais_inserta(
     pool: &PgPool,
-    pais_nuevo: &PaisNuevo,
+    pais_nuevo: &Nuevo,
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
         r#"INSERT INTO paises (nombre, sigla) 

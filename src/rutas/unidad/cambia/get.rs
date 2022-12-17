@@ -7,7 +7,7 @@ use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use crate::layout;
 use sqlx::PgPool;
-use crate::modelo::unidad::{Unidad, UnidadError};
+use crate::domain::unidad::{Unidad, UnidadError};
 use anyhow::Context;
 
     const ERROR_QRY: &str = "Error al leer unidades de la BD";

@@ -76,6 +76,10 @@
     align-items: center;
 }
 
+.lista-item-inactivo {
+    color: red;
+}
+
 .lista-item:nth-child(odd) {
     background-color: white;
 }
@@ -90,6 +94,10 @@
 
 .descripcion {
     width: 70%;
+}
+
+.nombre-largo {
+    width: 100%;
 }
 
 /* fin lista */

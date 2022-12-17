@@ -4,7 +4,7 @@
 //! purpose: muestra un capitulo
 
 use crate::layout;
-use crate::modelo::capitulo::{Capitulo, CapituloError};
+use crate::domain::capitulo::{Capitulo, CapituloError};
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use sqlx::PgPool;
@@ -34,7 +34,7 @@ fn contenido(capitulo: Capitulo) -> Markup { html! {
     .form-field #nombre {(capitulo.nombre)}
     .form-label {"Descripción:" }
     .form-field #descripcion {(capitulo.descripcion)}
-    button .form-submit #hijos type="button" { "Categorias" }
+    button .form-submit #sublista type="button" { "Categorias" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}

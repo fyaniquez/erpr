@@ -5,7 +5,7 @@
 
 use crate::layout;
 use crate::layout::lista::Paginado;
-use crate::modelo::capitulo::Capitulo;
+use crate::domain::capitulo::{Capitulo, lista_paginada};
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};
@@ -25,7 +25,7 @@ pub async fn muestra(
     if paginado.orden.is_empty() {
         paginado.orden = "nombre".to_string();
     }
-    let (filas, total_filas) = lista(&pool, &paginado)
+    let (filas, total_filas) = lista_paginada(&pool, &paginado)
         .await
         .context("Error al leer capitulos de la BD")?;
     paginado.total_filas = Some(total_filas);
@@ -36,21 +36,6 @@ pub async fn muestra(
         &paginado, contenido(filas),
     );
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
-}
-
-// modelo
-// obtiene un fragmento de la tabla de capitulos en la base de datos
-#[tracing::instrument(name = "Lista capitulos", skip(pool))]
-pub async fn lista(pool: &PgPool, paginado: &Paginado) -> Result<(Vec<Capitulo>, i32), sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, descripcion FROM capitulos";
-    let qry = paginado.get_qry(SELECT);
-    let filas: Vec<Capitulo> = sqlx::query_as(qry.as_ref())
-        .fetch_all(pool).await?;
-
-    let qry_count = paginado.get_qry_count(SELECT);
-    let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
-        .fetch_one(pool).await?;
-    Ok((filas, nro_filas.0 as i32))
 }
 
 // vista

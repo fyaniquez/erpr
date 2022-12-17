@@ -1,0 +1,11 @@
+/fin-objetos
+Ouse crate::rutas::OBJETO;
+/fin-servicios
+O            .service(OBJETO::lista::get::muestra)
+            .service(OBJETO::ve::get::muestra)
+            .service(OBJETO::crea::get::muestra)
+            .service(OBJETO::crea::post::procesa)
+            .service(OBJETO::cambia::get::muestra)
+            .service(OBJETO::cambia::post::procesa)
+            .service(OBJETO::borra::delete::procesa)
+:wq!

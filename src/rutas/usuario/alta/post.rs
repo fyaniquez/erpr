@@ -3,12 +3,12 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de usuario
 
-use crate::domain::{
-    UsuarioNombre, 
-    UsuarioApellido, 
-    UsuarioEmail, 
-    UsuarioNuevo,
-    UsuarioDocumento,
+use crate::domain::usuario::{
+    Nombre, 
+    Apellido, 
+    Email, 
+    Nuevo,
+    Documento,
 };
 use actix_web::http::StatusCode;
 use actix_web::{post, web, HttpResponse, ResponseError};
@@ -26,13 +26,13 @@ pub struct FormData {
 }
 
 // valida y contruye el objeto FormData
-impl TryFrom<FormData> for UsuarioNuevo {
+impl TryFrom<FormData> for Nuevo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let email = UsuarioEmail::parse(form_data.email)?;
-        let nombre = UsuarioNombre::parse(form_data.nombre)?;
-        let apellido = UsuarioApellido::parse(form_data.apellido)?;
-        let documento = UsuarioDocumento::parse(form_data.documento)?;
+        let email = Email::parse(form_data.email)?;
+        let nombre = Nombre::parse(form_data.nombre)?;
+        let apellido = Apellido::parse(form_data.apellido)?;
+        let documento = Documento::parse(form_data.documento)?;
         Ok( Self{ email, nombre, apellido, documento })
     }
 }
@@ -88,7 +88,7 @@ impl ResponseError for UsuarioError {
 #[tracing::instrument(name = "Inserta usuario", skip(usuario_nuevo, pool))]
 pub async fn usuario_inserta(
     pool: &PgPool,
-    usuario_nuevo: &UsuarioNuevo,
+    usuario_nuevo: &Nuevo,
 ) -> Result<Uuid, sqlx::Error> {
     let row = sqlx::query!(
 r#"INSERT INTO usuarios (email, nombre, documento, estado)

@@ -1,0 +1,11 @@
+/fin-objetos
+Ouse crate::rutas::catalogo;
+/fin-servicios
+O            .service(catalogo::lista::get::muestra)
+            .service(catalogo::ve::get::muestra)
+            .service(catalogo::crea::get::muestra)
+            .service(catalogo::crea::post::procesa)
+            .service(catalogo::cambia::get::muestra)
+            .service(catalogo::cambia::post::procesa)
+            .service(catalogo::borra::delete::procesa)
+:wq!

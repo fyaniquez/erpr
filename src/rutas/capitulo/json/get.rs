@@ -3,7 +3,7 @@
 //! date: 21/10/2022
 //! purpose: muestra un capitulo en formato json
 
-use crate::modelo::capitulo::{Capitulo, CapituloError};
+use crate::domain::capitulo::{Capitulo, CapituloError};
 use actix_web::{get, web, HttpResponse};
 use sqlx::PgPool;
 use anyhow::Context;

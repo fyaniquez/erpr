@@ -7,7 +7,7 @@ use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use crate::layout;
 use sqlx::PgPool;
-use crate::modelo::pais::{Pais, PaisError};
+use crate::domain::pais::{Pais, PaisError};
 use anyhow::Context;
 
 //const OBJETO: &str = "pais";

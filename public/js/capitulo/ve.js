@@ -26,7 +26,7 @@ const onClickCambia = (e) => {
 }
 
 // lista de objetos hijos del actual
-const onClickHijos = (e) => {
+const onClickSubLista = (e) => {
     var url = `${location.href}/${hijos}`;
     window.location.replace(encodeURI(url));
 }
@@ -40,7 +40,7 @@ const onLoadVe = () => {
 
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);
-    hijos.addEventListener("click", onClickHijos);
+    sublista.addEventListener("click", onClickSubLista);
 }
 
 document.readyState === "complete" ? 
