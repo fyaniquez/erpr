@@ -4,7 +4,11 @@
 //! purpose: muestra una categoria
 
 use crate::layout;
-use crate::domain::categoria::{Categoria, CategoriaError};
+use crate::domain::categoria::{
+    Categoria, 
+    CategoriaError,
+    obtiene,
+};
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use sqlx::PgPool;
@@ -35,17 +39,3 @@ fn contenido(categoria: Categoria) -> Markup { html! {
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}
-
-// modelo
-// obtiene un categoria de la base de datos
-#[tracing::instrument(name = "ve categoria", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Categoria, sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, capitulo_id FROM categorias WHERE id=$1";
-    let fila: Categoria = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
-}

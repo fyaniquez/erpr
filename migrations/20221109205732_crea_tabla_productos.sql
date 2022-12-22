@@ -15,7 +15,8 @@ CREATE TABLE public.productos (
     barras TEXT,
     activo boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    constraint productos_pkey primary key (id)
 );
 
 COMMENT ON COLUMN public.productos.barras

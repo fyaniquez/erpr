@@ -8,3 +8,5 @@ pub mod fabrica;
 pub mod producto;
 pub mod empresa;
 pub mod catalogo;
+pub mod precio;
+pub mod sucursal;

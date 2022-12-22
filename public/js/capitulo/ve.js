@@ -27,6 +27,8 @@ const onClickCambia = (e) => {
 
 // lista de objetos hijos del actual
 const onClickSubLista = (e) => {
+    var partes = location.href.split('/');
+    var capitulo = partes[ partes.length - 2];
     var url = `${location.href}/${hijos}`;
     window.location.replace(encodeURI(url));
 }

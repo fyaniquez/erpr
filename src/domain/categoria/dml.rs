@@ -45,7 +45,10 @@ pub async fn lista_paginada(
 #[tracing::instrument(name = "ve categoria", skip(pool))]
 pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Categoria, sqlx::Error> {
     let fila: Categoria =
-        sqlx::query_as("SELECT id, nombre, capitulo_id FROM categorias WHERE id=$1")
+        sqlx::query_as(
+            r#"SELECT id, nombre, capitulo_id 
+            FROM categorias 
+            WHERE id=$1"#)
             .bind(id)
             .fetch_one(pool)
             .await?;

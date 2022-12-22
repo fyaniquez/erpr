@@ -24,19 +24,21 @@ pub async fn muestra(
 ) -> Result<HttpResponse, CategoriaError> {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
+
     let (capitulo_id,) = path.into_inner();
+
     if paginado.orden.is_empty() {
         paginado.orden = "nombre".to_string();
     }
+
+    let capitulo = obtiene(&pool, capitulo_id).await
+        .context("Error al leer capitulo")?;
 
     let (filas, total_filas) = lista_paginada(&pool, &paginado, capitulo_id)
         .await
         .context("Error al leer categorias de la BD")?;
     paginado.total_filas = Some(total_filas);
 
-    let capitulo = obtiene(&pool, capitulo_id).await
-        .context("Error al leer capitulo")?;
-    
     let pagina = lista::crea(
         "Categorias",
         "/capitulos",

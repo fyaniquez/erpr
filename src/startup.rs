@@ -16,6 +16,8 @@ use crate::rutas::usuario;
 use crate::rutas::producto;
 use crate::rutas::empresa;
 use crate::rutas::catalogo;
+use crate::rutas::precio;
+use crate::rutas::sucursal;
 // fin-objetos
 
 use crate::rutas::public::home;
@@ -86,6 +88,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(fabrica::cambia::post::procesa)
             .service(fabrica::borra::delete::procesa)
             .service(producto::lista::get::muestra)
+            .service(producto::lista_sin_precio::get::muestra)
             .service(producto::ve::get::muestra)
             .service(producto::crea::get::muestra)
             .service(producto::crea::post::procesa)
@@ -106,6 +109,20 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(catalogo::cambia::get::muestra)
             .service(catalogo::cambia::post::procesa)
             .service(catalogo::borra::delete::procesa)
+            .service(precio::lista::get::muestra)
+            .service(precio::ve::get::muestra)
+            .service(precio::crea::get::muestra)
+            .service(precio::crea::post::procesa)
+            .service(precio::cambia::get::muestra)
+            .service(precio::cambia::post::procesa)
+            .service(precio::borra::delete::procesa)
+            .service(sucursal::lista::get::muestra)
+            .service(sucursal::ve::get::muestra)
+            .service(sucursal::crea::get::muestra)
+            .service(sucursal::crea::post::procesa)
+            .service(sucursal::cambia::get::muestra)
+            .service(sucursal::cambia::post::procesa)
+            .service(sucursal::borra::delete::procesa)
             // fin-servicios
             //.service(Files::new("/public", "./public")
             //.path_filter(|path, _| {

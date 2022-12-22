@@ -75,4 +75,4 @@ vi -u NONE -s scripts/startup.vi src/startup.rs
 ## ajusta migracion
 TIMES=`date +'%Y%m%d%H%M%S'`
 scripts/backup_tabla.sh $4 $TIMES
-sed "s/OBJETO/$4/" scripts/triggers.mod.vi >> scripts/${TIMES}_crea_tabla_${4}.sql
+sed "s/OBJETO/$4/" scripts/triggers.mod.vi >> migrations/${TIMES}_crea_tabla_${4}.sql

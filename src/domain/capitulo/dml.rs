@@ -40,7 +40,7 @@ pub async fn obtiene(pool: &PgPool, id: i64)
     let fila: Capitulo =
         sqlx::query_as(
             r#"SELECT id, nombre, descripcion
-            FROM capitulo WHERE id=$1"#)
+            FROM capitulos WHERE id=$1"#)
             .bind(id)
             .fetch_one(pool)
             .await?;
