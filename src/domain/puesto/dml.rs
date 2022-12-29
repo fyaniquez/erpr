@@ -8,9 +8,8 @@ use crate::layout::lista::Paginado;
 use sqlx::PgPool;
 
 const SELECT: &str = 
-    r#"SELECT id, nombre, sucursal_id, fecha, estado 
-    FROM puestos 
-    WHERE sucursal_id=$1"#;
+    r#"SELECT id, nombre, sigla, descripcion, sucursal_id, activo
+    FROM puestos WHERE sucursal_id=$1"#;
 
 // obtiene una lista de objetos
 #[tracing::instrument(name = "Lista puestos", skip(pool))]
@@ -46,11 +45,10 @@ pub async fn lista_paginada(
 
 // obtiene un puesto de la base de datos
 #[tracing::instrument(name = "ve puesto", skip(pool))]
-pub async fn obtiene(pool: &PgPool, id: i64) 
--> Result<Puesto, sqlx::Error> {
+pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Puesto, sqlx::Error> {
     let fila: Puesto =
         sqlx::query_as(
-        r#"SELECT id, nombre, sucursal_id, fecha, estado
+        r#"SELECT id, nombre, descripcion, sigla, sucursal_id, activo
         FROM puestos WHERE id=$1"#)
             .bind(id)
             .fetch_one(pool)

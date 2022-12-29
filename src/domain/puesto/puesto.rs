@@ -5,15 +5,15 @@
 use serde::Serialize;
 use actix_web::http::StatusCode;
 use actix_web::ResponseError;
-use chrono::NaiveDateTime;
 
 #[derive(Serialize, sqlx::FromRow)]
 pub struct Puesto {
     pub id: Option<i64>,
     pub nombre: String,
+    pub sigla: String,
+    pub descripcion: String,
     pub sucursal_id: i64,
-    pub fecha: NaiveDateTime,
-    pub estado: String,
+    pub activo: bool,
 }
 
 // errores considerados para lista de puestos

@@ -33,10 +33,10 @@ const onClickSubLista = (e) => {
 
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadVe = () => {
-    window.hijos = 'inventariados';
+    window.hijos = 'ventas';
     
     var nombre = document.getElementById('nombre').innerText;
-    var confirmacion = `¿Esta seguro de eliminar puesto: ${nombre}?`;
+    var confirmacion = `¿Esta seguro de eliminar el puesto: ${nombre}?`;
 
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);

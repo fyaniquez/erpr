@@ -24,7 +24,7 @@ pub async fn muestra(
 ) -> Result<HttpResponse, PuestoError> {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
-    
+    //
     let (sucursal_id,) = path.into_inner();
 
     if paginado.orden.is_empty() {

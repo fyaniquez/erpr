@@ -3,17 +3,23 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de puesto
 
-use crate::domain::puesto::Nombre;
-use crate::domain::puesto::{Puesto, PuestoError};
+use crate::domain::puesto::{
+    Nombre,
+    Sigla,
+    Descripcion,
+    Puesto, 
+    PuestoError
+};
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;
-use chrono::Utc;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
     nombre: String,
+    sigla: String,
+    descripcion: String,
 }
 
 // valida y contruye el objeto FormData
@@ -21,12 +27,15 @@ impl TryFrom<FormData> for Puesto {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         let nombre = Nombre::parse(form_data.nombre)?;
+        let sigla = Sigla::parse(form_data.sigla)?;
+        let descripcion = Descripcion::parse(form_data.descripcion)?;
         Ok( Self { 
             id: None, 
-            nombre: String::from(nombre.as_ref()), 
             sucursal_id: 0,
-            fecha: Utc::now().naive_utc(),
-            estado: String::from(""),
+            nombre: String::from(nombre.as_ref()),
+            sigla: String::from(sigla.as_ref()),
+            descripcion: String::from(descripcion.as_ref()),
+            activo: false,
         })
     }
 }
@@ -38,6 +47,8 @@ impl TryFrom<FormData> for Puesto {
     skip(form, pool),
     fields( 
         puesto_nombre = %form.nombre,
+        puesto_sigla = %form.sigla,
+        puesto_descripcion = %form.descripcion,
     )
 )]
 #[post("/puesto/{id}")]
@@ -70,13 +81,15 @@ pub async fn puesto_actualiza(
     puesto: &Puesto,
     id: i64,
 ) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query(
+    let _ = sqlx::query!(
         r#"UPDATE puestos 
-        SET nombre=$2
-        WHERE id=$1"#)
-        .bind(id)
-        .bind(&puesto.nombre)
-    
+        SET nombre=$2, sigla=$3, descripcion=$4
+        WHERE id=$1"#,
+        id,
+        &puesto.nombre,
+        &puesto.sigla,
+        &puesto.descripcion,
+    )
     .execute(pool)
     .await?;
     Ok(())

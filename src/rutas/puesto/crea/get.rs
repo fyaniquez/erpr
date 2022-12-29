@@ -7,6 +7,7 @@ use crate::domain::puesto::PuestoError;
 use crate::layout;
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
+
 #[derive(serde::Deserialize)]
 pub struct QueryData {
     pub sucursal: i64,
@@ -34,6 +35,14 @@ fn contenido(sucursal_id: i64) -> Markup {
             label for="nombre" {"Nombre:" }
             input type="text" name="nombre" id="nombre" required
                 placeholder="Nombre puesto";
+
+            label for="sigla" {"Sigla:" }
+            input type="text" name="sigla" id="sigla" required
+                placeholder="Sigla puesto";
+
+            label for="descripcion" {"Descripción:" }
+            input type="text" name="descripcion" id="descripcion" required
+                placeholder="Descripción puesto";
 
             button #crea .form-submit type="submit" { "Crear" }
             button #cancela .form-submit type="button" { "Cancelar" }

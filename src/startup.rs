@@ -20,8 +20,8 @@ use crate::rutas::precio;
 use crate::rutas::sucursal;
 use crate::rutas::inventario;
 use crate::rutas::inventariado;
-use crate::rutas::puesto;
 use crate::rutas::cliente;
+use crate::rutas::puesto;
 // fin-objetos
 
 use crate::rutas::public::home;
@@ -141,13 +141,6 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(inventariado::cambia::get::muestra)
             .service(inventariado::cambia::post::procesa)
             .service(inventariado::borra::delete::procesa)
-            .service(puesto::lista::get::muestra)
-            .service(puesto::ve::get::muestra)
-            .service(puesto::crea::get::muestra)
-            .service(puesto::crea::post::procesa)
-            .service(puesto::cambia::get::muestra)
-            .service(puesto::cambia::post::procesa)
-            .service(puesto::borra::delete::procesa)
             .service(cliente::lista::get::muestra)
             .service(cliente::ve::get::muestra)
             .service(cliente::crea::get::muestra)
@@ -155,6 +148,13 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(cliente::cambia::get::muestra)
             .service(cliente::cambia::post::procesa)
             .service(cliente::borra::delete::procesa)
+            .service(puesto::lista::get::muestra)
+            .service(puesto::ve::get::muestra)
+            .service(puesto::crea::get::muestra)
+            .service(puesto::crea::post::procesa)
+            .service(puesto::cambia::get::muestra)
+            .service(puesto::cambia::post::procesa)
+            .service(puesto::borra::delete::procesa)
             // fin-servicios
             //.service(Files::new("/public", "./public")
             //.path_filter(|path, _| {

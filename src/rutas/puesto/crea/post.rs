@@ -3,18 +3,23 @@
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea puesto
 
-use crate::domain::puesto::Nombre;
-use crate::domain::puesto::Nuevo;
+use crate::domain::puesto::{
+    Nombre,
+    Sigla,
+    Descripcion,
+    Nuevo,
+};
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
-use chrono::Utc;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
     nombre: String,
+    sigla: String,
+    descripcion: String,
 }
 
 // valida y contruye el objeto FormData
@@ -22,11 +27,14 @@ impl TryFrom<FormData> for Nuevo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         let nombre = Nombre::parse(form_data.nombre)?;
+        let sigla = Sigla::parse(form_data.sigla)?;
+        let descripcion = Descripcion::parse(form_data.descripcion)?;
         Ok( Self{ 
             nombre, 
+            sigla, 
+            descripcion, 
             sucursal_id: 0,
-            fecha: Utc::now().naive_utc(),
-            estado: String::from(""),
+            activo: false,
         })
     }
 }
@@ -38,6 +46,8 @@ impl TryFrom<FormData> for Nuevo {
     skip(form, pool),
     fields( 
         puesto_nombre = %form.nombre,
+        puesto_sigla = %form.sigla,
+        puesto_descripcion = %form.descripcion,
     )
 )]
 #[post("/puesto")]
@@ -46,8 +56,9 @@ pub async fn procesa(
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, PuestoError> {
 
-    //TODO añadir validacion de existencia de empresa_id
+    //TODO añadir validacion de existencia de capitulo_id
     let puesto = form.0.try_into().map_err(PuestoError::Validacion)?;
+
     let id = puesto_inserta(&pool, &puesto)
         .await
         .context("Error al insertar puesto en la BD")?;
@@ -90,13 +101,14 @@ pub async fn puesto_inserta(
     puesto_nuevo: &Nuevo,
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
-        r#"INSERT INTO puestos 
-        (nombre, sucursal_id) 
-        VALUES ($1, $2) 
-        RETURNING id"#,
-    )
+    r#"INSERT INTO puestos 
+    (nombre, sigla, descripcion, sucursal_id, activo) 
+    VALUES ($1, $2, $3, $4, $5) RETURNING id"#)
     .bind(puesto_nuevo.nombre.as_ref())
+    .bind(puesto_nuevo.sigla.as_ref())
+    .bind(puesto_nuevo.descripcion.as_ref())
     .bind(puesto_nuevo.sucursal_id)
+    .bind(puesto_nuevo.activo)
     .fetch_one(pool)
     .await?;
     Ok(id)
