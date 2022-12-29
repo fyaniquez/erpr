@@ -22,7 +22,7 @@ pub async fn muestra(
         .context("Error al leer catalogo")?;
     let pagina = layout::form::crea(
         "Catálogo", 
-        format!("/empresa/{}/catalogos", catalogo.empresa_id).as_ref(), 
+        format!("/sucursal/{}/catalogos", catalogo.sucursal_id).as_ref(), 
         "form.css", Some("catalogo/ve.js"), contenido(catalogo));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }

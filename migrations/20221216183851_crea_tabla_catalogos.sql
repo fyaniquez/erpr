@@ -10,13 +10,11 @@
 CREATE TABLE public.catalogos (
     id bigint NOT NULL,
     nombre TEXT NOT NULL,
-    propietario bigint,
-    empresa_id bigint,
+    sucursal_id bigint NOT NULL,
     fecha TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    activo BOOLEAN DEFAULT TRUE NOT NULL,
+    activo BOOLEAN DEFAULT FALSE NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CONSTRAINT ctl_pkey PRIMARY KEY(id)
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
 
@@ -28,9 +26,7 @@ ALTER TABLE public.catalogos OWNER TO erp;
 -- Name: COLUMN catalogos.propietario; Type: COMMENT; Schema: public; Owner: erp
 --
 
-COMMENT ON COLUMN public.catalogos.propietario IS 'empresa que compra/vende los productos indicados en el catalogo, si es igual empresa_id se trata del catalogo de la propia empresa';
-
-COMMENT ON COLUMN public.catalogos.empresa_id IS 'empresa de la que depende el catalogo';
+COMMENT ON COLUMN public.catalogos.sucursal_id IS 'empresa de la que depende el catalogo';
 
 COMMENT ON COLUMN public.catalogos.fecha IS 'fecha desde la que es válida el catalogo';
 
@@ -48,23 +44,24 @@ ALTER SEQUENCE public.catalogos_id_seq OWNED BY public.catalogos.id;
 ALTER TABLE ONLY public.catalogos ALTER COLUMN id SET DEFAULT nextval('public.catalogos_id_seq'::regclass);
 
 --datos
-INSERT INTO public.catalogos (id, nombre, activo, created_at, updated_at, propietario, empresa_id, fecha) VALUES (1, '2021', true, '2021-03-21 22:09:57.367588', '2021-04-02 15:21:32.988769', 1, 1, '2021-04-01 00:00:00');
+INSERT INTO public.catalogos (id, nombre, sucursal_id, activo, created_at, updated_at, fecha) VALUES (1, '2021', 1, true, '2021-03-21 22:09:57.367588', '2021-04-02 15:21:32.988769', '2021-04-01 00:00:00');
 
 -- ajusta sequencia
 SELECT pg_catalog.setval('public.catalogos_id_seq', 1, true);
 
 -- constraints
+ALTER TABLE ONLY public.catalogos
+    ADD CONSTRAINT catalogos_pkey PRIMARY KEY (id);
+
+CREATE INDEX index_catalogos_on_sucursal_id 
+    ON public.catalogos USING btree (sucursal_id);
 ALTER TABLE public.catalogos
-    ADD CONSTRAINT ctl_fk_ctl_emp 
-    FOREIGN KEY (empresa_id) REFERENCES public.empresas(id);
+    ADD CONSTRAINT fk_cat_suc
+    FOREIGN KEY (sucursal_id) REFERENCES public.sucursales(id);
 
 ALTER TABLE public.catalogos
-    ADD CONSTRAINT ctl_fk_ctl_propietario
-    FOREIGN KEY (propietario) REFERENCES public.empresas(id);
-
-ALTER TABLE public.catalogos
-    ADD CONSTRAINT ctl_uk_empresaid_propietario_nombre 
-    UNIQUE (empresa_id, propietario, nombre);
+    ADD CONSTRAINT ctl_uk_sucursalid_nombre 
+    UNIQUE (sucursal_id, nombre);
 
 
 -- triggers

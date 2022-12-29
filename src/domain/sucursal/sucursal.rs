@@ -11,7 +11,6 @@ pub struct Sucursal {
     pub id: Option<i64>,
     pub nombre: String,
     pub empresa_id: i64,
-    pub catalogo_id: i64,
 }
 
 // errores considerados para lista de sucursals

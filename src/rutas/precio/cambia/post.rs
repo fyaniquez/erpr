@@ -11,9 +11,7 @@ use sqlx::PgPool;
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
-    producto_id: i64,
     precio: i32,
-    costo: i32,
 }
 
 // valida y contruye el objeto FormData
@@ -23,9 +21,8 @@ impl TryFrom<FormData> for Precio {
         Ok( Self{ 
             id: None, 
             nombre: String::from(""),
-            producto_id: form_data.producto_id,
+            producto_id: 0,
             precio: form_data.precio,
-            costo: form_data.costo,
             catalogo_id: 0,
         })
     }
@@ -63,11 +60,10 @@ pub async fn precio_actualiza(
 ) -> Result<(), sqlx::Error> {
     let _ = sqlx::query!(
         r#"UPDATE precios 
-        SET precio=$2, costo=$3
+        SET precio=$2
         WHERE id=$1"#,
         id,
         precio.precio,
-        precio.costo,
     )
     .execute(pool)
     .await?;

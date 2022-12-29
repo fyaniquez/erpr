@@ -15,7 +15,6 @@ use sqlx::PgPool;
 pub struct FormData {
     nombre: String,
     empresa_id: i64,
-    catalogo_id: i64,
 }
 
 // valida y contruye el objeto FormData
@@ -26,7 +25,6 @@ impl TryFrom<FormData> for Nuevo {
         Ok( Self{ 
             nombre, 
             empresa_id: form_data.empresa_id,
-            catalogo_id: form_data.catalogo_id,
         })
     }
 }
@@ -94,7 +92,6 @@ pub async fn sucursal_inserta(
     )
     .bind(sucursal_nuevo.nombre.as_ref())
     .bind(sucursal_nuevo.empresa_id)
-    .bind(sucursal_nuevo.catalogo_id)
     .fetch_one(pool)
     .await?;
     Ok(id)

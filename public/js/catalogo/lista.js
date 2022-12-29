@@ -15,7 +15,9 @@ const onClickVe = (e) => {
 
 // llama al formulario de alta de objeto
 const onClickCrea = (e) => {
-    var url = `${window.origin}/${objeto}`;
+    var partes = location.href.split('/');
+    var sucursal = partes[ partes.length - 2 ];
+    var url = `${window.origin}/${objeto}?sucursal=${sucursal}`;
     window.location.replace(encodeURI(url));
 }
 

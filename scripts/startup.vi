@@ -1,11 +1,11 @@
 /fin-objetos
-Ouse crate::rutas::sucursal;
+Ouse crate::rutas::persona;
 /fin-servicios
-O            .service(sucursal::lista::get::muestra)
-            .service(sucursal::ve::get::muestra)
-            .service(sucursal::crea::get::muestra)
-            .service(sucursal::crea::post::procesa)
-            .service(sucursal::cambia::get::muestra)
-            .service(sucursal::cambia::post::procesa)
-            .service(sucursal::borra::delete::procesa)
+O            .service(persona::lista::get::muestra)
+            .service(persona::ve::get::muestra)
+            .service(persona::crea::get::muestra)
+            .service(persona::crea::post::procesa)
+            .service(persona::cambia::get::muestra)
+            .service(persona::cambia::post::procesa)
+            .service(persona::borra::delete::procesa)
 :wq!

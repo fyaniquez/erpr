@@ -11,8 +11,7 @@ use chrono::NaiveDateTime;
 pub struct Catalogo {
     pub id: Option<i64>,
     pub nombre: String,
-    pub propietario: i64,
-    pub empresa_id: i64,
+    pub sucursal_id: i64,
     pub fecha: NaiveDateTime,
     pub activo: bool,
 }

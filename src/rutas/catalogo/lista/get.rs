@@ -5,7 +5,7 @@
 
 use crate::layout::lista;
 use crate::layout::lista::Paginado;
-use crate::domain::empresa::{Empresa, obtiene};
+use crate::domain::sucursal::{Sucursal, obtiene};
 use crate::domain::catalogo::{Catalogo, lista_paginada};
 use actix_web::get;
 use actix_web::http::StatusCode;
@@ -16,7 +16,7 @@ use sqlx::PgPool;
 
 // controlador
 #[tracing::instrument(name = "Lista de catalogos", skip(pool))]
-#[get("/empresa/{id}/catalogos")]
+#[get("/sucursal/{id}/catalogos")]
 pub async fn muestra(
     path: web::Path<(i64,)>, 
     mut paginado: web::Query<Paginado>,
@@ -24,38 +24,42 @@ pub async fn muestra(
 ) -> Result<HttpResponse, CatalogoError> {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
-    let (empresa_id,) = path.into_inner();
+    //
+    let (sucursal_id,) = path.into_inner();
+
     if paginado.orden.is_empty() {
         paginado.orden = "nombre".to_string();
     }
 
-    let (filas, total_filas) = lista_paginada(&pool, &paginado, empresa_id)
+    let (filas, total_filas) = lista_paginada(&pool, &paginado, sucursal_id)
         .await
         .context("Error al leer catalogos de la BD")?;
+
     paginado.total_filas = Some(total_filas);
 
-    let empresa = obtiene(&pool, empresa_id).await
-        .context("Error al leer empresa")?;
+    let sucursal = obtiene(&pool, sucursal_id).await
+        .context("Error al leer sucursal")?;
     
     let pagina = lista::crea(
         "Catalogos",
-        "/empresas",
+        "/sucursales",
         "lista.css",
         Some("catalogo/lista.js"),
         &paginado,
-        contenido(filas, &empresa),
+        contenido(filas, &sucursal),
     );
+
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
-fn contenido(filas: Vec<Catalogo>, empresa: &Empresa) -> Option<Markup> {
+fn contenido(filas: Vec<Catalogo>, sucursal: &Sucursal) -> Option<Markup> {
     if filas.len() < 1 {
         return None;
     }
     Some(html! {
         .lista-box {
-            .lista-titulo { "Catalogos en: "(empresa.nombre) }
+            .lista-titulo { "Catalogos en: "(sucursal.nombre) }
             .lista {
                 .lista-cabecera {
                     span .nombre {"Nombre"}

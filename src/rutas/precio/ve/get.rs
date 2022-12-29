@@ -33,8 +33,6 @@ fn contenido(precio: Precio) -> Markup { html! {
     .form-field #precio {(precio.nombre)}
     .form-label {"Precio:" }
     .form-field #precio {(precio.precio)}
-    .form-label {"Costo:" }
-    .form-field #costo {(precio.costo)}
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}

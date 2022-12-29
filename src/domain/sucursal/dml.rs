@@ -7,7 +7,7 @@ use crate::domain::sucursal::Sucursal;
 use crate::layout::lista::Paginado;
 use sqlx::PgPool;
 
-const SELECT: &str = r#"SELECT id, nombre, empresa_id, catalogo_id 
+const SELECT: &str = r#"SELECT id, nombre, empresa_id
     FROM sucursales WHERE empresa_id=$1"#;
 
 // obtiene una lista de objetos
@@ -21,7 +21,7 @@ pub async fn lista(pool: &PgPool, empresa_id: i64) -> Result<Vec<Sucursal>, sqlx
 }
 
 // obtiene una pagina de la tabla de objetos
-#[tracing::instrument(name = "Lista sucursales", skip(pool))]
+#[tracing::instrument(name = "Lista sucursales paginada", skip(pool))]
 pub async fn lista_paginada(
     pool: &PgPool,
     paginado: &Paginado,
@@ -47,7 +47,7 @@ pub async fn obtiene(pool: &PgPool, id: i64)
 -> Result<Sucursal, sqlx::Error> {
     let fila: Sucursal =
         sqlx::query_as(
-        r#"SELECT id, nombre, empresa_id, catalogo_id
+        r#"SELECT id, nombre, empresa_id
         FROM sucursales WHERE id=$1"#)
             .bind(id)
             .fetch_one(pool)

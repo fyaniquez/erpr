@@ -9,16 +9,12 @@ use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
-use chrono::NaiveDateTime;
+use chrono::Utc;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
     nombre: String,
-    propietario: i64,
-    empresa_id: i64,
-    fecha: NaiveDateTime,
-    activo: bool,
 }
 
 // valida y contruye el objeto FormData
@@ -28,10 +24,9 @@ impl TryFrom<FormData> for Nuevo {
         let nombre = Nombre::parse(form_data.nombre)?;
         Ok( Self{ 
             nombre, 
-            empresa_id: form_data.empresa_id,
-            propietario: form_data.propietario,
-            fecha: form_data.fecha,
-            activo: form_data.activo,
+            sucursal_id: 0,
+            fecha: Utc::now().naive_utc(),
+            activo: false,
         })
     }
 }
@@ -50,12 +45,16 @@ pub async fn procesa(
     form: web::Form<FormData>, 
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, CatalogoError> {
+
     //TODO añadir validacion de existencia de capitulo_id
     let catalogo = form.0.try_into().map_err(CatalogoError::Validacion)?;
+
     let id = catalogo_inserta(&pool, &catalogo)
         .await
         .context("Error al insertar catalogo en la BD")?;
+
     let url_ver =  format!("/catalogo/{}", id);
+
     Ok(HttpResponse::Found()
         .insert_header((header::LOCATION, url_ver))
         .finish())
@@ -93,11 +92,10 @@ pub async fn catalogo_inserta(
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
     r#"INSERT INTO catalogos 
-    (nombre, propietario, empresa_id, fecha, activo) 
+    (nombre, sucursal_id, fecha, activo) 
     VALUES ($1, $2, $3, $4, $5) RETURNING id"#)
     .bind(catalogo_nuevo.nombre.as_ref())
-    .bind(catalogo_nuevo.propietario)
-    .bind(catalogo_nuevo.empresa_id)
+    .bind(catalogo_nuevo.sucursal_id)
     .bind(catalogo_nuevo.fecha)
     .bind(catalogo_nuevo.activo)
     .fetch_one(pool)

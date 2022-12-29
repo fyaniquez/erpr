@@ -49,10 +49,6 @@ fn contenido(precio: &Precio)
         input type="text" name="precio" id="precio" required
             placeholder="precio p/venta" value=(precio.precio);
 
-        label for="costo" {"Costo:" }
-        input type="text" name="costo" id="costo"
-            placeholder="costo d/compra" value=(precio.costo);
-
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

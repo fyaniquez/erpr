@@ -12,7 +12,6 @@ pub struct Precio {
     pub nombre: String,
     pub producto_id: i64,
     pub precio: i32,
-    pub costo: i32,
     pub catalogo_id: i64,
 }
 

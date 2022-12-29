@@ -10,3 +10,7 @@ pub mod empresa;
 pub mod catalogo;
 pub mod precio;
 pub mod sucursal;
+pub mod inventario;
+pub mod inventariado;
+pub mod puesto;
+pub mod cliente;

@@ -8,16 +8,12 @@ use crate::domain::catalogo::{Catalogo, CatalogoError};
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;
-use chrono::NaiveDateTime;
+use chrono::Utc;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
     nombre: String,
-    propietario: i64,
-    empresa_id: i64,
-    fecha: NaiveDateTime,
-    activo: bool,
 }
 
 // valida y contruye el objeto FormData
@@ -25,13 +21,12 @@ impl TryFrom<FormData> for Catalogo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         let nombre = Nombre::parse(form_data.nombre)?;
-        Ok( Self{ 
+        Ok( Self { 
             id: None, 
             nombre: String::from(nombre.as_ref()), 
-            propietario: form_data.propietario,
-            empresa_id: form_data.empresa_id,
-            fecha: form_data.fecha,
-            activo: form_data.activo,
+            sucursal_id: 0,
+            fecha: Utc::now().naive_utc(),
+            activo: false,
         })
     }
 }
@@ -51,12 +46,18 @@ pub async fn procesa(
     form: web::Form<FormData>, 
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, CatalogoError> {
+
     let (id,) = path.into_inner();
-    let catalogo = form.0.try_into().map_err(CatalogoError::Validacion)?;
+
+    let catalogo = form.0.try_into()
+        .map_err(CatalogoError::Validacion)?;
+
     catalogo_actualiza(&pool, &catalogo, id)
         .await
         .context("Error al actualizar catalogo en la BD")?;
+
     let url_ver =  format!("/catalogo/{}", id);
+
     Ok(HttpResponse::Found()
         .insert_header((header::LOCATION, url_ver))
         .finish())
@@ -71,14 +72,10 @@ pub async fn catalogo_actualiza(
 ) -> Result<(), sqlx::Error> {
     let _ = sqlx::query!(
         r#"UPDATE catalogos 
-        SET nombre=$2, propietario=$3, empresa_id=$4, fecha=$5, activo=$6
+        SET nombre=$2
         WHERE id=$1"#,
         id,
         &catalogo.nombre,
-        catalogo.propietario,
-        catalogo.empresa_id,
-        catalogo.fecha,
-        catalogo.activo
     )
     .execute(pool)
     .await?;

@@ -14,7 +14,6 @@ use sqlx::PgPool;
 pub struct FormData {
     producto_id: i64,
     precio: i32,
-    costo: i32,
     catalogo_id: i64,
 }
 
@@ -25,7 +24,6 @@ impl TryFrom<FormData> for Nuevo {
         Ok( Self{ 
             producto_id: form_data.producto_id,
             precio: form_data.precio,
-            costo: form_data.costo,
             catalogo_id: form_data.catalogo_id,
         })
     }
@@ -85,11 +83,10 @@ pub async fn precio_inserta(
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
     r#"INSERT INTO precios 
-    (producto_id, precio, costo, catalogo_id) 
-    VALUES ($1, $2, $3, $4) RETURNING id"#)
+    (producto_id, precio, catalogo_id) 
+    VALUES ($1, $2, $3) RETURNING id"#)
     .bind(precio_nuevo.producto_id)
     .bind(precio_nuevo.precio)
-    .bind(precio_nuevo.costo)
     .bind(precio_nuevo.catalogo_id)
     .fetch_one(pool)
     .await?;

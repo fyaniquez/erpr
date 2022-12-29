@@ -12,7 +12,6 @@ CREATE TABLE public.sucursales (
     id bigint NOT NULL,
     nombre TEXT NOT NULL,
     empresa_id bigint NOT NULL,
-    catalogo_id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -24,14 +23,6 @@ ALTER TABLE public.sucursales OWNER TO erp;
 -- TOC entry 3240 (class 0 OID 0)
 -- Dependencies: 260
 -- Name: COLUMN sucursales.catalogo_id; Type: COMMENT; Schema: public; Owner: erp
---
-
-COMMENT ON COLUMN public.sucursales.catalogo_id IS 'catalogo utilizado por la sucursal, debe ser uno de los que pertenecen a su propia empresa  empresa_id = catalogo_id.propietario';
-
-
---
--- TOC entry 261 (class 1259 OID 16629)
--- Name: sucursales_id_seq; Type: SEQUENCE; Schema: public; Owner: erp
 --
 
 CREATE SEQUENCE public.sucursales_id_seq
@@ -67,7 +58,7 @@ ALTER TABLE ONLY public.sucursales ALTER COLUMN id SET DEFAULT nextval('public.s
 -- Data for Name: sucursales; Type: TABLE DATA; Schema: public; Owner: erp
 --
 
-INSERT INTO public.sucursales (id, nombre, empresa_id, created_at, updated_at, catalogo_id) VALUES (1, 'Casa Matriz', 1, '2021-03-21 22:08:48.141185', '2021-03-21 22:08:48.141185', 1);
+INSERT INTO public.sucursales (id, nombre, empresa_id, created_at, updated_at) VALUES (1, 'Casa Matriz', 1, '2021-03-21 22:08:48.141185', '2021-03-21 22:08:48.141185');
 
 
 --
@@ -88,12 +79,6 @@ CREATE INDEX index_sucursales_on_empresa_id
 ALTER TABLE ONLY public.sucursales
     ADD CONSTRAINT fk_suc_emp FOREIGN KEY (empresa_id) 
         REFERENCES public.empresas(id);
-
-CREATE INDEX index_sucursales_on_catalogo_id 
-    ON public.sucursales USING btree (catalogo_id);
-ALTER TABLE ONLY public.sucursales
-    ADD CONSTRAINT fk_suc_ctl FOREIGN KEY (catalogo_id) 
-        REFERENCES public.catalogos(id);
 
 ALTER TABLE public.sucursales
     ADD CONSTRAINT uk_suc_nombre UNIQUE (empresa_id, nombre);

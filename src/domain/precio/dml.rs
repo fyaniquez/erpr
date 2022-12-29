@@ -8,8 +8,8 @@ use crate::layout::lista::Paginado;
 use sqlx::PgPool;
 
 const SELECT: &str = 
-    r#"SELECT pre.id, pro.nombre, pre.producto_id, pre.precio, 
-    pre.costo, pre.catalogo_id
+    r#"SELECT pre.id, pro.nombre, pre.producto_id, 
+    pre.precio, pre.catalogo_id
     FROM precios pre inner join productos pro on pre.producto_id = pro.id
     WHERE pre.catalogo_id=$1"#;
 
@@ -49,8 +49,8 @@ pub async fn lista_paginada(
 pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Precio, sqlx::Error> {
     let fila: Precio =
         sqlx::query_as(
-        r#"SELECT pre.id, pro.nombre, pre.producto_id, pre.precio, 
-        pre.costo, pre.catalogo_id
+        r#"SELECT pre.id, pro.nombre, pre.producto_id, 
+        pre.precio, pre.catalogo_id
         FROM precios pre INNER JOIN productos pro 
         ON pre.producto_id = pro.id
         WHERE pre.id=$1"#)

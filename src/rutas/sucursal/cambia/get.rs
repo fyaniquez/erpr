@@ -12,10 +12,6 @@ use crate::domain::sucursal::{
     SucursalError,
     obtiene,
 };
-use crate::domain::catalogo::{
-    Catalogo,
-    lista as catalogo_lista,
-};
 use anyhow::Context;
 
 #[tracing::instrument(name="Cambia sucursal", skip(pool))]
@@ -30,36 +26,22 @@ pub async fn muestra(
     let sucursal = obtiene(&pool, id).await
         .context("Error al leer sucursal")?;
 
-    let catalogos = catalogo_lista(&pool, sucursal.empresa_id)
-        .await
-        .context("Error al leer catálogos")
-        .unwrap();
-
     let pagina = layout::form::crea(
         "Sucursal", 
         format!("/empresa/{}/sucursales", sucursal.empresa_id).as_ref(), 
         "form.css", Some("sucursal/cambia.js"), 
-        contenido(&sucursal, catalogos));
+        contenido(&sucursal));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
-fn contenido(sucursal: &Sucursal, catalogos: Vec<Catalogo>) 
+fn contenido(sucursal: &Sucursal) 
 -> Markup { html! {
     form method="POST" action={"/sucursal/"(sucursal.id.unwrap())} {
 
         label for="nombre" {"Nombre:" }
         input type="text" name="nombre" id="nombre" required
             placeholder="Nombre sucursal" value=(sucursal.nombre);
-
-        label for="catalogo_id" {"Catálogo:" }
-        select #catalogo_id name="catalogo_id" {
-            @for catalogo in catalogos.into_iter() {
-                option value=(catalogo.id.unwrap())
-                selected[catalogo.id == Some(sucursal.catalogo_id)]
-                    {(catalogo.nombre)}
-            }
-        }
 
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }

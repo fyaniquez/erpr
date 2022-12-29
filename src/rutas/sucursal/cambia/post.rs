@@ -13,7 +13,6 @@ use sqlx::PgPool;
 #[derive(serde::Deserialize)]
 pub struct FormData {
     nombre: String,
-    catalogo_id: i64,
     empresa_id: i64,
 }
 
@@ -25,7 +24,6 @@ impl TryFrom<FormData> for Sucursal {
         Ok( Self{ 
             id: None, 
             nombre: String::from(nombre.as_ref()), 
-            catalogo_id: form_data.catalogo_id,
             empresa_id: form_data.empresa_id,
         })
     }
@@ -70,11 +68,10 @@ pub async fn sucursal_actualiza(
 ) -> Result<(), sqlx::Error> {
     let _ = sqlx::query!(
         r#"UPDATE sucursales 
-        SET nombre=$2, catalogo_id=$3, empresa_id=$4 
+        SET nombre=$2, empresa_id=$3 
         WHERE id=$1"#,
         id,
         &sucursal.nombre,
-        &sucursal.catalogo_id,
         &sucursal.empresa_id,
     )
     .execute(pool)

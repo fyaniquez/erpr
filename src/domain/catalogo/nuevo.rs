@@ -8,8 +8,7 @@ use chrono::NaiveDateTime;
 
 pub struct Nuevo {
     pub nombre: Nombre,
-    pub propietario: i64,
-    pub empresa_id: i64,
+    pub sucursal_id: i64,
     pub fecha: NaiveDateTime,
     pub activo: bool
 }
