@@ -27,7 +27,7 @@ COMMENT ON COLUMN public.puestos.sucursal_id IS 'sucursal en la que el puesto f√
 COMMENT ON COLUMN public.puestos.activo IS 'bandera para permitir transacciones desde este puesto';
 
 CREATE SEQUENCE public.puestos_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE

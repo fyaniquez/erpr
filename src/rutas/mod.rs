@@ -16,3 +16,4 @@ pub mod inventario;
 pub mod inventariado;
 pub mod cliente;
 pub mod puesto;
+pub mod medio;

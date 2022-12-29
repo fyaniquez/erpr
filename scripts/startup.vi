@@ -1,11 +1,11 @@
 /fin-objetos
-Ouse crate::rutas::puesto;
+Ouse crate::rutas::medio;
 /fin-servicios
-O            .service(puesto::lista::get::muestra)
-            .service(puesto::ve::get::muestra)
-            .service(puesto::crea::get::muestra)
-            .service(puesto::crea::post::procesa)
-            .service(puesto::cambia::get::muestra)
-            .service(puesto::cambia::post::procesa)
-            .service(puesto::borra::delete::procesa)
+O            .service(medio::lista::get::muestra)
+            .service(medio::ve::get::muestra)
+            .service(medio::crea::get::muestra)
+            .service(medio::crea::post::procesa)
+            .service(medio::cambia::get::muestra)
+            .service(medio::cambia::post::procesa)
+            .service(medio::borra::delete::procesa)
 :wq!
