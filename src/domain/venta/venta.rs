@@ -1,21 +1,28 @@
-//! domain/categoria/categoria
+//! domain/venta/venta
 //! autor: fyaniquez
 //! fecha: 03-03-2022
 
-use serde::Serialize;
 use actix_web::http::StatusCode;
 use actix_web::ResponseError;
+use serde::Serialize;
+use chrono::NaiveDateTime;
 
 #[derive(Serialize, sqlx::FromRow)]
-pub struct Categoria {
+pub struct Venta {
     pub id: Option<i64>,
-    pub nombre: String,
-    pub capitulo_id: i64,
+    pub fecha: NaiveDateTime,
+    pub total: i32,
+    pub descuento: i32,
+    pub cliente_id: i64,
+    pub puesto_id: i64,
+    pub usuario_id: i64,
+    pub medio_id: i64,
+    pub estado: String,
 }
 
-// errores considerados para lista de categorias
+// errores considerados para lista de ventas
 #[derive(thiserror::Error)]
-pub enum CategoriaError {
+pub enum VentaError {
     #[error("{0}")]
     Validacion(String),
     #[error(transparent)]
@@ -24,18 +31,18 @@ pub enum CategoriaError {
     Lookups(#[from] sqlx::Error),
 }
 
-impl std::fmt::Debug for CategoriaError {
+impl std::fmt::Debug for VentaError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         error_chain_fmt(self, f)
     }
 }
 
-impl ResponseError for CategoriaError {
+impl ResponseError for VentaError {
     fn status_code(&self) -> StatusCode {
         match self {
-            CategoriaError::Validacion(_) => StatusCode::BAD_REQUEST,
-            CategoriaError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            CategoriaError::Lookups(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            VentaError::Validacion(_) => StatusCode::BAD_REQUEST,
+            VentaError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            VentaError::Lookups(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
@@ -52,4 +59,3 @@ pub fn error_chain_fmt(
     }
     Ok(())
 }
-

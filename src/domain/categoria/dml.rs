@@ -12,7 +12,8 @@ const SELECT: &str = r#"SELECT id, nombre, capitulo_id
 
 // obtiene una lista de objetos
 #[tracing::instrument(name = "Lista categorias", skip(pool))]
-pub async fn lista(pool: &PgPool, capitulo_id: i64) -> Result<Vec<Categoria>, sqlx::Error> {
+pub async fn lista(pool: &PgPool, capitulo_id: i64) 
+-> Result<Vec<Categoria>, sqlx::Error> {
     let filas: Vec<Categoria> = sqlx::query_as(SELECT)
         .bind(capitulo_id)
         .fetch_all(pool)
@@ -43,7 +44,8 @@ pub async fn lista_paginada(
 
 // obtiene un categoria de la base de datos
 #[tracing::instrument(name = "ve categoria", skip(pool))]
-pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Categoria, sqlx::Error> {
+pub async fn obtiene(pool: &PgPool, id: i64) 
+-> Result<Categoria, sqlx::Error> {
     let fila: Categoria =
         sqlx::query_as(
             r#"SELECT id, nombre, capitulo_id 

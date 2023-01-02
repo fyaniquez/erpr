@@ -3,12 +3,12 @@
 CREATE TABLE public.puestos (
     id bigint NOT NULL,
     nombre text NOT NULL,
-    sigla text
+    sigla text NOT  NULL,
     descripcion text NOT NULL,
     sucursal_id bigint NOT NULL,
     activo boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 

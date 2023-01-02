@@ -23,6 +23,7 @@ use crate::rutas::inventariado;
 use crate::rutas::cliente;
 use crate::rutas::puesto;
 use crate::rutas::medio;
+use crate::rutas::venta;
 // fin-objetos
 
 use crate::rutas::public::home;
@@ -163,6 +164,11 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(medio::cambia::get::muestra)
             .service(medio::cambia::post::procesa)
             .service(medio::borra::delete::procesa)
+            .service(venta::lista::get::muestra)
+            .service(venta::ve::get::muestra)
+            .service(venta::crea::get::muestra)
+            .service(venta::crea::post::procesa)
+            .service(venta::borra::delete::procesa)
             // fin-servicios
             //.service(Files::new("/public", "./public")
             //.path_filter(|path, _| {
