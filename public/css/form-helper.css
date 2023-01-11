@@ -57,16 +57,13 @@ textarea,
 select {
   background: rgba(255, 255, 255, 0.1);
   border: none;
-  font-size: 1rem;
+  font-size: 0.889rem;
   height: auto;
-  margin: 0;
   outline: 0;
-  padding: 1rem;
-  width: 100%;
+  padding: 0.444rem;
   background-color: #ffffff;
   color: var(--sec);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-  margin-bottom: 30px;
 }
 
 input[type="radio"],
@@ -103,6 +100,6 @@ fieldset {
 }
 
 legend {
-  font-size: 1.4em;
+  font-size: 0.889rem;
   margin-bottom: 10px;
 }

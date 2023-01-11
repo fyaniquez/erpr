@@ -6,13 +6,19 @@
  */
 
 // vuelve a la lista
-const onClickCancela = (e) => {
-    atras.click();
+const onClickAgregaItem = (e) => {
+    // inserta nueva fila
+    window.fila += 1;
+    var item = document.getElementById("fila-0");
+    var nuevo_item = item.outerHTML.replaceAll("-0", '-'+window.fila);
+    item.insertAdjacentHTML('beforebegin', nuevo_item);
 }
 
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadCrea = () => {
-    cancela.addEventListener("click", onClickCancela);
+    agrega_item.addEventListener("click", onClickAgregaItem);
+    //fila
+    window.fila = 0;
 }
 
 document.readyState === "complete" ? onLoadCrea() : addEventListener("load", onLoadCrea);

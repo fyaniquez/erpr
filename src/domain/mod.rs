@@ -16,3 +16,4 @@ pub mod cliente;
 pub mod puesto;
 pub mod medio;
 pub mod venta;
+pub mod vendido;

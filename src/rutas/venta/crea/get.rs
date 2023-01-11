@@ -3,14 +3,8 @@
 //! date: 6/12/2022
 //! purpose: muestra el formulario de alta de venta
 //!
-use crate::domain::cliente::{
-    lista as cliente_lista, 
-    Cliente
-};
-use crate::domain::medio::{
-    lista as medio_lista, 
-    Medio
-};
+use crate::domain::cliente::{lista as cliente_lista, Cliente};
+use crate::domain::medio::{lista as medio_lista, Medio};
 
 use crate::layout;
 use actix_web::Result as AwResult;
@@ -21,6 +15,8 @@ use sqlx::PgPool;
 #[tracing::instrument(name = "formulario crea venta", skip(pool))]
 #[get("/venta")]
 pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
+    let puesto_id: i64 = 1;
+    let usuario_id: i64 = 1;
 
     let clientes = cliente_lista(&pool)
         .await
@@ -35,40 +31,156 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
     layout::form::crea(
         "Venta",
         "/ventas",
-        "form.css",
+        "maestro-detalle.css",
         Some("venta/crea.js"),
-        contenido( clientes, medios),
+        contenido(clientes, medios, puesto_id, usuario_id),
     )
 }
 
 fn contenido(
     clientes: Vec<Cliente>,
     medios: Vec<Medio>,
-) -> Markup { html! {
-    form method="POST" action="/venta" {
+    puesto_id: i64,
+    usuario_id: i64,
+) -> Markup {
+    html! {
+        form method="POST" action="/venta" {
 
-        label for="cliente_id" {"Cliente:" }
-        input type="text" name="cliente_id" id="cliente_id" required
-            placeholder="cliente";
+            input type="hidden" name="puesto_id" value=(puesto_id);
+            input type="hidden" name="usuario_id" value=(usuario_id);
+            .busqueda-box #busqueda-box {
+                .busqueda #busqueda {};
+            }
 
-        label for="medio" {"Medio de pago:" }
-        select #medio name="medio" {
-            @for medio in medios.into_iter() {
-                option value=(medio.id.unwrap())
-                selected[medio.nombre == "efectivo"] 
-                    {(medio.nombre)}
+            (formulario_detalle())
+
+            .maestro-box {
+                label for="cliente_id" {"Código:" }
+                input type="text" name="cliente_id"
+                    id="cliente_id" required placeholder="cliente";
+
+                label for="nit" {"NIT/CI/CEX:" }
+                input type="text"
+                    id="nit" required placeholder="NIT/CI/CEX";
+
+                label for="nombre" {"Nombres:" }
+                input type="text"
+                    id="nombre" required placeholder="Nombres/Razón Social";
+
+                label for="apellido" {"Apellidos:" }
+                input type="text"
+                    id="apellido" required placeholder="Apellido";
+
+                label for="subtotal" {"Sub Total:" }
+                input type="text"
+                    id="subtotal" required placeholder="Suma de items";
+
+                label for="descuento" {"Descuento:" }
+                input type="text" name="descuento" id="descuento"
+                    required placeholder="Descuento";
+
+                label for="total" {"Total:" }
+                input type="text" name="total" id="total"
+                    required placeholder="Total a pagar";
+
+                label for="pago" {"Pago:" }
+                input type="text" id="pago";
+
+                label for="cambio" {"Cambio:" }
+                input type="text" id="cambio";
+
+                select #medio name="medio" {
+                    @for medio in medios.into_iter() {
+                        option value=(medio.id.unwrap())
+                        selected[medio.nombre == "efectivo"]
+                            {(medio.nombre)}
+                    }
+                }
+            }
+
+            button #crea .form-submit type="submit" { "Crear" }
+            button #cancela .form-submit type="button" { "Cancelar" }
+        }
+    }
+}
+
+fn formulario_detalle() -> Markup {
+    html! {
+        .det-box #detalle {
+            #"fila-0" .det-fila {
+                .det-item {
+                    input .det-corto type="text" id="producto_id-0"
+                        name="det['producto_id'][]"
+                        placeholder="id prod.";
+                    input .det-largo type="text" id="producto-0"
+                        name="det['producto'][]"
+                        placeholder="nombre del producto";
+                    img .det-btn #"borra-0"
+                        src="/public/img/waste-24.png" alt="Agrega";
+                }
+                .det-item {
+                    input .det-corto type="text" id="cantidad-0"
+                        name="det['cantidad'][]"
+                        placeholder="cantidad" required;
+                    input .det-corto type="text" id="precio-0"
+                        name="det['precio'][]" placeholder="precio" required;
+                    div .det-output id="subtotal-0" {"sub total"}
+                    input .det-corto type="text" id="descuento-0"
+                        name="det['descuento'][]"
+                        placeholder="descuento" required;
+                    input .det-corto type="text" id="total-0"
+                        name="det['total'][]"
+                        placeholder="total" required;
+                }
+            }
+            .det-cell {
+                button .btn #agrega_item type="button" {
+                    img src="/public/img/si.png" alt="Agrega";
+                }
+            }
+            .det-cell {
+                button .btn #borra_item type="button" {
+                    img src="/public/img/no.png" alt="Cancela";
+                }
             }
         }
-
-        label for="total" {"Total:" }
-        input type="text" name="total" id="total"
-            required placeholder="Total a pagar";
-
-        label for="descuento" {"Descuento:" }
-        input type="text" name="descuento" id="descuento"
-            required placeholder="Descuento";
-
-        button #crea .form-submit type="submit" { "Crear" }
-        button #cancela .form-submit type="button" { "Cancelar" }
+        (formulario_detalle_tabla())
     }
-}}
+}
+
+fn formulario_detalle_tabla() -> Markup {
+    html! {
+        .det-tabla #det_tabla {
+            {
+                    { "id" }
+                    { "Producto" }
+                    { "Prc." }
+                    { "Ctd." }
+                    { "Dsc." }
+                    { "Tot." }
+                    { img src="/public/img/gear.png"; }
+            }
+
+
+                #det_fila {
+                    { }
+                    { }
+                    { }
+                    { }
+                    { }
+                    { }
+                    { img src="/public/img/waste-24.png"; }
+                }
+
+                #totales {
+                    { }
+                    { "Totales" }
+                    { }
+                    { }
+                    #subtotal { }
+                    #descuento { }
+                    #total { }
+                }
+        }
+    }
+}

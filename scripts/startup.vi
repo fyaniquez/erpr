@@ -1,11 +1,11 @@
 /fin-objetos
-Ouse crate::rutas::venta;
+Ouse crate::rutas::vendido;
 /fin-servicios
-O            .service(venta::lista::get::muestra)
-            .service(venta::ve::get::muestra)
-            .service(venta::crea::get::muestra)
-            .service(venta::crea::post::procesa)
-            .service(venta::cambia::get::muestra)
-            .service(venta::cambia::post::procesa)
-            .service(venta::borra::delete::procesa)
+O            .service(vendido::lista::get::muestra)
+            .service(vendido::ve::get::muestra)
+            .service(vendido::crea::get::muestra)
+            .service(vendido::crea::post::procesa)
+            .service(vendido::cambia::get::muestra)
+            .service(vendido::cambia::post::procesa)
+            .service(vendido::borra::delete::procesa)
 :wq!

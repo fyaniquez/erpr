@@ -14,11 +14,11 @@ use sqlx::PgPool;
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
-    descuento: i32,
-    total: i32,
-    cliente_id: i64,
     puesto_id: i64,
     usuario_id: i64,
+    cliente_id: i64,
+    descuento: i32,
+    total: i32,
     medio_id: i64,
 }
 
@@ -68,10 +68,11 @@ pub async fn venta_inserta(
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
     r#"INSERT INTO ventas 
-        (descuento, cliente_id, puesto_id, usuario_id, medio_id)
-        VALUES ($1, $2, $3, $4, $5)
+        (total, descuento, cliente_id, puesto_id, usuario_id, medio_id)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id"#,
     )
+    .bind(venta_nuevo.total)
     .bind(venta_nuevo.descuento)
     .bind(venta_nuevo.cliente_id)
     .bind(venta_nuevo.puesto_id)

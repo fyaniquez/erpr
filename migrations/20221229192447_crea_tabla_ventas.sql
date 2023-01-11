@@ -31,7 +31,7 @@ ALTER SEQUENCE public.ventas_id_seq OWNED BY public.ventas.id;
 ALTER TABLE ONLY public.ventas ALTER COLUMN id SET DEFAULT nextval('public.ventas_id_seq'::regclass);
 
 INSERT INTO public.ventas (id, fecha, total, descuento, cliente_id, puesto_id, usuario_id, medio_id, estado, created_at, updated_at) VALUES (1, '2022-07-23 15:52:33.951947', 2800, 0, 1, 1, 1, 1, 'Pagado','2022-07-23 15:52:33.95195', '2022-07-23 15:52:33.95195');
-INSERT INTO public.ventas (id, fecha, total, descuento, cliente_id, puesto_id, usuario_id, medio_id, estado, created_at, updated_at) VALUES (2, '2022-07-23 15:52:33.951947', 3000, 100, 1, 1, 1, 1, 'Pagado','2022-07-23 15:52:33.95195', '2022-07-23 15:52:33.95195');
+INSERT INTO public.ventas (id, fecha, total, descuento, cliente_id, puesto_id, usuario_id, medio_id, estado, created_at, updated_at) VALUES (2, '2022-07-23 15:52:33.951947', 700, 100, 1, 1, 1, 1, 'Pagado','2022-07-23 15:52:33.95195', '2022-07-23 15:52:33.95195');
 
 SELECT pg_catalog.setval('public.ventas_id_seq', 2, true);
 
