@@ -29,7 +29,7 @@ pub async fn usuario_email(
             HttpResponse::Found()
                 .append_header((
                     "Location", 
-                    format!("/usuario_email_form?{}", &fila.email.unwrap())))
+                    format!("/usuario_email_form?{}", &fila.email)))
             .finish()
         },
         Err(_e) => {

@@ -39,7 +39,7 @@ pub async fn login_email(
             HttpResponse::Found()
                 .append_header((
                     "Location", 
-                    format!("/login_pass_form?{}", &fila.email.unwrap())))
+                    format!("/login_pass_form?{}", &fila.email)))
             .finish()
         },
         Err(e) => {
