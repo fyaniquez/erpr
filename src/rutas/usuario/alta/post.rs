@@ -89,11 +89,11 @@ impl ResponseError for UsuarioError {
 pub async fn usuario_inserta(
     pool: &PgPool,
     usuario_nuevo: &Nuevo,
-) -> Result<Uuid, sqlx::Error> {
+) -> Result<i64, sqlx::Error> {
     let row = sqlx::query!(
 r#"INSERT INTO usuarios (email, nombre, documento, estado)
    VALUES ($1, $2, $3, $4)
-   RETURNING usuario_id"#,
+   RETURNING id"#,
         usuario_nuevo.email.as_ref(),
         usuario_nuevo.nombres(),
         usuario_nuevo.documento.as_ref(),
@@ -101,7 +101,7 @@ r#"INSERT INTO usuarios (email, nombre, documento, estado)
     )
     .fetch_one(pool)
     .await?;
-    Ok(row.usuario_id)
+    Ok(row.id)
 }
 
 pub fn error_chain_fmt(
