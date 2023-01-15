@@ -19,6 +19,8 @@ pub struct Paginado {
     pub longitud: String,
     #[serde(default)]
     pub orden: String,
+    #[serde(default)]
+    pub filtro: String,
     pub total_filas: Option<i32>,
 }
 
@@ -28,6 +30,7 @@ impl Default for Paginado {
             pagina: String::from("1"),
             longitud: String::from("10"),
             orden: String::new(),
+            filtro: String::new(),
             total_filas: None,
         }
     }
@@ -37,8 +40,8 @@ impl std::fmt::Debug for Paginado {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             f,
-            "orden:{}; pagina:{}; longitud:{}\n",
-            self.orden, self.pagina, self.longitud
+            "orden:{}; filtro:{}; pagina:{}; longitud:{}\n",
+            self.orden, self.filtro, self.pagina, self.longitud
         )?;
         Ok(())
     }
@@ -96,9 +99,17 @@ impl Paginado {
 
     // complementa el query con los parametros
     pub fn get_qry(&self, qry: &str) -> String {
+        let filtro;
+        if self.filtro != "" {
+            filtro = format!(
+                "AND {} ILIKE '%{}%'", self.orden, self.filtro);
+        } else {
+            filtro = "".to_string();
+        }
         format!(
-            "{} ORDER BY {} LIMIT {} OFFSET {}",
+            "{} {} ORDER BY {} LIMIT {} OFFSET {}",
             qry,
+            filtro,
             self.orden,
             self.get_longitud(),
             self.get_offset()
@@ -112,11 +123,22 @@ impl Paginado {
 
     // genera un query para count
     pub fn get_qry_count(&self, qry: &str) -> String {
+        // reemplaza la lista de campos por count(campo_1)
         let i = qry.find("FROM").unwrap();
         let v: Vec<&str> = qry[7..i].splitn(2, ',').collect();
         let f = qry[7..i].to_string();
         let c = format!("COUNT({}) ", v[0].trim());
-        qry.replace(&f, &c)
+        let query = qry.replace(&f, &c);
+
+        // agrega el filtro
+        let filtro;
+        if self.filtro != "" {
+            filtro = format!(
+                "AND {} ILIKE '%{}%'", self.orden, self.filtro);
+        } else {
+            filtro = "".to_string();
+        }
+        format!("{} {}", query, filtro)
     }
 }
 

@@ -45,5 +45,43 @@
     display: inline;
     background-color: white;
 }
-.det-btn {
+.det-tabla {
+    display: table;
+    background-color: white;
+}
+.det-tabla > div {
+    display: table-row;
+    border-down: 1px solid black;
+}
+.det-tabla > div > div {
+    display: table-cell;
+}
+
+.det-tabla > div :nth-chid(1) {
+    width: 10%;
+    text-align: center;
+}
+.det-tabla > div :nth-chid(2) {
+    width: 40%;
+    text-align: left;
+}
+.det-tabla > div :nth-chid(3) {
+    width: 12%
+    text-align: right;
+}
+.det-tabla > div :nth-chid(4) {
+    width: 10%
+    text-align: right;
+}
+.det-tabla > div :nth-chid(5) {
+    width: 12%
+    text-align: right;
+}
+.det-tabla > div :nth-chid(6) {
+    width: 12%
+    text-align: right;
+}
+.det-tabla > div :nth-chid(7) {
+    width: 4%
+    text-align: center;
 }

@@ -10,7 +10,8 @@ use sqlx::PgPool;
 const SELECT: &str = 
     r#"SELECT pre.id, pro.nombre, pre.producto_id, 
     pre.precio, pre.catalogo_id
-    FROM precios pre inner join productos pro on pre.producto_id = pro.id
+    FROM precios pre 
+    INNER JOIN productos pro ON pre.producto_id = pro.id
     WHERE pre.catalogo_id=$1"#;
 
 // obtiene una lista de objetos
@@ -30,6 +31,7 @@ pub async fn lista_paginada(
     paginado: &Paginado,
     catalogo_id: i64,
 ) -> Result<(Vec<Precio>, i32), sqlx::Error> {
+
     let qry = paginado.get_qry(SELECT);
     let filas: Vec<Precio> = sqlx::query_as(qry.as_ref())
         .bind(catalogo_id)

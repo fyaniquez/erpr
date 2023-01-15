@@ -15,6 +15,31 @@ use maud::{html, Markup};
 use sqlx::PgPool;
 
 // controlador
+#[tracing::instrument(name = "Lista de precios json", skip(pool))]
+#[get("/catalogo/{id}/precios.json")]
+pub async fn muestra_json(
+    path: web::Path<(i64,)>, 
+    mut paginado: web::Query<Paginado>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, PrecioError> {
+    // TODO: ver como implementar  un trait si no esta en el mismo archivo
+    // en la implentacion de default puede colocarse los valores p/defecto
+    let (catalogo_id,) = path.into_inner();
+    paginado.orden = "nombre".to_string();
+
+    let (filas, total_filas) = lista_paginada(&pool, &paginado, catalogo_id)
+        .await
+        .context("Error al leer precios de la BD")?;
+    paginado.total_filas = Some(total_filas);
+
+    // a json
+    let lista_json = serde_json::to_string(&filas)?;
+
+    // al browser
+    Ok(HttpResponse::Ok().body(lista_json))
+}
+
+// controlador
 #[tracing::instrument(name = "Lista de precios", skip(pool))]
 #[get("/catalogo/{id}/precios")]
 pub async fn muestra(
@@ -25,9 +50,7 @@ pub async fn muestra(
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
     let (catalogo_id,) = path.into_inner();
-    if paginado.orden.is_empty() {
-        paginado.orden = "nombre".to_string();
-    }
+    paginado.orden = "nombre".to_string();
 
     let (filas, total_filas) = lista_paginada(&pool, &paginado, catalogo_id)
         .await

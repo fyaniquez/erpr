@@ -117,6 +117,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(catalogo::cambia::post::procesa)
             .service(catalogo::borra::delete::procesa)
             .service(precio::lista::get::muestra)
+            .service(precio::lista::get::muestra_json)
             .service(precio::ve::get::muestra)
             .service(precio::crea::get::muestra)
             .service(precio::crea::post::procesa)

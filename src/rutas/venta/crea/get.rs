@@ -107,80 +107,73 @@ fn contenido(
 fn formulario_detalle() -> Markup {
     html! {
         .det-box #detalle {
-            #"fila-0" .det-fila {
+            .det-fila {
                 .det-item {
-                    input .det-corto type="text" id="producto_id-0"
-                        name="det['producto_id'][]"
+                    input .det-corto type="text" id="producto_id"
                         placeholder="id prod.";
-                    input .det-largo type="text" id="producto-0"
-                        name="det['producto'][]"
+                    input .det-largo type="text" id="producto"
                         placeholder="nombre del producto";
-                    img .det-btn #"borra-0"
-                        src="/public/img/waste-24.png" alt="Agrega";
+                    img .det-btn #"borra"
+                        src="/img/waste-24.png" alt="Agrega";
                 }
                 .det-item {
-                    input .det-corto type="text" id="cantidad-0"
-                        name="det['cantidad'][]"
+                    input .det-corto type="text" id="cantidad"
                         placeholder="cantidad" required;
-                    input .det-corto type="text" id="precio-0"
-                        name="det['precio'][]" placeholder="precio" required;
-                    div .det-output id="subtotal-0" {"sub total"}
-                    input .det-corto type="text" id="descuento-0"
-                        name="det['descuento'][]"
+                    input .det-corto type="text" id="precio"
+                        placeholder="precio" required;
+                    input .det-corto type="text" id="descuento"
                         placeholder="descuento" required;
-                    input .det-corto type="text" id="total-0"
-                        name="det['total'][]"
+                    input .det-corto type="text" id="total"
                         placeholder="total" required;
                 }
             }
             .det-cell {
                 button .btn #agrega_item type="button" {
-                    img src="/public/img/si.png" alt="Agrega";
+                    img src="/img/si.png" alt="Agrega";
                 }
             }
             .det-cell {
                 button .btn #borra_item type="button" {
-                    img src="/public/img/no.png" alt="Cancela";
+                    img src="/img/no.png" alt="Cancela";
                 }
             }
         }
-        (formulario_detalle_tabla())
+        (tabla_detalle())
     }
 }
 
-fn formulario_detalle_tabla() -> Markup {
+fn tabla_detalle() -> Markup {
     html! {
         .det-tabla #det_tabla {
-            {
-                    { "id" }
-                    { "Producto" }
-                    { "Prc." }
-                    { "Ctd." }
-                    { "Dsc." }
-                    { "Tot." }
-                    { img src="/public/img/gear.png"; }
+            div {
+                div { "id" }
+                div { "Producto" }
+                div { "Prc." }
+                div { "Ctd." }
+                div { "Dsc." }
+                div { "Tot." }
+                div { img src="/img/gear.png"; }
             }
 
+            #det_fila {
+                div { }
+                div { }
+                div { }
+                div { }
+                div { }
+                div { }
+                div { img src="/img/waste-24.png"; }
+            }
 
-                #det_fila {
-                    { }
-                    { }
-                    { }
-                    { }
-                    { }
-                    { }
-                    { img src="/public/img/waste-24.png"; }
-                }
-
-                #totales {
-                    { }
-                    { "Totales" }
-                    { }
-                    { }
-                    #subtotal { }
-                    #descuento { }
-                    #total { }
-                }
+            #totales {
+                { }
+                { "Totales" }
+                { }
+                { }
+                #subtotal { }
+                #descuento { }
+                #total { }
+            }
         }
     }
 }

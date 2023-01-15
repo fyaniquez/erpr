@@ -14,7 +14,6 @@ use actix_web::http::StatusCode;
 use actix_web::{post, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
-use uuid::Uuid;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]

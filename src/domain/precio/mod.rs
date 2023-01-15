@@ -5,6 +5,7 @@ pub use precio::Precio;
 pub use precio::PrecioError;
 pub use nuevo::Nuevo;
 pub use dml::{
-    lista, lista_paginada,
+    lista, 
+    lista_paginada,
     obtiene
 };

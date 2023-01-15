@@ -21,6 +21,8 @@ pub enum PrecioError {
     #[error("{0}")]
     Validacion(String),
     #[error(transparent)]
+    Serdes(#[from] serde_json::Error),
+    #[error(transparent)]
     Otro(#[from] anyhow::Error),
     #[error(transparent)]
     Lookups(#[from] sqlx::Error),
@@ -38,6 +40,7 @@ impl ResponseError for PrecioError {
             PrecioError::Validacion(_) => StatusCode::BAD_REQUEST,
             PrecioError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
             PrecioError::Lookups(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            PrecioError::Serdes(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
