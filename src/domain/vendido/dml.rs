@@ -6,9 +6,10 @@
 use crate::domain::vendido::{
     Vendido,
     VendidoVe,
+    Vendidos,
 };
 use crate::layout::lista::Paginado;
-use sqlx::PgPool;
+use sqlx::{PgPool, Transaction};
 
 const SELECT: &str = r#"SELECT id, cantidad, precio, 
     total, producto_id venta_id 
@@ -76,4 +77,58 @@ pub async fn obtiene_ve(pool: &PgPool, id: i64)
             .fetch_one(pool)
             .await?;
     Ok(fila)
+}
+
+// inserta un item vendido en la base de datos
+#[tracing::instrument(name = "Inserta item vendido", 
+skip(vendido, venta_id, tx))]
+pub async fn inserta(
+    tx: &mut Transaction<'_, sqlx::Postgres>,
+    venta_id: i64,
+    vendido: &Vendido,
+) -> Result<i64, sqlx::Error> {
+
+    let (id,) = sqlx::query_as(
+    r#"INSERT INTO vendidos 
+        (producto_id, venta_id, cantidad, precio, descuento, total)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id"#,
+    )
+    .bind(vendido.producto_id)
+    .bind(venta_id)
+    .bind(vendido.cantidad)
+    .bind(vendido.precio)
+    .bind(vendido.descuento)
+    .bind(vendido.total)
+    .fetch_one(tx)
+    .await?;
+    Ok(id)
+}
+
+#[tracing::instrument(name = "Inserta items vendidos", 
+skip(vendidos, venta_id, tx))]
+pub async fn inserta_mul(
+    tx: &mut Transaction<'_, sqlx::Postgres>,
+    venta_id: i64,
+    vendidos: &Vendidos,
+) -> Result<i64, sqlx::Error> {
+
+    let venta_ids: Vec<i64> = (0..vendidos.precios.len())
+        .map(|_| venta_id).collect();
+
+    sqlx::query( 
+    r#"INSERT INTO vendidos 
+        (producto_id, venta_id, cantidad, precio, descuento, total)
+        SELECT * FROM UNNEST($1::bigint[], $2::bigint[], $3::integer[], 
+        $4::integer[], $5::integer[], $6::integer[])
+        "#)
+    .bind(&vendidos.producto_ids[..])
+    .bind(&venta_ids[..])
+    .bind(&vendidos.cantidads[..])
+    .bind(&vendidos.precios[..])
+    .bind(&vendidos.descuentos[..])
+    .bind(&vendidos.totals[..])
+    .execute(tx)
+    .await?;
+    Ok(1)
 }

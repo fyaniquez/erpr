@@ -17,3 +17,4 @@ pub mod puesto;
 pub mod medio;
 pub mod venta;
 pub mod vendido;
+pub mod distribuidora;

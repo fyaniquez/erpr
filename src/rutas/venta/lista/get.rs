@@ -5,7 +5,7 @@
 
 use crate::layout::lista;
 use crate::layout::lista::Paginado;
-use crate::domain::puesto::Puesto;
+use crate::domain::puesto::{Puesto, obtiene};
 use crate::domain::venta::{Venta, lista_paginada};
 use actix_web::get;
 use actix_web::http::StatusCode;
@@ -31,7 +31,7 @@ pub async fn muestra(
         .context("Error al leer punto de venta")?;
 
     if paginado.orden.is_empty() {
-        paginado.orden = "nombre".to_string();
+        paginado.orden = "fecha".to_string();
     }
 
     let (filas, total_filas) = lista_paginada(&pool, &paginado, puesto_id)
@@ -66,7 +66,7 @@ fn contenido(filas: Vec<Venta>, puesto: &Puesto) -> Option<Markup> {
                 .lista-items {
                 @for fila in filas.into_iter() {
                     .lista-item #{(fila.id.unwrap())} {
-                        span .nombre {(fila.fecha.format("%d-%m-%Y %H:%M").to_string())}
+                        span .nombre {(fila.fecha.unwrap().format("%d-%m-%Y %H:%M").to_string())}
                         span .nombre {(fila.total)}
                     }
                 }}
@@ -112,16 +112,3 @@ pub fn error_chain_fmt(
     Ok(())
 }
 
-// modelo
-// obtiene un puesto de la base de datos
-#[tracing::instrument(name = "ve puesto", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Puesto, sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, descripcion FROM puestos WHERE id=$1";
-    let fila: Puesto = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
-}

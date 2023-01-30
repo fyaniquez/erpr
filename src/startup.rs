@@ -25,6 +25,7 @@ use crate::rutas::puesto;
 use crate::rutas::medio;
 use crate::rutas::venta;
 use crate::rutas::vendido;
+use crate::rutas::distribuidora;
 // fin-objetos
 
 use crate::rutas::public::home;
@@ -118,6 +119,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(catalogo::borra::delete::procesa)
             .service(precio::lista::get::muestra)
             .service(precio::lista::get::muestra_json)
+            .service(precio::ve::get::muestra_json)
             .service(precio::ve::get::muestra)
             .service(precio::crea::get::muestra)
             .service(precio::crea::post::procesa)
@@ -145,7 +147,10 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(inventariado::cambia::get::muestra)
             .service(inventariado::cambia::post::procesa)
             .service(inventariado::borra::delete::procesa)
+            .service(cliente::lista::get::muestra_json)
             .service(cliente::lista::get::muestra)
+            .service(cliente::ve::get::muestra_json)
+            .service(cliente::ve::get::muestra_documento_json)
             .service(cliente::ve::get::muestra)
             .service(cliente::crea::get::muestra)
             .service(cliente::crea::post::procesa)
@@ -178,6 +183,13 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(vendido::cambia::get::muestra)
             .service(vendido::cambia::post::procesa)
             .service(vendido::borra::delete::procesa)
+            .service(distribuidora::lista::get::muestra)
+            .service(distribuidora::ve::get::muestra)
+            .service(distribuidora::crea::get::muestra)
+            .service(distribuidora::crea::post::procesa)
+            .service(distribuidora::cambia::get::muestra)
+            .service(distribuidora::cambia::post::procesa)
+            .service(distribuidora::borra::delete::procesa)
             // fin-servicios
             //.service(Files::new("/public", "./public")
             //.path_filter(|path, _| {

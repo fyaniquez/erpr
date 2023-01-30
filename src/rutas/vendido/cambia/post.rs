@@ -25,7 +25,7 @@ impl TryFrom<FormData> for Vendido {
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         Ok( Self{ 
             id: None, 
-            venta_id: form_data.venta_id,
+            venta_id: Some(form_data.venta_id),
             producto_id: form_data.producto_id,
             cantidad: form_data.cantidad,
             precio: form_data.precio,

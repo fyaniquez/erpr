@@ -3,7 +3,6 @@
 //! date: 6/12/2022
 //! purpose: muestra el formulario de alta de venta
 //!
-use crate::domain::cliente::{lista as cliente_lista, Cliente};
 use crate::domain::medio::{lista as medio_lista, Medio};
 
 use crate::layout;
@@ -17,11 +16,7 @@ use sqlx::PgPool;
 pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
     let puesto_id: i64 = 1;
     let usuario_id: i64 = 1;
-
-    let clientes = cliente_lista(&pool)
-        .await
-        .map_err(|_e| HttpResponse::InternalServerError().finish())
-        .unwrap();
+    let catalogo_id: i64 = 1;
 
     let medios = medio_lista(&pool)
         .await
@@ -30,25 +25,30 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
 
     layout::form::crea(
         "Venta",
-        "/ventas",
+        &format!("/puest/{}/ventas", puesto_id),
         "maestro-detalle.css",
         Some("venta/crea.js"),
-        contenido(clientes, medios, puesto_id, usuario_id),
+        contenido(medios, puesto_id, usuario_id, catalogo_id),
     )
 }
 
 fn contenido(
-    clientes: Vec<Cliente>,
     medios: Vec<Medio>,
     puesto_id: i64,
     usuario_id: i64,
+    catalogo_id: i64,
 ) -> Markup {
     html! {
         form method="POST" action="/venta" {
 
-            input type="hidden" name="puesto_id" value=(puesto_id);
-            input type="hidden" name="usuario_id" value=(usuario_id);
+            input #puesto_id type="hidden" 
+                name="puesto_id" value=(puesto_id);
+            input #usuario_id type="hidden" 
+                name="usuario_id" value=(usuario_id);
+            input #catalogo_id type="hidden" 
+                name="catalogo_id" value=(catalogo_id);
             .busqueda-box #busqueda-box {
+                .busqueda_titulo #busqueda_titulo {};
                 .busqueda #busqueda {};
             }
 
@@ -59,17 +59,13 @@ fn contenido(
                 input type="text" name="cliente_id"
                     id="cliente_id" required placeholder="cliente";
 
-                label for="nit" {"NIT/CI/CEX:" }
+                label for="documento" {"NIT/CI/CEX:" }
                 input type="text"
-                    id="nit" required placeholder="NIT/CI/CEX";
+                    id="documento" required placeholder="NIT/CI/CEX";
 
                 label for="nombre" {"Nombres:" }
                 input type="text"
                     id="nombre" required placeholder="Nombres/Razón Social";
-
-                label for="apellido" {"Apellidos:" }
-                input type="text"
-                    id="apellido" required placeholder="Apellido";
 
                 label for="subtotal" {"Sub Total:" }
                 input type="text"
@@ -98,7 +94,7 @@ fn contenido(
                 }
             }
 
-            button #crea .form-submit type="submit" { "Crear" }
+            button #crea .form-submit type="button" { "Crear" }
             button #cancela .form-submit type="button" { "Cancelar" }
         }
     }
@@ -111,16 +107,15 @@ fn formulario_detalle() -> Markup {
                 .det-item {
                     input .det-corto type="text" id="producto_id"
                         placeholder="id prod.";
-                    input .det-largo type="text" id="producto"
-                        placeholder="nombre del producto";
+                    input .det-largo #producto type="text"
+                        placeholder="nombre producto";
                     img .det-btn #"borra"
                         src="/img/waste-24.png" alt="Agrega";
                 }
                 .det-item {
+                    .lit-corto #precio {}
                     input .det-corto type="text" id="cantidad"
                         placeholder="cantidad" required;
-                    input .det-corto type="text" id="precio"
-                        placeholder="precio" required;
                     input .det-corto type="text" id="descuento"
                         placeholder="descuento" required;
                     input .det-corto type="text" id="total"
@@ -166,13 +161,13 @@ fn tabla_detalle() -> Markup {
             }
 
             #totales {
-                { }
-                { "Totales" }
-                { }
-                { }
-                #subtotal { }
-                #descuento { }
-                #total { }
+                div { }
+                div { "Totales" }
+                div { }
+                div { }
+                #t_descuento { }
+                #t_total { }
+                div { }
             }
         }
     }

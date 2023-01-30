@@ -33,7 +33,9 @@ pub async fn muestra_json(
     paginado.total_filas = Some(total_filas);
 
     // a json
-    let lista_json = serde_json::to_string(&filas)?;
+    let lista_json = serde_json::to_string(&filas)
+        .map_err(|err| PrecioError::Validacion(err.to_string()))
+        .unwrap();
 
     // al browser
     Ok(HttpResponse::Ok().body(lista_json))

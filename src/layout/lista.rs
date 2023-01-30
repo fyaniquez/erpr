@@ -101,8 +101,13 @@ impl Paginado {
     pub fn get_qry(&self, qry: &str) -> String {
         let filtro;
         if self.filtro != "" {
-            filtro = format!(
-                "AND {} ILIKE '%{}%'", self.orden, self.filtro);
+            if qry.contains("WHERE") {
+                filtro = format!(
+                    " AND {} ILIKE '%{}%'", self.orden, self.filtro);
+            } else {
+                filtro = format!(
+                    " WHERE {} ILIKE '%{}%'", self.orden, self.filtro);
+            }
         } else {
             filtro = "".to_string();
         }
@@ -133,8 +138,13 @@ impl Paginado {
         // agrega el filtro
         let filtro;
         if self.filtro != "" {
-            filtro = format!(
-                "AND {} ILIKE '%{}%'", self.orden, self.filtro);
+            if qry.contains("WHERE") {
+                filtro = format!(
+                    " AND {} ILIKE '%{}%'", self.orden, self.filtro);
+            } else {
+                filtro = format!(
+                    " WHERE {} ILIKE '%{}%'", self.orden, self.filtro);
+            }
         } else {
             filtro = "".to_string();
         }

@@ -6,6 +6,9 @@
             "request": "launch",
             "name": "Debug",
             "program": "${workspaceRoot}/target/debug/${workspaceRootFolderName}",
+            "env": {
+                "DATABASE_URL": "postgres://postgres:password@localhost:5454/erprustest"
+            },
             "args": [],
             "cwd": "${workspaceRoot}",
             "sourceLanguages": [

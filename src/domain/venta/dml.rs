@@ -4,8 +4,12 @@
 //! instrucciones dml para apitulo
 
 use crate::layout::lista::Paginado;
-use crate::domain::venta::Venta;
-use sqlx::PgPool;
+use crate::domain::venta::{
+    Venta,
+    VentaVe,
+};
+use sqlx::{PgPool, Transaction};
+use chrono::Utc;
 
 const SELECT: &str = 
     r#"SELECT id, fecha, total, descuento, cliente_id,
@@ -56,4 +60,50 @@ pub async fn obtiene(
         .fetch_one(pool)
         .await?;
     Ok(fila)
+}
+
+// obtiene un venta de la base de datos
+#[tracing::instrument(name = "ve venta", skip(pool))]
+pub async fn obtiene_ve(
+    pool: &PgPool, id: i64
+) -> Result<VentaVe, sqlx::Error> {
+    let fila: VentaVe = sqlx::query_as(
+            r#"SELECT v.id, v.fecha, v.total, v.descuento, 
+                c.nombre as cliente, p.nombre as puesto, 
+                u.nombre as usuario, m.nombre as medio, v.estado
+            FROM ventas v, clientes c, puestos p,
+                usuarios u, medios m
+            WHERE v.id=$1 AND v.cliente_id = c.id 
+                AND v.puesto_id = p.id AND v.usuario_id = u.id
+                AND v.medio_id = m.id"#
+        ).bind(id)
+        .fetch_one(pool)
+        .await?;
+    Ok(fila)
+}
+
+// inserta un venta en la base de datos
+#[tracing::instrument(name = "Inserta venta", skip(venta, tx))]
+pub async fn inserta(
+    tx: &mut Transaction<'_, sqlx::Postgres>,
+    venta: &Venta,
+) -> Result<i64, sqlx::Error> {
+    let (id,) = sqlx::query_as(
+    r#"INSERT INTO ventas 
+        (fecha, total, descuento, cliente_id, puesto_id, 
+        usuario_id, medio_id, estado)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING id"#,
+    )
+    .bind(Utc::now().naive_utc())
+    .bind(venta.total)
+    .bind(venta.descuento)
+    .bind(venta.cliente_id)
+    .bind(venta.puesto_id)
+    .bind(venta.usuario_id)
+    .bind(venta.medio_id)
+    .bind("Pagado".to_string())
+    .fetch_one(tx)
+    .await?;
+    Ok(id)
 }

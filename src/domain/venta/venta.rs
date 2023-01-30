@@ -4,20 +4,20 @@
 
 use actix_web::http::StatusCode;
 use actix_web::ResponseError;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use chrono::NaiveDateTime;
 
-#[derive(Serialize, sqlx::FromRow)]
+#[derive(Serialize, Deserialize, sqlx::FromRow)]
 pub struct Venta {
     pub id: Option<i64>,
-    pub fecha: NaiveDateTime,
+    pub fecha: Option<NaiveDateTime>,
     pub total: i32,
     pub descuento: i32,
     pub cliente_id: i64,
     pub puesto_id: i64,
     pub usuario_id: i64,
     pub medio_id: i64,
-    pub estado: String,
+    pub estado: Option<String>,
 }
 
 // errores considerados para lista de ventas
@@ -29,6 +29,19 @@ pub enum VentaError {
     Otro(#[from] anyhow::Error),
     #[error(transparent)]
     Lookups(#[from] sqlx::Error),
+}
+
+// modelo
+#[derive(serde::Serialize, sqlx::FromRow)]
+pub struct VentaVe {
+    pub id: i64,
+    pub fecha: NaiveDateTime,
+    pub total: i32,
+    pub descuento: i32,
+    pub puesto: String,
+    pub usuario: String,
+    pub cliente: String,
+    pub medio: String,
 }
 
 impl std::fmt::Debug for VentaError {

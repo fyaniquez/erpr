@@ -38,6 +38,32 @@ pub async fn muestra(
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
+// controlador json
+#[tracing::instrument(name = "Lista de clientes", skip(pool))]
+#[get("/clientes.json")]
+pub async fn muestra_json(
+    mut paginado: web::Query<Paginado>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ClienteError> {
+    // TODO: ver como implementar  un trait si no esta en el mismo archivo
+    // en la implentacion de default puede colocarse los valores p/defecto
+    paginado.orden = "nombre".to_string();
+
+    let (filas, total_filas) = lista_paginada(&pool, &paginado)
+        .await
+        .context("Error al leer clientes de la BD")?;
+    paginado.total_filas = Some(total_filas);
+
+ // a json
+    let lista_json = serde_json::to_string(&filas)
+        .map_err(|err| ClienteError::Validacion(err.to_string()))
+        .unwrap();
+
+    // al browser
+    Ok(HttpResponse::Ok().body(lista_json))
+
+}
+
 // vista
 fn contenido(filas: Vec<Cliente>) -> Option<Markup> {
     if filas.len() < 1 {

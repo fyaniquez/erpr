@@ -10,6 +10,26 @@ use maud::{html, Markup};
 use sqlx::PgPool;
 use anyhow::Context;
 
+// controlador json
+#[tracing::instrument(name="Ve precio json", skip(pool))]
+#[get("/precio/{id}.{ext}")]
+pub async fn muestra_json(
+    path: web::Path<(i64, String)>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, PrecioError> {
+    let (id, _ext) = path.into_inner();
+    let precio = obtiene(&pool, id).await
+        .context("Error al leer precio")?;
+
+    // a json
+    let obj_json = serde_json::to_string(&precio)
+        .map_err(|err| PrecioError::Validacion(err.to_string()))
+        .unwrap();
+
+    // al browser
+    Ok(HttpResponse::Ok().body(obj_json))
+}
+
 // controlador
 #[tracing::instrument(name="Ve precio", skip(pool))]
 #[get("/precio/{id}")]

@@ -21,26 +21,40 @@ pub enum PrecioError {
     #[error("{0}")]
     Validacion(String),
     #[error(transparent)]
-    Serdes(#[from] serde_json::Error),
+    Json(serde_json::Error),
     #[error(transparent)]
     Otro(#[from] anyhow::Error),
     #[error(transparent)]
     Lookups(#[from] sqlx::Error),
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
 }
-
+impl From<serde_json::Error> for PrecioError {
+    fn from(err: serde_json::Error) -> PrecioError {
+        use serde_json::error::Category;
+        match err.classify() {
+            Category::Io => {
+                PrecioError::Io(err.into())
+            }
+            Category::Syntax | Category::Data | Category::Eof => {
+                PrecioError::Json(err)
+            }
+        }
+    }
+}
 impl std::fmt::Debug for PrecioError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         error_chain_fmt(self, f)
     }
 }
-
 impl ResponseError for PrecioError {
     fn status_code(&self) -> StatusCode {
         match self {
             PrecioError::Validacion(_) => StatusCode::BAD_REQUEST,
             PrecioError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
             PrecioError::Lookups(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            PrecioError::Serdes(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            PrecioError::Json(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            PrecioError::Io(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }

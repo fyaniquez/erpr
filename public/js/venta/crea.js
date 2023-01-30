@@ -29,8 +29,8 @@ const validaDetalle = () => {
         descuento.focus();
         return null;
     }
-    const precio = document.getElementById("precio").value;
-    const producto = document.getElementById("producto").value;
+    const precio = document.getElementById("precio").innerText;
+    const producto = document.getElementById("producto").innerText;
     const total = document.getElementById("total").value;
     return {
         producto_id: producto_id_val,
@@ -54,15 +54,41 @@ const validaDecimal = (numero) => {
     if (isNaN(decimal) || decimal <= 0) return 0.0;
     return Math.trunc(decimal *  100.0) / 100.0;
 }
-// agrega item
+// valida decimal si error usa defa(ult)
+const validaDec = (numero, defa) => {
+    const decimal = parseFloat(numero);
+    if (isNaN(decimal) || decimal <= 0) return defa;
+    return Math.trunc(decimal *  100.0) / 100.0;
+}
+// agrega item a la tabla de vendidos
 const agregaItem = (detalle) => {
     var fila = window.fila + 1;
-    const nuevo_item = `<div><div>${detalle.producto_id}</div><div>${detalle.producto}</div><div>${detalle.precio}</div><div>${detalle.cantidad}</div><div>${detalle.descuento}</div><div>${detalle.total}</div><div id="fila-${fila}"><img src="/img/waste-24.png"/></div></div>`;
-    var item = document.getElementById("det_fila");
+    var precio = parseFloat(detalle.precio).toFixed(2);
+    var cantidad = parseFloat(detalle.cantidad).toFixed(2);
+    var descuento = parseFloat(detalle.descuento).toFixed(2);
+    var total = parseFloat(detalle.total).toFixed(2);
+    const nuevo_item = `<div><div>${detalle.producto_id}</div>
+        <div>${detalle.producto}</div><div>${precio}</div>
+        <div>${cantidad}</div><div>${descuento}</div>
+        <div>${total}</div><div id="fila-${fila}">
+        <img src="/img/waste-24.png"/></div></div>`;
+    var item = window.totales;
     item.insertAdjacentHTML('beforebegin', nuevo_item);
     window.fila = fila;
     var nf = document.getElementById(`fila-${fila}`);
     nf.addEventListener("click", onClickBorraItem);
+}
+
+// modifica y muestra los totales de la tabla
+const muestraTotalTabla = (detalle) => {
+    var t_total = validaDec(window.t_total.innerText, 0);
+    var t_descuento = validaDec(window.t_descuento.innerText, 0);
+
+    t_total += detalle.total;
+    t_descuento += detalle.descuento;
+
+    window.t_total.innerText = parseFloat(t_total).toFixed(2);
+    window.t_descuento.innerText = parseFloat(t_descuento).toFixed(2);
 }
 
 // obtiene producto
@@ -73,27 +99,144 @@ const obtieneProducto = async id => {
 
 // obtiene lista productos
 const obtieneListaProductos = async producto => {
-    const response = await fetch(`/precio/${id}.json`);
+    var catalogo = window.catalogo_id.value;
+    var filtro = encodeURIComponent(producto);
+    const response = await 
+        fetch(`/catalogo/${catalogo}/precios.json?filtro=${filtro}`);
     return response.json();
+} 
+// muestra productos en un popup
+const muestraListaProductos = (lista) => {
+    (window.busqueda_titulo).innerText = 'Productos';
+    var tbl = '';
+    for (var i = 0; i < lista.length; i++) {
+        const fil = `<div id="${lista[i].producto_id}">
+            <div>${lista[i].nombre}</div>
+            <div>${lista[i].precio}</div></div>`;
+        tbl += fil;
+    }
+    window.busqueda.innerHTML = tbl;
+    window.busqueda.style.display = 'block';
+}
+
+const calculaCampos = (producto) => {
+    var precio = +producto.precio / 100;
+    var cantidad = 1;
+    var descuento = 0;
+    var total = precio * cantidad - descuento;
+
+    return { cantidad, descuento, precio, total };
 }
 
 // muestra producto en formulario
-const muestraProducto = producto => {
-    window.producto.innerText = producto.nombre;
-    window.precio.innerText = producto.precio;
+const muestraProductoFrm = producto => {
+    var campos = calculaCampos(producto);
+    window.producto_id.value = producto.producto_id;
+    window.producto.value = producto.nombre;
+    window.precio.innerText = campos.precio;
+    window.cantidad.value = campos.cantidad;
+    window.descuento.value = campos.descuento;
+    window.total.value = campos.total;
+}
+
+// muestra cliente en formulario
+const muestraCliente = cliente => {
+    window.cliente_id.value = cliente.id;
+    window.nombre.value = cliente.nombre;
+    window.documento.value = cliente.documento;
+}
+
+// obtiene  cliente
+const obtieneCliente = async id => {
+    const response = await fetch(`/cliente/${id}.json`);
+    return response.json();
+}
+
+// obtiene  cliente por documento
+const obtieneClienteDocumento = async documento => {
+    const response = await fetch(`/cliente/doc_${documento}.json`);
+    return response.json();
+}
+
+// obtiene lista clientes
+const obtieneListaClientes = async cliente => {
+    const response = await fetch(`/clientes.json?filtro=${cliente}`);
+    return response.json();
+} 
+// muestra productos en un popup
+const muestraListaClientes = (lista) => {
+    (window.busqueda_titulo).innerText = 'Clientes';
+    var tbl = '';
+    for (var i = 0; i < lista.length; i++) {
+        const fil = `<div id="${lista[i].id}">
+            <div>${lista[i].nombre}</div>
+            <div>${lista[i].documento}</div></div>`;
+        tbl += fil;
+    }
+    window.busqueda.innerHTML = tbl;
+    window.busqueda.style.display = 'block';
+}
+
+// recopila los datos y los incluye en una estructura json
+const creaJsonVenta = () => {
+    var producto_ids = [];
+    var precios = [];
+    var cantidads = [];
+    var descuentos = [];
+    var totals = [];
+    for (var i=1; i < window.det_tabla.children.length - 1; i++) {
+        var f = window.det_tabla.children[i];
+        producto_ids.push( +f.children[0].innerText );
+        precios.push( +f.children[2].innerText );
+        cantidads.push( +f.children[3].innerText );
+        descuentos.push( +f.children[4].innerText );
+        totals.push( +f.children[5].innerText );
+    }
+        
+    return {
+        venta: {
+            total: +window.total.value,
+            descuento: +window.descuento.value,
+            cliente_id: +window.cliente_id.value,
+            puesto_id: +window.puesto_id.value,
+            usuario_id: +window.usuario_id.value,
+            medio_id: +window.medio.value,
+        },
+        vendidos: {
+            producto_ids: producto_ids,
+            precios: precios,
+            cantidads: cantidads,
+            descuentos: descuentos,
+            totals: totals,
+        }
+    }
+}
+// envia venta al servidor para grabarla
+const grabaVenta = async venta => {
+    const response = await fetch(`/venta`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(venta)
+    });
+    return response.json();
 }
 
 // agrega item
 const onClickAgregaItem = (e) => {
     const detalle = validaDetalle();
     if (detalle === null) return false;
+    var dt = document.getElementById("det_fila");
+    if (dt !== null) dt.remove();
     agregaItem(detalle);
+    muestraTotalTabla(detalle);
 }
 
 // borra item
 const onClickBorraItem = (e) => {
     const padre = e.target.parentElement;
-    const nombre = padre.children[1].innerText;
+    const nombre = padre.children[1].value;
     if (confirm(`¿Esta seguro de eliminar el producto: ${nombre}?`)) {
         e.target.removeEventListener("click", onClickBorraItem);
         padre.remove();
@@ -101,29 +244,108 @@ const onClickBorraItem = (e) => {
 }
 
 // obtiene producto a partir de su id
-const onChangeProductoId = (async e) => {
+const onChangeProductoId = async e => {
     const id = validaEntero(e.target);
     if (id < 1) {
-        window.producto.focus();
+        window.producto_id.focus();
         return;
     }
     var producto = await obtieneProducto(id);
-    muestraProducto(producto);
+    muestraProductoFrm(producto);
 }
 
 // muestra un popup de productos a medida que el usuario teclea nombre
 const onKeyupProducto = async e => {
     var producto = e.target.value.trim();
     if (producto == '') return;
-    var lista = await obtieneLista(producto);
+    var lista = await obtieneListaProductos(producto);
     muestraListaProductos(lista)
 }
 
+const onChangeCantidad = e => {
+    var cantidad = validaDec(e.target.value, 1);   
+    var precio = validaDec(window.precio.innerText, 0);
+    var descuento = validaDec(window.descuento.innerText, 0);
+    window.total.value = cantidad * precio - descuento;
+}
+
+const onChangeDescuento = e => {
+    var descuento = validaDec(e.target.value, 1);   
+    var precio = validaDec(window.precio.innerText, 0);
+    var cantidad = validaDec(window.cantidad.innerText, 0);
+    window.total.value = cantidad * precio - descuento;
+}
+
+// obtiene cliente a partir de su id
+const onChangeClienteId = async e => {
+    const id = validaEntero(e.target);
+    if (id < 1) {
+        window.cliente_id.focus();
+        return;
+    }
+    var cliente = await obtieneCliente(id);
+    muestraCliente(cliente);
+}
+    
+// obtiene producto a partir de su nit
+const onChangeDocumento = async e => {
+    const documento = e.target.value.trim();
+    if (documento === '') {
+        window.documento.focus();
+        return;
+    }
+    var cliente = await obtieneClienteDocumento(documento);
+    muestraCliente(cliente);
+}
+
+// pasa el elemento seleccionado del popup al formulario
+const onClickBusqueda = e => {
+    var fil = e.target.parentNode;
+    if (window.busqueda_titulo.innerText === 'Productos') {
+        var prod = {
+            id: fil.id,
+            nombre: fil.children[0].innerText,
+            precio: fil.children[1].innerText,
+        }
+        muestraProductoFrm(prod);
+    } else {
+        var cli = {
+            id: fil.id,
+            nombre: fil.children[0].innerText,
+            documento: fil.children[1].innerText,
+        }
+        muestraCliente(cli);
+    }
+    window.busqueda.style.display = 'none';
+}
+// muestra un popup de clientes a medida que el usuario teclea nombre
+const onKeyupNombre = async e => {
+    var nombre = e.target.value.trim();
+    if (nombre == '') return;
+    var lista = await obtieneListaClientes(nombre);
+    muestraListaClientes(lista);
+}
+
+// graba la venta en la base de datos
+const onClickCrea = async e => {
+    var venta = creaJsonVenta();
+    var venta_id = await grabaVenta(venta);
+    var url =  `${location.href}/${venta_id}`;
+// TODO: manejar los errores
+    window.location.href = url;
+}
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadCrea = () => {
     window.agrega_item.addEventListener("click", onClickAgregaItem);
-    window.producto_id.addEventListener("change" onChangeProductoId);
-    window.producto.addEventListener("keyup" onKeyupProducto);
+    window.producto_id.addEventListener("change", onChangeProductoId);
+    window.cliente_id.addEventListener("change", onChangeClienteId);
+    window.documento.addEventListener("change", onChangeDocumento);
+    window.producto.addEventListener("keyup", onKeyupProducto);
+    window.cantidad.addEventListener("change", onChangeCantidad);
+    window.descuento.addEventListener("change", onChangeDescuento);
+    window.busqueda.addEventListener("click", onClickBusqueda);
+    window.nombre.addEventListener("keyup", onKeyupNombre);
+    window.crea.addEventListener("click", onClickCrea);
     window.fila = 0;
 }
 

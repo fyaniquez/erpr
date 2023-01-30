@@ -2,15 +2,15 @@
 //! autor: fyaniquez
 //! fecha: 03-03-2022
 
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use actix_web::http::StatusCode;
 use actix_web::ResponseError;
 
-#[derive(Serialize, sqlx::FromRow)]
+#[derive(Serialize, Deserialize, sqlx::FromRow, Debug)]
 pub struct Vendido {
     pub id: Option<i64>,
     pub producto_id: i64,
-    pub venta_id: i64,
+    pub venta_id: Option<i64>,
     pub cantidad: i32,
     pub precio: i32,
     pub descuento: i32,
@@ -26,6 +26,15 @@ pub struct VendidoVe {
     pub precio: i32,
     pub descuento: i32,
     pub total: i32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Vendidos {
+    pub producto_ids: Vec<i64>,
+    pub cantidads: Vec<i32>,
+    pub precios: Vec<i32>,
+    pub descuentos: Vec<i32>,
+    pub totals: Vec<i32>,
 }
 // errores considerados para lista de vendidos
 #[derive(thiserror::Error)]

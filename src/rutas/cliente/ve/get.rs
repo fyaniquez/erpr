@@ -4,7 +4,12 @@
 //! purpose: muestra un cliente
 
 use crate::layout;
-use crate::domain::cliente::{Cliente, ClienteError};
+use crate::domain::cliente::{
+    Cliente, 
+    ClienteError,
+    obtiene,
+    obtiene_documento
+};
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use sqlx::PgPool;
@@ -28,6 +33,46 @@ pub async fn muestra(
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
+// controlador json
+#[tracing::instrument(name="Ve cliente json", skip(pool))]
+#[get("/cliente/{id}.{ext}")]
+pub async fn muestra_json(
+    path: web::Path<(i64, String)>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ClienteError> {
+    let (id, _ext) = path.into_inner();
+    let cliente = obtiene(&pool, id).await
+        .context("Error al leer cliente")?;
+
+   // a json
+    let obj_json = serde_json::to_string(&cliente)
+        .map_err(|err| ClienteError::Validacion(err.to_string()))
+        .unwrap();
+
+    // al browser
+    Ok(HttpResponse::Ok().body(obj_json))
+}
+
+// controlador json por documento
+#[tracing::instrument(name="Ve cliente por documento json", skip(pool))]
+#[get("/cliente/{tipo}_{id}.{ext}")]
+pub async fn muestra_documento_json(
+    path: web::Path<(String, String, String)>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ClienteError> {
+    let (_tipo, documento, _ext) = path.into_inner();
+    let cliente = obtiene_documento(&pool, documento).await
+        .context("Error al leer cliente por documento")?;
+
+   // a json
+    let obj_json = serde_json::to_string(&cliente)
+        .map_err(|err| ClienteError::Validacion(err.to_string()))
+        .unwrap();
+
+    // al browser
+    Ok(HttpResponse::Ok().body(obj_json))
+}
+
 // vista
 fn contenido(cliente: Cliente) -> Markup { html! {
     .form-label {"Nombre:" }
@@ -39,17 +84,3 @@ fn contenido(cliente: Cliente) -> Markup { html! {
     button .form-submit #borra type="button" { "Borrar" }
 }}
 
-// modelo
-// obtiene un cliente de la base de datos
-#[tracing::instrument(name = "ve cliente", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Cliente, sqlx::Error> {
-    const SELECT: &str 
-        = "SELECT id, nombre, documento FROM clientes WHERE id=$1";
-    let fila: Cliente = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
-}
