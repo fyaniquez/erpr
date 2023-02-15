@@ -26,6 +26,9 @@ use crate::rutas::medio;
 use crate::rutas::venta;
 use crate::rutas::vendido;
 use crate::rutas::distribuidora;
+use crate::rutas::compra;
+use crate::rutas::comprado;
+use crate::rutas::vendedor;
 // fin-objetos
 
 use crate::rutas::public::home;
@@ -95,6 +98,8 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(fabrica::cambia::get::muestra)
             .service(fabrica::cambia::post::procesa)
             .service(fabrica::borra::delete::procesa)
+            .service(producto::ve::get::muestra_json)
+            .service(producto::lista::get::muestra_json)
             .service(producto::lista::get::muestra)
             .service(producto::lista_sin_precio::get::muestra)
             .service(producto::ve::get::muestra)
@@ -190,6 +195,23 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(distribuidora::cambia::get::muestra)
             .service(distribuidora::cambia::post::procesa)
             .service(distribuidora::borra::delete::procesa)
+            .service(compra::lista::get::muestra)
+            .service(compra::ve::get::muestra)
+            .service(compra::crea::get::muestra)
+            .service(compra::crea::post::procesa)
+            .service(compra::borra::delete::procesa)
+            .service(comprado::lista::get::muestra)
+            .service(comprado::ve::get::muestra)
+            .service(comprado::crea::get::muestra)
+            .service(comprado::crea::post::procesa)
+            .service(comprado::borra::delete::procesa)
+            .service(vendedor::lista::get::muestra)
+            .service(vendedor::ve::get::muestra)
+            .service(vendedor::crea::get::muestra)
+            .service(vendedor::crea::post::procesa)
+            .service(vendedor::cambia::get::muestra)
+            .service(vendedor::cambia::post::procesa)
+            .service(vendedor::borra::delete::procesa)
             // fin-servicios
             //.service(Files::new("/public", "./public")
             //.path_filter(|path, _| {

@@ -33,7 +33,7 @@ const onClickSubLista = (e) => {
 
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadVe = () => {
-    window.hijos = 'catalogos';
+    window.hijos = 'vendedores';
     
     var nombre = document.getElementById('nombre').innerText;
     var confirmacion = `¿Esta seguro de eliminar la distribuidora: ${nombre}?`;

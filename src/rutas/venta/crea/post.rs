@@ -9,11 +9,9 @@ use crate::domain::venta::{
     inserta as venta_inserta,
 };
 use crate::domain::vendido::{
-    Vendido,
     Vendidos,
     inserta_mul,
 };
-use actix_web::http::header::ContentType;
 use actix_web::{post, web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;

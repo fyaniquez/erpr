@@ -20,3 +20,6 @@ pub mod medio;
 pub mod venta;
 pub mod vendido;
 pub mod distribuidora;
+pub mod compra;
+pub mod comprado;
+pub mod vendedor;

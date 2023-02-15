@@ -9,8 +9,11 @@ use actix_web::ResponseError;
 #[derive(Serialize, sqlx::FromRow)]
 pub struct Distribuidora {
     pub id: Option<i64>,
+    pub empresa_id: i64,
     pub nombre: String,
-    pub nit: String,
+    pub descripcion: String,
+    pub documento: String,
+    pub preventa: String,
     pub activa: bool,
 }
 
@@ -35,8 +38,10 @@ impl ResponseError for DistribuidoraError {
     fn status_code(&self) -> StatusCode {
         match self {
             DistribuidoraError::Validacion(_) => StatusCode::BAD_REQUEST,
-            DistribuidoraError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            DistribuidoraError::Lookups(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            DistribuidoraError::Otro(_) 
+                => StatusCode::INTERNAL_SERVER_ERROR,
+            DistribuidoraError::Lookups(_) 
+                => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }

@@ -61,3 +61,21 @@ pub fn error_chain_fmt(
     }
     Ok(())
 }
+
+// modelo
+#[derive(serde::Serialize, sqlx::FromRow)]
+pub struct ProductoVe {
+    pub id: i64,
+    pub nombre: String,
+    pub caracteristicas: String,
+    pub capitulo: String,
+    pub categoria: String,
+    pub marca: String,
+    pub unidad: String,
+    pub fabrica: String,
+    pub contenido: String,
+    pub cantidad: i32,
+    pub fraccionable: String,
+    pub barras: String,
+    pub activo: String,
+}

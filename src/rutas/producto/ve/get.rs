@@ -4,11 +4,36 @@
 //! purpose: muestra una producto
 
 use crate::layout;
-use crate::domain::producto::{ProductoError};
+use crate::domain::producto::{
+    obtiene,
+    obtiene_ve,
+    ProductoVe,
+    ProductoError
+};
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use sqlx::PgPool;
 use anyhow::Context;
+
+// controlador json
+#[tracing::instrument(name="Ve producto json", skip(pool))]
+#[get("/producto/{id}.{ext}")]
+pub async fn muestra_json(
+    path: web::Path<(i64, String)>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ProductoError> {
+
+    let (id, _ext) = path.into_inner();
+
+    let producto = obtiene(&pool, id).await
+        .context("Error al leer producto")?;
+
+    let obj_json = serde_json::to_string(&producto)
+        .map_err(|err| ProductoError::Validacion(err.to_string()))
+        .unwrap();
+
+    Ok(HttpResponse::Ok().body(obj_json))
+}
 
 // controlador
 #[tracing::instrument(name="Ve producto", skip(pool))]
@@ -18,7 +43,7 @@ pub async fn muestra(
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ProductoError> {
     let (id,) = path.into_inner();
-    let producto = obtiene(&pool, id).await
+    let producto = obtiene_ve(&pool, id).await
         .context("Error al leer producto")?;
 
     let pagina = layout::form::crea(
@@ -59,46 +84,3 @@ fn contenido(producto: ProductoVe) -> Markup { html! {
     button .form-submit #borra type="button" { "Borrar" }
 }}
 
-// modelo
-#[derive(serde::Serialize, sqlx::FromRow)]
-pub struct ProductoVe {
-    pub id: i64,
-    pub nombre: String,
-    pub caracteristicas: String,
-    pub capitulo: String,
-    pub categoria: String,
-    pub marca: String,
-    pub unidad: String,
-    pub fabrica: String,
-    pub contenido: String,
-    pub cantidad: i32,
-    pub fraccionable: String,
-    pub barras: String,
-    pub activo: String,
-}
-
-// obtiene un producto de la base de datos
-#[tracing::instrument(name = "ve producto", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<ProductoVe, sqlx::Error> {
-    const SELECT: &str = 
-        r#"SELECT p.id, p.nombre, p.caracteristicas, cap.nombre as capitulo,
-            cat.nombre as categoria, mar.nombre as marca, 
-            uni.nombre as unidad, fab.nombre as fabrica, p.barras,
-            p.contenido, p.cantidad, 
-            CASE WHEN p.fraccionable THEN 'Si' ELSE 'No' END as fraccionable,  
-            CASE WHEN p.activo THEN 'Si' ELSE 'No' END as activo
-        FROM productos p 
-        INNER JOIN categorias as cat ON p.categoria_id = cat.id
-        INNER JOIN marcas as mar ON p.marca_id = mar.id
-        INNER JOIN unidades as uni ON p.unidad_id = uni.id
-        INNER JOIN fabricas as fab ON p.fabrica_id = fab.id
-        INNER JOIN capitulos as cap ON cat.capitulo_id = cap.id
-        WHERE p.id=$1"#;
-    let fila: ProductoVe = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
-}

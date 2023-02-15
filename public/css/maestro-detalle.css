@@ -66,6 +66,7 @@
 .det-tabla {
     display: table;
     background-color: white;
+    font-size: 0.889rem;
 }
 .det-tabla > div {
     display: table-row;

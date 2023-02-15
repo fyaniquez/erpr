@@ -21,9 +21,17 @@ fn contenido() -> Markup { html! {
         input type="text" name="nombre" id="nombre" required
             placeholder="Nombre distribuidora";
 
-        label for="nit" {"NIT:" }
-        input type="text" name="nit" id="nit" required
+        label for="documento" {"NIT:" }
+        input type="text" name="documento" id="documento" required
             placeholder="# Iden. Tributaria";
+
+        label for="descripcion" {"Descripción:" }
+        input type="text" name="descripcion" id="descripcion" required
+            placeholder="Giro de la distribuidora";
+
+        label for="preventa" {"Preventa:" }
+        input type="text" name="preventa" id="preventa" required
+            placeholder="Días de preventa";
 
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }

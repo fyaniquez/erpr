@@ -32,8 +32,8 @@ fn contenido(distribuidora: &Distribuidora) -> Markup { html! {
             placeholder="Nombre capítulo" value=(distribuidora.nombre);
 
         label for="NIT" {"NIT:" }
-        input type="text" name="nit" id="nit" required
-            placeholder="# Iden. tributaria" value=(distribuidora.nit);
+        input type="text" name="documento" id="documento" required
+            placeholder="# Iden. tributaria" value=(distribuidora.documento);
 
         fieldset {
             legend { "¿Está activo?"}
@@ -56,7 +56,7 @@ pub async fn obtiene(
     pool: &PgPool, id: i64
 ) -> Result<Distribuidora, sqlx::Error> {
     const SELECT: &str 
-        = "SELECT id, nombre, nit, activa FROM distribuidoras WHERE id=$1";
+        = "SELECT id, nombre, documento, activa FROM distribuidoras WHERE id=$1";
     let fila: Distribuidora = sqlx::query_as(SELECT.as_ref())
         .bind(id)
         .fetch_one(pool)

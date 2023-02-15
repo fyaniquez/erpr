@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS public.distribuidoras (
     descripcion TEXT NOT NULL,
     documento TEXT NOT NULL UNIQUE,
     preventa TEXT NOT NULL,
-    entrega TEXT NOT NULL,
     activa boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -22,8 +21,6 @@ COMMENT ON COLUMN public.distribuidoras.descripcion
     IS 'datos que ayuden a caracterizar a la distribuidora';
 COMMENT ON COLUMN public.distribuidoras.preventa
     IS 'dias en los que realiza preventa';
-COMMENT ON COLUMN public.distribuidoras.entrega
-    IS 'dias en los que realiza entrega';
 
 ALTER TABLE public.distribuidoras OWNER TO erp;
 
@@ -43,8 +40,14 @@ ALTER TABLE ONLY public.distribuidoras ALTER COLUMN id SET DEFAULT nextval('publ
 -- ajusta ultimo registro
 SELECT pg_catalog.setval('public.distribuidoras_id_seq', 1, true);
 
--- constraints
+-- datos
+INSERT INTO public.distribuidoras (id, empresa_id, nombre, descripcion, 
+    documento, preventa, activa, created_at, updated_at) VALUES (1, 1,
+    'EMBOL S.A.', 'Embotelladora Coca Cola', '1007039026', 
+    'martes, viernes', true, '2021-03-21 22:06:51.791416', 
+    '2021-03-21 22:06:51.791416');
 
+-- constraints
 CREATE INDEX index_distribuidoras_on_empresas 
     ON public.distribuidoras USING btree (empresa_id);
 ALTER TABLE ONLY public.distribuidoras

@@ -10,7 +10,7 @@ use crate::domain::capitulo::{
 use crate::domain::capitulo::{Capitulo, CapituloError};
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
-use sqlx::PgPool;
+use sqlx::{PgPool, query};
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
@@ -66,13 +66,12 @@ pub async fn capitulo_actualiza(
     capitulo: &Capitulo,
     id: i64,
 ) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query!(
-        "UPDATE capitulos SET nombre=$1, descripcion=$2 WHERE id=$3",
-        &capitulo.nombre,
-        &capitulo.descripcion,
-        id,
-    )
-    .execute(pool)
-    .await?;
+    let _ = query(
+        "UPDATE capitulos SET nombre=$1, descripcion=$2 WHERE id=$3")
+        .bind(&capitulo.nombre)
+        .bind(&capitulo.descripcion)
+        .bind(id)
+       .execute(pool)
+       .await?;
     Ok(())
 }

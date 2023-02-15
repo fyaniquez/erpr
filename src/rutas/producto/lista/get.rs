@@ -6,13 +6,46 @@
 use crate::layout::lista;
 use crate::layout::lista::Paginado;
 use crate::domain::capitulo::Capitulo;
-use crate::domain::producto::{Producto, lista_paginada};
+use crate::domain::producto::{
+    Producto, 
+    lista_paginada
+};
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};
 use anyhow::Context;
 use maud::{html, Markup};
 use sqlx::PgPool;
+
+// controlador json
+#[tracing::instrument(name = "Lista de productos json", skip(pool))]
+#[get("/productos.json")]
+pub async fn muestra_json(
+
+    mut paginado: web::Query<Paginado>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ProductoError> {
+    // TODO: ver como implementar  un trait si no esta en el mismo archivo
+    // en la implentacion de default puede colocarse los valores p/defecto
+
+    if paginado.orden.is_empty() {
+        paginado.orden = "nombre".to_string();
+    }
+
+    let (filas, total_filas) = lista_paginada(&pool, &paginado)
+        .await
+        .context("Error al leer productos de la BD")?;
+    paginado.total_filas = Some(total_filas);
+
+ // a json
+    let lista_json = serde_json::to_string(&filas)
+        .map_err(|err| ProductoError::Validacion(err.to_string()))
+        .unwrap();
+
+    // al browser
+    Ok(HttpResponse::Ok().body(lista_json))
+
+}
 
 // controlador
 #[tracing::instrument(name = "Lista de productos", skip(pool))]
@@ -104,16 +137,3 @@ pub fn error_chain_fmt(
     Ok(())
 }
 
-// modelo
-// obtiene un capitulo de la base de datos
-#[tracing::instrument(name = "ve capitulo", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Capitulo, sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, descripcion FROM capitulos WHERE id=$1";
-    let fila: Capitulo = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
-}

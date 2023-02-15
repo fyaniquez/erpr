@@ -4,7 +4,11 @@
 //! purpose: muestra un distribuidora
 
 use crate::layout;
-use crate::domain::distribuidora::{Distribuidora, DistribuidoraError};
+use crate::domain::distribuidora::{
+    Distribuidora, 
+    DistribuidoraError,
+    obtiene,
+};
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use sqlx::PgPool;
@@ -33,25 +37,14 @@ fn contenido(distribuidora: Distribuidora) -> Markup { html! {
     .form-label {"Nombre:" }
     .form-field #nombre {(distribuidora.nombre)}
     .form-label {"NIT:" }
-    .form-field {(distribuidora.nit)}
+    .form-field {(distribuidora.documento)}
+    .form-label {"Descripción:" }
+    .form-field {(distribuidora.descripcion)}
+    .form-label {"Preventa:" }
+    .form-field {(distribuidora.preventa)}
     .form-label {"Activa:" }
     .form-field {@if distribuidora.activa {"Sí"} @else {"No"}}
-    button .form-submit #sublista type="button" { "Catálogos" }
+    button .form-submit #sublista type="button" { "Contactos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}
-
-// modelo
-// obtiene un distribuidora de la base de datos
-#[tracing::instrument(name = "ve distribuidora", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Distribuidora, sqlx::Error> {
-    const SELECT: &str 
-        = "SELECT id, nombre, nit, activa FROM distribuidoras WHERE id=$1";
-    let fila: Distribuidora = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
-}

@@ -7,11 +7,14 @@ use crate::layout::lista::Paginado;
 use crate::domain::distribuidora::Distribuidora;
 use sqlx::PgPool;
 
-const SELECT: &str = "SELECT id, nombre, nit, activa FROM distribuidoras";
+const SELECT: &str = r#"SELECT id, empresa_id, nombre, descripcion,
+        documento, preventa, activa FROM distribuidoras"#;
 
 // obtiene una lista de objetos
 #[tracing::instrument(name = "Lista distribuidoras", skip(pool))]
-pub async fn lista(pool: &PgPool) -> Result<Vec<Distribuidora>, sqlx::Error> {
+pub async fn lista(
+    pool: &PgPool
+) -> Result<Vec<Distribuidora>, sqlx::Error> { 
     let filas: Vec<Distribuidora> = sqlx::query_as(SELECT)
         .fetch_all(pool).await?;
     Ok(filas)
@@ -39,7 +42,8 @@ pub async fn obtiene(pool: &PgPool, id: i64)
 -> Result<Distribuidora, sqlx::Error> {
     let fila: Distribuidora =
         sqlx::query_as(
-            r#"SELECT id, nombre, nit, activa
+            r#"SELECT id, empresa_id, nombre, descripcion,
+            documento, preventa, activa
             FROM distribuidoras WHERE id=$1"#)
             .bind(id)
             .fetch_one(pool)

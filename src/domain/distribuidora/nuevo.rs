@@ -5,11 +5,12 @@
 
 use crate::domain::distribuidora::{
     nombre::Nombre,
-    nit::Nit,
+    documento::Documento,
 };
 
 pub struct Nuevo {
     pub nombre: Nombre,
-    pub nit: Nit,
-    pub activa: bool,
+    pub documento: Documento,
+    pub descripcion: String,
+    pub preventa: String,
 }

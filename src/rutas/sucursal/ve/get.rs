@@ -31,6 +31,7 @@ pub async fn muestra(
         "Sucursal", 
         format!("/empresa/{}/sucursales", sucursal.empresa_id).as_ref(), 
         "form.css", Some("sucursal/ve.js"), contenido(sucursal));
+
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 

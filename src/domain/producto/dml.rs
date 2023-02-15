@@ -4,7 +4,10 @@
 //! instrucciones dml para apitulo
 
 use crate::layout::lista::Paginado;
-use crate::domain::producto::Producto;
+use crate::domain::producto::{
+    Producto,
+    ProductoVe,
+};
 use sqlx::PgPool;
 
 const SELECT: &str = 
@@ -35,22 +38,6 @@ pub async fn lista_paginada(
     let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
         .fetch_one(pool).await?;
     Ok((filas, nro_filas.0 as i32))
-}
-
-// obtiene un producto de la base de datos
-#[tracing::instrument(name = "ve producto", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Producto, sqlx::Error> {
-    let fila: Producto = sqlx::query_as(
-            r#"SELECT id, nombre, caracteristicas, categoria_id,
-                marca_id, unidad_id, fabrica_id, contenido, cantidad,
-                fraccionable, barras, activo
-            FROM productos WHERE id=$1"#
-        ).bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
 }
 
 // lista los productos sin precios en el catalogo proporcionado
@@ -91,4 +78,47 @@ pub async fn lista_paginada_sin_precio(
         .bind(catalogo_id)
         .fetch_one(pool).await?;
     Ok((filas, nro_filas.0 as i32))
+}
+// obtiene un producto de la base de datos
+#[tracing::instrument(name = "ve producto ve", skip(pool))]
+pub async fn obtiene_ve(
+    pool: &PgPool, id: i64
+) -> Result<ProductoVe, sqlx::Error> {
+    const SELECT: &str = 
+        r#"SELECT p.id, p.nombre, p.caracteristicas, cap.nombre as capitulo,
+            cat.nombre as categoria, mar.nombre as marca, 
+            uni.nombre as unidad, fab.nombre as fabrica, p.barras,
+            p.contenido, p.cantidad, 
+            CASE WHEN p.fraccionable THEN 'Si' ELSE 'No' END as fraccionable,  
+            CASE WHEN p.activo THEN 'Si' ELSE 'No' END as activo
+        FROM productos p 
+        INNER JOIN categorias as cat ON p.categoria_id = cat.id
+        INNER JOIN marcas as mar ON p.marca_id = mar.id
+        INNER JOIN unidades as uni ON p.unidad_id = uni.id
+        INNER JOIN fabricas as fab ON p.fabrica_id = fab.id
+        INNER JOIN capitulos as cap ON cat.capitulo_id = cap.id
+        WHERE p.id=$1"#;
+    let fila: ProductoVe = sqlx::query_as(SELECT.as_ref())
+        .bind(id)
+        .fetch_one(pool)
+        .await?;
+    Ok(fila)
+}
+
+// obtiene un producto de la base de datos
+#[tracing::instrument(name = "ve producto", skip(pool))]
+pub async fn obtiene(
+    pool: &PgPool, id: i64
+) -> Result<Producto, sqlx::Error> {
+    const SELECT: &str = 
+        r#"SELECT id, nombre, caracteristicas, 
+            categoria_id, marca_id, unidad_id, fabrica_id, barras,
+            contenido, cantidad, fraccionable, activo
+        FROM productos
+        WHERE id=$1"#;
+    let fila: Producto = sqlx::query_as(SELECT.as_ref())
+        .bind(id)
+        .fetch_one(pool)
+        .await?;
+    Ok(fila)
 }

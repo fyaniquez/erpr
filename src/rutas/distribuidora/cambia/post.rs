@@ -5,7 +5,7 @@
 
 use crate::domain::distribuidora::{
     Nombre, 
-    Nit,
+    Documento,
 };
 use crate::domain::distribuidora::{Distribuidora, DistribuidoraError};
 use actix_web::{http::header, post, web, HttpResponse};
@@ -16,8 +16,11 @@ use sqlx::PgPool;
 #[derive(serde::Deserialize)]
 pub struct FormData {
     nombre: String,
-    nit: String,
+    documento: String,
     activa: bool,
+    descripcion: String,
+    empresa_id: i64,
+    preventa: String,
 }
 
 // valida y contruye el objeto FormData
@@ -25,12 +28,15 @@ impl TryFrom<FormData> for Distribuidora {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         let nombre = Nombre::parse(form_data.nombre)?;
-        let nit = Nit::parse(form_data.nit)?;
+        let documento = Documento::parse(form_data.documento)?;
         Ok( Self{ 
             id:None, 
             nombre: String::from(nombre.as_ref()), 
-            nit: String::from(nit.as_ref()), 
+            documento: String::from(documento.as_ref()), 
             activa: form_data.activa,
+            descripcion: form_data.descripcion,
+            empresa_id: form_data.empresa_id,
+            preventa: form_data.preventa,
         })
     }
 }
@@ -42,7 +48,7 @@ impl TryFrom<FormData> for Distribuidora {
     skip(form, pool),
     fields( 
         distribuidora_nombre = %form.nombre,
-        distribuidora_nit = %form.nit,
+        distribuidora_documento = %form.documento,
         distribuidora_activa = %form.activa,
     )
 )]
@@ -71,11 +77,15 @@ pub async fn distribuidora_actualiza(
     id: i64,
 ) -> Result<(), sqlx::Error> {
     let _ = sqlx::query!(
-        "UPDATE distribuidoras SET nombre=$1, nit=$2, activa=$3 WHERE id=$4",
-        &distribuidora.nombre,
-        &distribuidora.nit,
-        distribuidora.activa,
+        r#"UPDATE distribuidoras 
+        SET nombre=$2, descripcion=$3, documento=$4,
+        preventa=$5, activa=$6 WHERE id=$1"#,
         id,
+        &distribuidora.nombre,
+        &distribuidora.descripcion,
+        &distribuidora.documento,
+        &distribuidora.preventa,
+        distribuidora.activa,
     )
     .execute(pool)
     .await?;
