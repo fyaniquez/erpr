@@ -1,0 +1,295 @@
+{
+  "db": "PostgreSQL",
+  "0a7c6ccd3b916ccfe8edc6b8ab85715bea6fe0322b23c3e35b51297fdcb9b206": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text",
+          "Text",
+          "Text",
+          "Text",
+          "Bool"
+        ]
+      }
+    },
+    "query": "UPDATE distribuidoras \n        SET nombre=$2, descripcion=$3, documento=$4,\n        preventa=$5, activa=$6 WHERE id=$1"
+  },
+  "1084529ea0cc208e498bfccf902bcb05050853ad0e00edfa7aebaf7832ec3ecf": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE medios SET nombre=$1, sigla=$2 WHERE id=$3"
+  },
+  "163d26a66403a09a4d53065570f0a0a151d098d097f62f94b5654d2cc493e3f2": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Bool",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE empresas SET nombre=$1, nit=$2, activa=$3 WHERE id=$4"
+  },
+  "167d6146b002c6810db7e87856208247bca4bc858451fc8b4cfe5465ea951e6e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "INSERT INTO usuarios (email, nombre, documento, estado)\n   VALUES ($1, $2, $3, $4)\n   RETURNING id"
+  },
+  "2eab28a97a10e504e4092def0e1439c1bacd6123adf453febbda16fb006fcc5d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "UPDATE puestos \n        SET nombre=$2, sigla=$3, descripcion=$4\n        WHERE id=$1"
+  },
+  "2eec782a63bf81b52de62c18db80e3ceebf892f08efa222bf59f3b9d302bb94d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "email",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "nombre",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT email, nombre FROM usuarios WHERE email=$1"
+  },
+  "34785cf1326649f876f88e4bdb6be9ae5bc6f80e4304ea9a0401184c7c31282a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE sucursales \n        SET nombre=$2, empresa_id=$3 \n        WHERE id=$1"
+  },
+  "3fb36676e1cbb43d702a61126b2a052c583c5edf6d1f103610315470bc42895e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "UPDATE clientes SET nombre=$2, documento=$3 WHERE id=$1"
+  },
+  "50e9408e37d9b567da2b663a71ba3b65aad8a9ee8f63199deaf6d48f49abf2f7": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE marcas SET nombre=$1 WHERE id=$2"
+  },
+  "79bf54088453998ecc1977844ee1c0bd8d3a2db79021ae0b5bfd40e29eb7749d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE productos SET nombre=$1 WHERE id=$2"
+  },
+  "814e63d85c4c5798d38a5e17872fe9b30f15b3b2ad94c26779cfdab1b634a77d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE paises SET nombre=$1, sigla=$2 WHERE id=$3"
+  },
+  "834c2a5ee326e75d6891602f84f2e81449cc3bad7d44987bd702a98169437b59": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE categorias SET nombre=$1 WHERE id=$2"
+  },
+  "87e8a3d0d9a02a6468ef193c1f76ce26e88ec06edbd5fc091bc0a2234d4282b8": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int4"
+        ]
+      }
+    },
+    "query": "UPDATE inventariados \n        SET cantidad=$2\n        WHERE id=$1"
+  },
+  "9d060cb117fdd1e2bc9f17a2ee85d9f12a11dfe5f46d764bc4accd09ff3911be": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE unidades SET nombre=$1, sigla=$2 WHERE id=$3"
+  },
+  "a46137ffc2e2c3bda0358dad023c1e2febefc99a391f91624809119afcf68ded": {
+    "describe": {
+      "columns": [
+        {
+          "name": "email",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT email FROM usuarios WHERE EMAIL=$1"
+  },
+  "bbbc3e5a53e76ee08aaac5bd2fa67fbf21d3cc4360e94181258f67bdc1c2e806": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Int8"
+        ]
+      }
+    },
+    "query": "UPDATE fabricas SET nombre=$1 WHERE id=$2"
+  },
+  "ce04dcffd5f44ce56da435241266bc5c15c037abdc9403ad05c22b1f9961639d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text"
+        ]
+      }
+    },
+    "query": "UPDATE catalogos \n        SET nombre=$2\n        WHERE id=$1"
+  },
+  "ee5fb4b3e5c91132d45c15394e359c33a0c5aa1b6250440fd9ce90be5dc3c6af": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "UPDATE vendedores SET nombre=$2, cargo=$3,\n        contactos=$4 WHERE id=$1"
+  },
+  "fcd828f6fe0010ed7ea6f9638120682f5488ebbd289c648f6c56935c5e3a7d4c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int4"
+        ]
+      }
+    },
+    "query": "UPDATE precios \n        SET precio=$2\n        WHERE id=$1"
+  }
+}

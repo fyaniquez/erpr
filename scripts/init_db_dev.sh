@@ -6,11 +6,11 @@
 set -x
 set -eo pipefail
 
-DB_USER=${POSTGRES_USER:=postgres}
-DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
-DB_NAME="${POSTGRES_DB:=erprustest}"
-DB_PORT="${POSTGRES_PORT:=5454}"
-DB_HOST="${POSTGRES_HOST:=localhost}"
+DB_USER=${POSTGRES_USER:=erpuser}
+DB_PASSWORD="${POSTGRES_PASSWORD:=el10culalu}"
+DB_NAME="${POSTGRES_DB:=erprustdb}"
+DB_PORT="${POSTGRES_PORT:=5432}"
+DB_HOST="${POSTGRES_HOST:=172.18.0.2}"
 
 # si una DB postgres esta corriendo saltarla
 if [[ -z "${SKIP_DOCKER}" ]]

@@ -2,6 +2,6 @@
 -- configura extensión para generar uuid
 
 CREATE USER erp WITH PASSWORD 'el10culalu';
-ALTER DATABASE erprustest OWNER TO erp;
+ALTER DATABASE erprdb OWNER TO erp;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
