@@ -6,9 +6,9 @@
 set -x
 set -eo pipefail
 
-DB_USER=${POSTGRES_USER:=erpuser}
-DB_PASSWORD="${POSTGRES_PASSWORD:=el10culalu}"
-DB_NAME="${POSTGRES_DB:=erprustdb}"
+DB_USER=${POSTGRES_USER:=postgres}
+DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
+DB_NAME="${POSTGRES_DB:=erprdb}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 DB_HOST="${POSTGRES_HOST:=172.18.0.2}"
 
@@ -16,6 +16,8 @@ DB_HOST="${POSTGRES_HOST:=172.18.0.2}"
 if [[ -z "${SKIP_DOCKER}" ]]
 then
 docker run \
+    --name erp-dev \
+    --network erpr-net \
 	-e POSTGRES_USER=${DB_USER} \
 	-e POSTGRES_PASSWORD=${DB_PASSWORD} \
 	-e POSTGRES_DB=${DB_NAME} \

@@ -14,7 +14,7 @@ impl Nombre {
     pub fn parse(s: String) -> Result<Nombre, String> {
         let is_empty_or_whitespace = s.trim().is_empty();
         let is_too_long = s.graphemes(true).count() > 32;
-        let prohibidos = ['/', '(', ')', '"', '<', '>', '\\', '{', '}'];
+        let prohibidos = ['(', ')', '"', '<', '>', '\\', '{', '}'];
         let tiene_prohibidos = s.chars().any(|g| prohibidos.contains(&g));
         if is_empty_or_whitespace || is_too_long || tiene_prohibidos {
             Err(format!("{} Nombre no valido.", s))

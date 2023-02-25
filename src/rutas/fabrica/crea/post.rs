@@ -3,10 +3,13 @@
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea fabrica
 
-use crate::domain::fabrica::Nombre;
-use crate::domain::fabrica::Nuevo;
-use actix_web::http::StatusCode;
-use actix_web::{http::header, post, web, HttpResponse, ResponseError};
+use crate::domain::fabrica::{
+    Nombre,
+    Nuevo,
+    inserta as fabrica_inserta,
+};
+use actix_web::{post, web, HttpResponse, ResponseError};
+use actix_web::http::{ StatusCode, header };
 use anyhow::Context;
 use sqlx::PgPool;
 
@@ -14,7 +17,6 @@ use sqlx::PgPool;
 #[derive(serde::Deserialize)]
 pub struct FormData {
     nombre: String,
-    pais_id: i64,
 }
 
 // valida y contruye el objeto FormData
@@ -23,7 +25,7 @@ impl TryFrom<FormData> for Nuevo {
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         let nombre = Nombre::parse(form_data.nombre)?;
         // todo simplificar las siguientes 2 lineas en una sola
-        let pais_id = form_data.pais_id;
+        let pais_id = 1;
         Ok( Self{ nombre, pais_id})
     }
 }
@@ -37,13 +39,16 @@ impl TryFrom<FormData> for Nuevo {
         fabrica_nombre = %form.nombre,
     )
 )]
-#[post("/fabrica")]
+#[post("/pais/{id}/fabrica")]
 pub async fn procesa(
     form: web::Form<FormData>, 
-    pool: web::Data<PgPool>
+    path: web::Path<(i64,)>,
+    pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, FabricaError> {
     //TODO añadir validacion de existencia de pais_id
-    let fabrica = form.0.try_into().map_err(FabricaError::Validacion)?;
+    let (pais_id,) = path.into_inner();
+    let mut fabrica: Nuevo = form.0.try_into().map_err(FabricaError::Validacion)?;
+    fabrica.pais_id = pais_id;
     let id = fabrica_inserta(&pool, &fabrica)
         .await
         .context("Error al insertar fabrica en la BD")?;
@@ -77,21 +82,6 @@ impl ResponseError for FabricaError {
     }
 }
 
-// inserta un fabrica en la base de datos
-#[tracing::instrument(name = "Inserta fabrica", skip(nuevo, pool))]
-pub async fn fabrica_inserta(
-    pool: &PgPool,
-    nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-"INSERT INTO fabricas (nombre, pais_id) VALUES ($1, $2) RETURNING id",
-    )
-    .bind(nuevo.nombre.as_ref())
-    .bind(nuevo.pais_id)
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
-}
 
 pub fn error_chain_fmt(
     e: &impl std::error::Error,

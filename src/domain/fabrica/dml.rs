@@ -4,7 +4,10 @@
 //! instrucciones dml para apitulo
 
 use crate::layout::lista::Paginado;
-use crate::domain::fabrica::Fabrica;
+use crate::domain::fabrica::{
+    Fabrica,
+    Nuevo,
+};
 use sqlx::PgPool;
 
 const SELECT: &str = "SELECT id, nombre, pais_id FROM fabricas";
@@ -31,5 +34,20 @@ pub async fn lista_paginada(
     let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
         .fetch_one(pool).await?;
     Ok((filas, nro_filas.0 as i32))
+}
+// inserta un fabrica en la base de datos
+#[tracing::instrument(name = "Inserta fabrica", skip(nuevo, pool))]
+pub async fn inserta(
+    pool: &PgPool,
+    nuevo: &Nuevo,
+) -> Result<i64, sqlx::Error> {
+    let (id,) = sqlx::query_as(
+"INSERT INTO fabricas (nombre, pais_id) VALUES ($1, $2) RETURNING id",
+    )
+    .bind(nuevo.nombre.as_ref())
+    .bind(nuevo.pais_id)
+    .fetch_one(pool)
+    .await?;
+    Ok(id)
 }
 

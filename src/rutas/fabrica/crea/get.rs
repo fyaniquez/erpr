@@ -7,28 +7,30 @@ use actix_web::Result as AwResult;
 use actix_web::{get, web};
 use maud::{html, Markup};
 use crate::layout;
+use sqlx::PgPool;
 
 #[derive(serde::Deserialize)]
 pub struct QueryData {
     pub pais: i64
 }
 
-#[get("/fabrica")]
+#[get("/pais/{id}/fabrica")]
 pub async fn muestra(
-    query: web::Query<QueryData>, 
+    path: web::Path<(i64,)>, 
+    pool: web::Data<PgPool>,
 ) -> AwResult<Markup> {
+    let (id,) = path.into_inner();
+    let url = format!("/pais/{}/fabrica", id); 
     layout::form::crea(
-        "Fábrica", 
-        format!("/pais/{}/fabricas", query.pais).as_ref(), 
-        "form.css", Some("fabrica/crea.js"), contenido(query.pais))
+        "Fábrica", &url, 
+        "form.css", Some("fabrica/crea.js"), contenido(&url))
 }
 
-fn contenido(pais_id: i64) -> Markup { html! {
-    form method="POST" action="/fabrica" {
-        input type="hidden" name="pais_id" value=(pais_id);
+fn contenido(url: &str) -> Markup { html! {
+    form method="POST" action=(url) {
         label for="nombre" {"Nombre:" }
         input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre categoría";
+            placeholder="Nombre fabrica";
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

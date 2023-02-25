@@ -26,7 +26,7 @@ pub async fn muestra(
         paginado.orden = "nombre".to_string();
     }
     let (filas, total_filas) = lista(&pool, &paginado)
-        .await.context("Error al leer fabricas de la BD")?;
+        .await.context("Error al leer paises de la BD")?;
     paginado.total_filas = Some(total_filas);
 
     let pagina = layout::lista::crea(
