@@ -8,6 +8,18 @@ use crate::domain::capitulo::Capitulo;
 use sqlx::PgPool;
 
 const SELECT: &str = "SELECT id, nombre, descripcion FROM capitulos";
+const SELECT_ALFABETICO: &str = r#"SELECT id, nombre, descripcion 
+    FROM capitulos ORDER BY nombre"#;
+
+// obtiene una lista de objetos
+#[tracing::instrument(
+    name = "Lista capitulos alfabeticamente ordenada", 
+    skip(pool))]
+pub async fn lista_alfabetica(pool: &PgPool) -> Result<Vec<Capitulo>, sqlx::Error> {
+    let filas: Vec<Capitulo> = sqlx::query_as(SELECT_ALFABETICO)
+        .fetch_all(pool).await?;
+    Ok(filas)
+}
 
 // obtiene una lista de objetos
 #[tracing::instrument(name = "Lista capitulos", skip(pool))]

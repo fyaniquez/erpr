@@ -5,7 +5,6 @@
 
 use crate::layout::lista;
 use crate::layout::lista::Paginado;
-use crate::domain::capitulo::Capitulo;
 use crate::domain::producto::{
     Producto, 
     lista_paginada

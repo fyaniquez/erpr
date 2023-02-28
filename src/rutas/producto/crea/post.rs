@@ -6,6 +6,7 @@
 use crate::domain::producto::{
     ProductoError, Nuevo,
     Contenido, Nombre, Caracteristicas,
+    inserta as producto_inserta,
 };
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
@@ -17,7 +18,6 @@ pub struct FormData {
     nombre: String,
     contenido: String,
     caracteristicas: String,
-    activo: bool,
     barras: String,
     cantidad: i32,
     categoria_id: i64,
@@ -39,7 +39,6 @@ impl TryFrom<FormData> for Nuevo {
             nombre,
             contenido,
             caracteristicas,
-            activo: form_data.activo,
             barras: Some(form_data.barras),
             cantidad: form_data.cantidad,
             categoria_id: form_data.categoria_id,
@@ -76,31 +75,4 @@ pub async fn procesa(
         .finish())
 }
 
-// inserta un producto en la base de datos
-#[tracing::instrument(name = "Inserta producto", skip(producto_nuevo, pool))]
-pub async fn producto_inserta(
-    pool: &PgPool,
-    producto_nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-    r#"INSERT INTO productos 
-        (nombre, caraceristicas, categoria_id, marca_id, unidad_id,
-        fabrica_id, contenido, cantidad, fraccionable, barras, activo) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
-        RETURNING id"#,
-    )
-    .bind(producto_nuevo.nombre.as_ref())
-    .bind(producto_nuevo.caracteristicas.as_ref())
-    .bind(producto_nuevo.categoria_id)
-    .bind(producto_nuevo.marca_id)
-    .bind(producto_nuevo.unidad_id)
-    .bind(producto_nuevo.fabrica_id)
-    .bind(producto_nuevo.contenido.as_ref())
-    .bind(producto_nuevo.cantidad)
-    .bind(producto_nuevo.fraccionable)
-    .bind(producto_nuevo.barras.as_ref())
-    .bind(producto_nuevo.activo)
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
-}
+

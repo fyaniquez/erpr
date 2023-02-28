@@ -50,7 +50,7 @@ ALTER TABLE public.productos_id_seq OWNER TO erp;
 
 ALTER SEQUENCE public.productos_id_seq OWNED BY public.productos.id;
 
-ALTER TABLE ONLY public.productos ALTER COLUMN id SET DEFAULT nextval('public.productos'::regclass);
+ALTER TABLE ONLY public.productos ALTER COLUMN id SET DEFAULT nextval('public.productos_id_seq'::regclass);
 
 -- datos
 INSERT INTO public.productos (id, nombre, categoria_id, caracteristicas, marca_id, unidad_id, fabrica_id, contenido, cantidad, fraccionable, barras, activo, created_at, updated_at) VALUES (961, 'Barra Fruna uni. 20 g Date', 430, 'Date', 386, 21, 2, '20 g', 100, false, '-.-', true, '2021-04-25 00:00:00-04', '2021-04-25 00:00:00-04');

@@ -9,7 +9,6 @@ use crate::domain::compra::{
     inserta as compra_inserta,
 };
 use crate::domain::distribuidora::{
-    Distribuidora,
     obtiene as distribuidora_obtiene,
 };
 use crate::domain::comprado::{

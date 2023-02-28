@@ -20,4 +20,5 @@ pub use dml::{
     lista_paginada_sin_precio,
     obtiene_ve,
     obtiene,
+    inserta,
 };

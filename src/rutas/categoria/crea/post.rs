@@ -3,10 +3,13 @@
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea categoria
 
-use crate::domain::categoria::Nombre;
-use crate::domain::categoria::Nuevo;
-use actix_web::http::StatusCode;
-use actix_web::{http::header, post, web, HttpResponse, ResponseError};
+use crate::domain::categoria::{
+    Nombre,
+    Nuevo,
+    inserta as categoria_inserta,
+};
+use actix_web::http::{StatusCode, header};
+use actix_web::{post, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
@@ -14,7 +17,6 @@ use sqlx::PgPool;
 #[derive(serde::Deserialize)]
 pub struct FormData {
     nombre: String,
-    capitulo_id: i64,
 }
 
 // valida y contruye el objeto FormData
@@ -22,8 +24,7 @@ impl TryFrom<FormData> for Nuevo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         let nombre = Nombre::parse(form_data.nombre)?;
-        // todo simplificar las siguientes 2 lineas en una sola
-        let capitulo_id = form_data.capitulo_id;
+        let capitulo_id = 1;
         Ok( Self{ nombre, capitulo_id})
     }
 }
@@ -37,13 +38,17 @@ impl TryFrom<FormData> for Nuevo {
         categoria_nombre = %form.nombre,
     )
 )]
-#[post("/categoria")]
+#[post("/capitulo/{id}/categoria")]
 pub async fn procesa(
     form: web::Form<FormData>, 
+    path: web::Path<(i64,)>, 
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, CategoriaError> {
     //TODO añadir validacion de existencia de capitulo_id
-    let categoria = form.0.try_into().map_err(CategoriaError::Validacion)?;
+    let mut categoria: Nuevo = form.0.try_into()
+        .map_err(CategoriaError::Validacion)?;
+    let (capitulo_id,) = path.into_inner();
+    categoria.capitulo_id = capitulo_id;
     let id = categoria_inserta(&pool, &categoria)
         .await
         .context("Error al insertar categoria en la BD")?;
@@ -75,22 +80,6 @@ impl ResponseError for CategoriaError {
             CategoriaError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-// inserta un categoria en la base de datos
-#[tracing::instrument(name = "Inserta categoria", skip(categoria_nuevo, pool))]
-pub async fn categoria_inserta(
-    pool: &PgPool,
-    categoria_nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-"INSERT INTO categorias (nombre, capitulo_id) VALUES ($1, $2) RETURNING id",
-    )
-    .bind(categoria_nuevo.nombre.as_ref())
-    .bind(categoria_nuevo.capitulo_id)
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
 }
 
 pub fn error_chain_fmt(

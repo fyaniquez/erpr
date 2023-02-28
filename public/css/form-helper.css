@@ -60,7 +60,7 @@ select {
   font-size: 0.889rem;
   height: auto;
   outline: 0;
-  padding: 0.444rem;
+  padding: 0.5em;
   background-color: #ffffff;
   color: var(--sec);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
@@ -89,7 +89,7 @@ select:hover {
 }
 
 select {
-  padding: 0.75rem;
+  padding: 0.5rem;
   height: 2rem;
   border-radius: 2px;
 }

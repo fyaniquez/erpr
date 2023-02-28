@@ -3,7 +3,10 @@
 //! date: 6/12/2022
 //! purpose: muestra el formulario de alta de producto
 
-use crate::domain::capitulo::{Capitulo, lista as capitulo_lista};
+use crate::domain::capitulo::{
+    Capitulo, 
+    lista_alfabetica as capitulo_lista,
+};
 use crate::domain::categoria::{Categoria, lista as categoria_lista};
 use crate::domain::fabrica::{Fabrica, lista as fabrica_lista};
 use crate::domain::marca::{Marca, lista as marca_lista};
@@ -150,13 +153,6 @@ fn contenido(
             label for="fraccionable_no" {"No"}
         }
 
-        fieldset {
-            legend { "¿Está activo?"}
-            input type="radio" name="activo" id="activo_si" value="true"
-            label for="activo_si" {"Si"}
-            input type="radio" name="activo" id="activo_no" value="false"
-            label for="activo_no" {"No"}
-        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

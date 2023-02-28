@@ -20,5 +20,4 @@ pub struct Nuevo {
     pub cantidad: i32,
     pub fraccionable: bool,
     pub barras: Option<String>,
-    pub activo: bool,
 }

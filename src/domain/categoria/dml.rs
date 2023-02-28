@@ -3,18 +3,22 @@
 //! date: 30/10/2022
 //! instrucciones dml para apitulo
 
-use crate::domain::categoria::Categoria;
+use crate::domain::categoria::{Categoria, Nuevo};
 use crate::layout::lista::Paginado;
 use sqlx::PgPool;
 
 const SELECT: &str = r#"SELECT id, nombre, capitulo_id 
     FROM categorias WHERE capitulo_id=$1"#;
 
+const SELECT_JSON: &str = r#"SELECT id, nombre, capitulo_id 
+    FROM categorias WHERE capitulo_id=$1
+    ORDER BY nombre"#;
+
 // obtiene una lista de objetos
-#[tracing::instrument(name = "Lista categorias", skip(pool))]
+#[tracing::instrument(name = "Lista categorias json", skip(pool))]
 pub async fn lista(pool: &PgPool, capitulo_id: i64) 
 -> Result<Vec<Categoria>, sqlx::Error> {
-    let filas: Vec<Categoria> = sqlx::query_as(SELECT)
+    let filas: Vec<Categoria> = sqlx::query_as(SELECT_JSON)
         .bind(capitulo_id)
         .fetch_all(pool)
         .await?;
@@ -56,3 +60,20 @@ pub async fn obtiene(pool: &PgPool, id: i64)
             .await?;
     Ok(fila)
 }
+
+// inserta un categoria en la base de datos
+#[tracing::instrument(name = "Inserta categoria", skip(categoria_nuevo, pool))]
+pub async fn inserta(
+    pool: &PgPool,
+    categoria_nuevo: &Nuevo,
+) -> Result<i64, sqlx::Error> {
+    let (id,) = sqlx::query_as(
+"INSERT INTO categorias (nombre, capitulo_id) VALUES ($1, $2) RETURNING id",
+    )
+    .bind(categoria_nuevo.nombre.as_ref())
+    .bind(categoria_nuevo.capitulo_id)
+    .fetch_one(pool)
+    .await?;
+    Ok(id)
+}
+

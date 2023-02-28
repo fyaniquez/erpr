@@ -6,13 +6,39 @@
 use crate::layout::lista;
 use crate::layout::lista::Paginado;
 use crate::domain::capitulo::{Capitulo, obtiene};
-use crate::domain::categoria::{Categoria, lista_paginada};
+use crate::domain::categoria::{
+    Categoria, 
+    CategoriaError,
+    lista_paginada,
+    lista,
+};
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};
 use anyhow::Context;
 use maud::{html, Markup};
 use sqlx::PgPool;
+
+// controlador
+#[tracing::instrument(name = "Lista de categorias en json", skip(pool))]
+#[get("/capitulo/{id}/categorias.json")]
+pub async fn muestra_json(
+    path: web::Path<(i64,)>, 
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, CategoriaError> {
+    let (capitulo_id,) = path.into_inner();
+
+    let filas = lista(&pool, capitulo_id)
+        .await .context("Error al leer categorias de la BD")?;
+
+    // a json
+    let lista_json = serde_json::to_string(&filas)
+        .map_err(|err| CategoriaError::Validacion(err.to_string()))
+        .unwrap();
+
+    // al browser
+    Ok(HttpResponse::Ok().body(lista_json))
+}
 
 // controlador
 #[tracing::instrument(name = "Lista de categorias", skip(pool))]
@@ -49,7 +75,6 @@ pub async fn muestra(
     );
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
-
 // vista
 fn contenido(filas: Vec<Categoria>, capitulo: &Capitulo) -> Option<Markup> {
     if filas.len() < 1 {
@@ -74,28 +99,6 @@ fn contenido(filas: Vec<Categoria>, capitulo: &Capitulo) -> Option<Markup> {
 }
 
 // errores considerados para lista de categorias
-#[derive(thiserror::Error)]
-pub enum CategoriaError {
-    #[error("{0}")]
-    Validacion(String),
-    #[error(transparent)]
-    Otro(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for CategoriaError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
-impl ResponseError for CategoriaError {
-    fn status_code(&self) -> StatusCode {
-        match self {
-            CategoriaError::Validacion(_) => StatusCode::BAD_REQUEST,
-            CategoriaError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
-        }
-    }
-}
 
 pub fn error_chain_fmt(
     e: &impl std::error::Error,

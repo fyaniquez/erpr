@@ -9,6 +9,8 @@ pub use descripcion::Descripcion;
 pub use nombre::Nombre;
 pub use nuevo::Nuevo;
 pub use dml::{
-    lista, lista_paginada,
+    lista, 
+    lista_alfabetica,
+    lista_paginada,
     obtiene,
 };
