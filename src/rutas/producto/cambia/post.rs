@@ -5,7 +5,7 @@
 
 use crate::domain::producto::{
     Producto, ProductoError,
-    Contenido, Nombre, Caracteristicas,
+    Contenido, Caracteristicas,
 };
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
@@ -14,7 +14,6 @@ use sqlx::PgPool;
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
-    nombre: String,
     contenido: String,
     caracteristicas: String,
     activo: bool,
@@ -31,12 +30,11 @@ pub struct FormData {
 impl TryFrom<FormData> for Producto {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = Nombre::parse(form_data.nombre)?;
         let contenido = Contenido::parse(form_data.contenido)?;
         let caracteristicas = Caracteristicas::parse(form_data.caracteristicas)?;
         Ok( Self{ 
             id: None, 
-            nombre: String::from(nombre.as_ref()), 
+            nombre: "-.-".to_string(),
             contenido: String::from(contenido.as_ref()), 
             caracteristicas: String::from(caracteristicas.as_ref()), 
             activo: form_data.activo,
@@ -56,9 +54,6 @@ impl TryFrom<FormData> for Producto {
 #[tracing::instrument(
     name = "Actualización de producto",
     skip(form, pool),
-    fields( 
-        producto_nombre = %form.nombre,
-    )
 )]
 #[post("/producto/{id}")]
 pub async fn procesa(

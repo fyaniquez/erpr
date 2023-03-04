@@ -4,13 +4,11 @@
 //! estructura para procesar producto nuevo
 
 use crate::domain::producto::{
-    nombre::Nombre,
     contenido::Contenido,
     caracteristicas::Caracteristicas,
 };
 
 pub struct Nuevo {
-    pub nombre: Nombre,
     pub caracteristicas: Caracteristicas,
     pub categoria_id: i64,
     pub marca_id: i64,

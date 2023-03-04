@@ -1,5 +1,4 @@
 mod producto;
-mod nombre;
 mod caracteristicas;
 mod contenido;
 mod nuevo;
@@ -9,7 +8,6 @@ pub use producto::{
     ProductoVe,
     ProductoError,
 };
-pub use nombre::Nombre;
 pub use caracteristicas::Caracteristicas;
 pub use contenido::Contenido;
 pub use nuevo::Nuevo;

@@ -1,11 +1,13 @@
-//! src/rutas/producto/crea/post.rs
-//! author: fyaniquez
-//! date: 06/12/2022
-//! purpose: procesa el formulario crea producto
+/*!
+src/rutas/producto/crea/post.rs
+author: fyaniquez
+date: 06/12/2022
+purpose: procesa el formulario crea producto
+*/
 
 use crate::domain::producto::{
     ProductoError, Nuevo,
-    Contenido, Nombre, Caracteristicas,
+    Contenido, Caracteristicas,
     inserta as producto_inserta,
 };
 use actix_web::{http::header, post, web, HttpResponse};
@@ -15,7 +17,6 @@ use sqlx::PgPool;
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
-    nombre: String,
     contenido: String,
     caracteristicas: String,
     barras: String,
@@ -31,12 +32,9 @@ pub struct FormData {
 impl TryFrom<FormData> for Nuevo {
     type Error = String;
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
-        let nombre = Nombre::parse(form_data.nombre)?;
-        // todo simplificar las siguientes 2 lineas en una sola
         let contenido = Contenido::parse(form_data.contenido)?;
         let caracteristicas = Caracteristicas::parse(form_data.caracteristicas)?;
         Ok( Self { 
-            nombre,
             contenido,
             caracteristicas,
             barras: Some(form_data.barras),
@@ -55,9 +53,6 @@ impl TryFrom<FormData> for Nuevo {
 #[tracing::instrument(
     name = "Alta de producto",
     skip(form, pool),
-    fields( 
-        producto_nombre = %form.nombre,
-    )
 )]
 #[post("/producto")]
 pub async fn procesa(

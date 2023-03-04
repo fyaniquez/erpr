@@ -134,12 +134,11 @@ pub async fn inserta(
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
     r#"INSERT INTO productos 
-        (nombre, caracteristicas, categoria_id, marca_id, unidad_id,
+        (caracteristicas, categoria_id, marca_id, unidad_id,
         fabrica_id, contenido, cantidad, fraccionable, barras, activo) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
         RETURNING id"#,
     )
-    .bind(producto_nuevo.nombre.as_ref())
     .bind(producto_nuevo.caracteristicas.as_ref())
     .bind(producto_nuevo.categoria_id)
     .bind(producto_nuevo.marca_id)

@@ -79,7 +79,7 @@ fn contenido(
     form method="POST" action="/producto" {
 
         label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
+        input type="text" id="nombre" 
             placeholder="Nombre categoría";
 
         label for="caracteristicas" {"Características:" }
