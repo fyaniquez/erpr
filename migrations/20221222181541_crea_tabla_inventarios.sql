@@ -96,6 +96,8 @@ CREATE OR REPLACE FUNCTION inventarios_insert_prepara()
    LANGUAGE PLPGSQL
 AS $$
 BEGIN
+    NEW.fecha = now();
+    NEW.estado = 'Inactiva';
 	NEW.created_at = now();
 	NEW.updated_at = now();
     RETURN NEW;

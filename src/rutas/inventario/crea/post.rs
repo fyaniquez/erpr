@@ -3,8 +3,11 @@
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea inventario
 
-use crate::domain::inventario::Nombre;
-use crate::domain::inventario::Nuevo;
+use crate::domain::inventario::{
+    Nombre,
+    Nuevo,
+    inserta as inventario_inserta,
+};
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
@@ -47,7 +50,9 @@ pub async fn procesa(
 ) -> Result<HttpResponse, InventarioError> {
 
     //TODO añadir validacion de existencia de empresa_id
-    let inventario = form.0.try_into().map_err(InventarioError::Validacion)?;
+    let mut inventario: Nuevo = form.0.try_into().map_err(InventarioError::Validacion)?;
+    //TODO obtener la sucursal del estado
+    inventario.sucursal_id = 1;
     let id = inventario_inserta(&pool, &inventario)
         .await
         .context("Error al insertar inventario en la BD")?;
@@ -81,25 +86,6 @@ impl ResponseError for InventarioError {
             InventarioError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-// inserta un inventario en la base de datos
-#[tracing::instrument(name = "Inserta inventario", skip(inventario_nuevo, pool))]
-pub async fn inventario_inserta(
-    pool: &PgPool,
-    inventario_nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-        r#"INSERT INTO inventarios 
-        (nombre, sucursal_id) 
-        VALUES ($1, $2) 
-        RETURNING id"#,
-    )
-    .bind(inventario_nuevo.nombre.as_ref())
-    .bind(inventario_nuevo.sucursal_id)
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
 }
 
 pub fn error_chain_fmt(

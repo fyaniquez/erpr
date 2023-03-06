@@ -1036,8 +1036,16 @@ CREATE OR REPLACE FUNCTION productos_insert_prepara()
    RETURNS TRIGGER 
    LANGUAGE PLPGSQL
 AS $$
+DECLARE
+	categoria TEXT;
+	marca TEXT;
+	unidad TEXT;
 BEGIN
-	NEW.created_at = now();
+	SELECT nombre INTO categoria FROM categorias WHERE id = NEW.categoria_id;
+	SELECT nombre INTO marca FROM marcas WHERE id = NEW.marca_id;
+	SELECT nombre INTO unidad FROM unidades WHERE id = NEW.unidad_id;
+	NEW.nombre = categoria || ' ' || marca || ' ' || NEW.caracteristicas || ' ' || unidad;	
+    NEW.created_at = now();
 	NEW.updated_at = now();
     RETURN NEW;
 END;
@@ -1053,7 +1061,15 @@ CREATE OR REPLACE FUNCTION productos_update_prepara()
    RETURNS TRIGGER 
    LANGUAGE PLPGSQL
 AS $$
+DECLARE
+	categoria TEXT;
+	marca TEXT;
+	unidad TEXT;
 BEGIN
+	SELECT nombre INTO categoria FROM categorias WHERE id = NEW.categoria_id;
+	SELECT nombre INTO marca FROM marcas WHERE id = NEW.marca_id;
+	SELECT nombre INTO unidad FROM unidades WHERE id = NEW.unidad_id;
+	NEW.nombre = categoria || ' ' || marca || ' ' || NEW.caracteristicas || ' ' || unidad;	
 	NEW.updated_at = now();
     RETURN NEW;
 END;
