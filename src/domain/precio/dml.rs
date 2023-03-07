@@ -3,7 +3,10 @@
 //! date: 30/10/2022
 //! instrucciones dml para apitulo
 
-use crate::domain::precio::Precio;
+use crate::domain::precio::{
+    Precio,
+    Nuevo,
+};
 use crate::layout::lista::Paginado;
 use sqlx::PgPool;
 
@@ -60,4 +63,22 @@ pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Precio, sqlx::Error> {
             .fetch_one(pool)
             .await?;
     Ok(fila)
+}
+//
+// inserta un precio en la base de datos
+#[tracing::instrument(name = "Inserta precio", skip(precio_nuevo, pool))]
+pub async fn inserta(
+    pool: &PgPool,
+    precio_nuevo: &Nuevo,
+) -> Result<i64, sqlx::Error> {
+    let (id,) = sqlx::query_as(
+    r#"INSERT INTO precios 
+    (producto_id, precio, catalogo_id) 
+    VALUES ($1, $2, $3) RETURNING id"#)
+    .bind(precio_nuevo.producto_id)
+    .bind(precio_nuevo.precio)
+    .bind(precio_nuevo.catalogo_id)
+    .fetch_one(pool)
+    .await?;
+    Ok(id)
 }

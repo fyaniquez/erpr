@@ -3,7 +3,10 @@
 //! date: 30/10/2022
 //! instrucciones dml para apitulo
 
-use crate::domain::inventariado::Inventariado;
+use crate::domain::inventariado::{
+    Inventariado,
+    Nuevo,
+};
 use crate::layout::lista::Paginado;
 use sqlx::PgPool;
 
@@ -59,4 +62,22 @@ pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Inventariado, sqlx::Error
             .fetch_one(pool)
             .await?;
     Ok(fila)
+}
+
+// inserta un inventariado en la base de datos
+#[tracing::instrument(name = "Inserta inventariado", skip(inventariado_nuevo, pool))]
+pub async fn inserta(
+    pool: &PgPool,
+    inventariado_nuevo: &Nuevo,
+) -> Result<i64, sqlx::Error> {
+    let (id,) = sqlx::query_as(
+    r#"INSERT INTO inventariados 
+    (producto_id, cantidad, inventario_id) 
+    VALUES ($1, $2, $3) RETURNING id"#)
+    .bind(inventariado_nuevo.producto_id)
+    .bind(inventariado_nuevo.cantidad)
+    .bind(inventariado_nuevo.inventario_id)
+    .fetch_one(pool)
+    .await?;
+    Ok(id)
 }

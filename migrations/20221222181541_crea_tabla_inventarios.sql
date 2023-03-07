@@ -97,7 +97,7 @@ CREATE OR REPLACE FUNCTION inventarios_insert_prepara()
 AS $$
 BEGIN
     NEW.fecha = now();
-    NEW.estado = 'Inactiva';
+    NEW.estado = 'Inactivo';
 	NEW.created_at = now();
 	NEW.updated_at = now();
     RETURN NEW;

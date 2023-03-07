@@ -3,8 +3,11 @@
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea catalogo
 
-use crate::domain::catalogo::Nombre;
-use crate::domain::catalogo::Nuevo;
+use crate::domain::catalogo::{
+    Nombre,
+    Nuevo,
+    inserta as catalogo_inserta,
+};
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
@@ -24,9 +27,7 @@ impl TryFrom<FormData> for Nuevo {
         let nombre = Nombre::parse(form_data.nombre)?;
         Ok( Self{ 
             nombre, 
-            sucursal_id: 0,
-            fecha: Utc::now().naive_utc(),
-            activo: false,
+            sucursal_id: 1,
         })
     }
 }
@@ -47,7 +48,10 @@ pub async fn procesa(
 ) -> Result<HttpResponse, CatalogoError> {
 
     //TODO añadir validacion de existencia de capitulo_id
-    let catalogo = form.0.try_into().map_err(CatalogoError::Validacion)?;
+    let mut catalogo: Nuevo = form.0.try_into().map_err(CatalogoError::Validacion)?;
+
+    // TOMAR la sucursal del estado
+    catalogo.sucursal_id = 1;
 
     let id = catalogo_inserta(&pool, &catalogo)
         .await
@@ -82,25 +86,6 @@ impl ResponseError for CatalogoError {
             CatalogoError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-// inserta un catalogo en la base de datos
-#[tracing::instrument(name = "Inserta catalogo", skip(catalogo_nuevo, pool))]
-pub async fn catalogo_inserta(
-    pool: &PgPool,
-    catalogo_nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-    r#"INSERT INTO catalogos 
-    (nombre, sucursal_id, fecha, activo) 
-    VALUES ($1, $2, $3, $4, $5) RETURNING id"#)
-    .bind(catalogo_nuevo.nombre.as_ref())
-    .bind(catalogo_nuevo.sucursal_id)
-    .bind(catalogo_nuevo.fecha)
-    .bind(catalogo_nuevo.activo)
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
 }
 
 pub fn error_chain_fmt(

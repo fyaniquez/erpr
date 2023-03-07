@@ -76,7 +76,8 @@ fn contenido(
     unidad_default: i64,
     fabrica_default: i64,
 ) -> Markup { html! {
-    form method="POST" action="/producto" {
+    //form method="POST" action="/producto" {
+    form method="POST" action="/productotot" {
 
         label for="nombre" {"Nombre:" }
         input type="text" id="nombre" 

@@ -3,7 +3,10 @@
 //! date: 30/10/2022
 //! instrucciones dml para apitulo
 
-use crate::domain::catalogo::Catalogo;
+use crate::domain::catalogo::{
+    Catalogo,
+    Nuevo,
+};
 use crate::layout::lista::Paginado;
 use sqlx::PgPool;
 
@@ -54,4 +57,21 @@ pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Catalogo, sqlx::Error> {
             .fetch_one(pool)
             .await?;
     Ok(fila)
+}
+
+// inserta un catalogo en la base de datos
+#[tracing::instrument(name = "Inserta catalogo", skip(catalogo_nuevo, pool))]
+pub async fn inserta(
+    pool: &PgPool,
+    catalogo_nuevo: &Nuevo,
+) -> Result<i64, sqlx::Error> {
+    let (id,) = sqlx::query_as(
+    r#"INSERT INTO catalogos 
+    (nombre, sucursal_id) 
+    VALUES ($1, $2) RETURNING id"#)
+    .bind(catalogo_nuevo.nombre.as_ref())
+    .bind(catalogo_nuevo.sucursal_id)
+    .fetch_one(pool)
+    .await?;
+    Ok(id)
 }

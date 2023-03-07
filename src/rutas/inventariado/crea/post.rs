@@ -3,7 +3,10 @@
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea inventariado
 
-use crate::domain::inventariado::Nuevo;
+use crate::domain::inventariado::{
+    Nuevo,
+    inserta as inventariado_inserta,
+};
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
@@ -73,24 +76,6 @@ impl ResponseError for InventariadoError {
             InventariadoError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-// inserta un inventariado en la base de datos
-#[tracing::instrument(name = "Inserta inventariado", skip(inventariado_nuevo, pool))]
-pub async fn inventariado_inserta(
-    pool: &PgPool,
-    inventariado_nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-    r#"INSERT INTO inventariados 
-    (producto_id, cantidad, inventario_id) 
-    VALUES ($1, $2, $3) RETURNING id"#)
-    .bind(inventariado_nuevo.producto_id)
-    .bind(inventariado_nuevo.cantidad)
-    .bind(inventariado_nuevo.inventario_id)
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
 }
 
 pub fn error_chain_fmt(

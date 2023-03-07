@@ -7,5 +7,6 @@ pub use nuevo::Nuevo;
 pub use dml::{
     lista, 
     lista_paginada,
-    obtiene
+    obtiene,
+    inserta,
 };

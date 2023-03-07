@@ -71,6 +71,7 @@ CREATE OR REPLACE FUNCTION catalogos_insert_prepara()
    LANGUAGE PLPGSQL
 AS $$
 BEGIN
+    NEW.fecha = now();
 	NEW.created_at = now();
 	NEW.updated_at = now();
     RETURN NEW;

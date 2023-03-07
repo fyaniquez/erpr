@@ -106,6 +106,8 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(producto::ve::get::muestra)
             .service(producto::crea::get::muestra)
             .service(producto::crea::post::procesa)
+            // temporal para acelerar la producción
+            .service(producto::crea::post::procesatot)
             .service(producto::cambia::get::muestra)
             .service(producto::cambia::post::procesa)
             .service(producto::borra::delete::procesa)

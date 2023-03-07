@@ -3,7 +3,11 @@
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea precio
 
-use crate::domain::precio::Nuevo;
+use crate::domain::precio::{
+    Precio,
+    inserta as precio_inserta,
+    Nuevo,
+};
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
@@ -73,24 +77,6 @@ impl ResponseError for PrecioError {
             PrecioError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-// inserta un precio en la base de datos
-#[tracing::instrument(name = "Inserta precio", skip(precio_nuevo, pool))]
-pub async fn precio_inserta(
-    pool: &PgPool,
-    precio_nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-    r#"INSERT INTO precios 
-    (producto_id, precio, catalogo_id) 
-    VALUES ($1, $2, $3) RETURNING id"#)
-    .bind(precio_nuevo.producto_id)
-    .bind(precio_nuevo.precio)
-    .bind(precio_nuevo.catalogo_id)
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
 }
 
 pub fn error_chain_fmt(

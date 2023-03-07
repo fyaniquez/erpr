@@ -5,6 +5,16 @@ date: 06/12/2022
 purpose: procesa el formulario crea producto
 */
 
+use crate::domain::inventariado::{
+    Inventariado,
+    Nuevo as Inventariado_Nuevo,
+    inserta as inventariado_inserta,
+};
+use crate::domain::precio::{
+    Precio,
+    Nuevo as Precio_Nuevo,
+    inserta as precio_inserta,
+};
 use crate::domain::producto::{
     ProductoError, Nuevo,
     Contenido, Caracteristicas,
@@ -64,6 +74,58 @@ pub async fn procesa(
     let id = producto_inserta(&pool, &producto)
         .await
         .context("Error al insertar producto en la BD")?;
+    let url_ver =  format!("/producto/{}", id);
+    Ok(HttpResponse::Found()
+        .insert_header((header::LOCATION, url_ver))
+        .finish())
+}
+
+
+// extrae datos del producto del formulario, los verifica
+// e inserta en la base de datos
+#[tracing::instrument(
+    name = "Alta de producto total",
+    skip(form, pool),
+)]
+#[post("/productotot")]
+pub async fn procesatot(
+    form: web::Form<FormData>, 
+    pool: web::Data<PgPool>
+) -> Result<HttpResponse, ProductoError> {
+    //TODO añadir validacion de existencia de capitulo_id
+    let producto: Nuevo = form.0.try_into().map_err(ProductoError::Validacion)?;
+
+    // lineas añadidas para ayudar la inventariación
+    let cantidadf = &producto.barras;
+    let cantidadg: &String = cantidadf.as_ref().unwrap();
+    let cantidad: i32 = cantidadg.parse().unwrap();
+    let preciof: f32 = producto.contenido.as_ref().parse().unwrap();
+    let precio: i32 = preciof as i32;
+
+    let id = producto_inserta(&pool, &producto)
+        .await
+        .context("Error al insertar producto en la BD")?;
+
+    let inventariado = Inventariado_Nuevo {
+        cantidad, 
+        producto_id: id,
+        inventario_id: 5,
+    };
+
+    let _iid = inventariado_inserta(&pool, &inventariado)
+        .await
+        .map_err(|e| ProductoError::Validacion(e.to_string()));
+
+    let preciobj = Precio_Nuevo {
+        precio, 
+        producto_id: id,
+        catalogo_id: 5,
+    };
+
+    let _pid = precio_inserta(&pool, &preciobj)
+        .await
+        .map(|e| ProductoError::Validacion(e.to_string()));
+
     let url_ver =  format!("/producto/{}", id);
     Ok(HttpResponse::Found()
         .insert_header((header::LOCATION, url_ver))
