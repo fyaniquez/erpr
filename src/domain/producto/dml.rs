@@ -151,5 +151,36 @@ pub async fn inserta(
     .bind(true)
     .fetch_one(pool)
     .await?;
+
     Ok(id)
+}
+
+
+// inserta un producto en la base de datos
+#[tracing::instrument(name = "modifica producto", skip(producto, pool))]
+pub async fn actualiza(
+    pool: &PgPool,
+    producto: &Producto,
+    id: i64,
+) -> Result<(), sqlx::Error> {
+    let _ = sqlx::query(
+        r#"UPDATE productos SET nombre=$2, contenido=$3, caracteristicas=$4, 
+        barras=$5, cantidad=$6, categoria_id=$7, fraccionable=$8, fabrica_id=$9, 
+        marca_id=$10, unidad_id=$11 WHERE id=$1"#
+    )
+    .bind(id)
+    .bind(&producto.nombre)
+    .bind(&producto.contenido)
+    .bind(&producto.caracteristicas)
+    .bind(producto.barras.as_ref())
+    .bind(producto.cantidad)
+    .bind(producto.categoria_id)
+    .bind(producto.fraccionable)
+    .bind(producto.fabrica_id)
+    .bind(producto.marca_id)
+    .bind(producto.unidad_id)
+    .execute(pool)
+    .await?;
+
+    Ok(())
 }

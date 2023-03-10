@@ -239,9 +239,18 @@ fn combina(
     .principal {
         .lista-box {
             .lista-cabecera {
-             span .form-titulo {(titulo)}
-                a .form-atras #atras href=(atras) { 
-                    img src="/img/lista-24.png"; }
+                span {(titulo)}
+                input #filtro value=(paginado.filtro);
+                button .pagina-buscar #buscar {};
+                a #atras href=(atras) { 
+                    img src="/img/lista-24.png"; 
+                }
+                //span .form-titulo {(titulo)}
+                //input .pagina-filtro #filtro;
+                //button .pagina-buscar #buscar;
+                //a .form-atras #atras href=(atras) { 
+                    //img src="/img/lista-24.png"; 
+                //}
             }
             @match contenido {
                 Some(contenido) => {

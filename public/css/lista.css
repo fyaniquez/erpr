@@ -117,7 +117,7 @@
 
 .paginas span {
     color: var(--sec);
-    float: left;
+    /*float: left;*/
     padding: 8px 16px;
     text-decoration: none;
     transition: background-color .3s;
@@ -139,6 +139,19 @@
 }
 .pagina-boton:focus {
     outline: none;
+}
+.pagina-buscar {
+    width: 24px;
+    background-image: url('/img/search-24.png');
+    background-repeat: no-repeat;
+}
+.pagina-filtro {
+    width: 100%;
+}
+.pagina-atras {
+    width: 24px;
+    height: 24px;
+    display: inline;
 }
 
 /* Style the active/current link */

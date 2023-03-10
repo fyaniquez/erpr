@@ -98,9 +98,10 @@ pub async fn procesatot(
     // lineas añadidas para ayudar la inventariación
     let cantidadf = &producto.barras;
     let cantidadg: &String = cantidadf.as_ref().unwrap();
-    let cantidad: i32 = cantidadg.parse().unwrap();
+    let cantidadh: f32 = cantidadg.parse().unwrap();
+    let cantidad: i32 = (cantidadh * 100.0) as i32;
     let preciof: f32 = producto.contenido.as_ref().parse().unwrap();
-    let precio: i32 = preciof as i32;
+    let precio: i32 = (preciof * 100.0) as i32;
 
     let id = producto_inserta(&pool, &producto)
         .await
@@ -119,7 +120,7 @@ pub async fn procesatot(
     let preciobj = Precio_Nuevo {
         precio, 
         producto_id: id,
-        catalogo_id: 5,
+        catalogo_id: 2,
     };
 
     let _pid = precio_inserta(&pool, &preciobj)

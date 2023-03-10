@@ -7,10 +7,25 @@
 
 // genera el query string y llamar a la página correspondiente
 export const paginar = (pagina) => {
-    var url = window.location.href;
-    url = url.substring(0, url.indexOf('?')) + '?';
-    url += `pagina=${pagina}`;
-    window.location.replace(encodeURI(url.substring(0, url.length)));
+    var origin = window.location.origin;
+    var pathname = window.location.pathname;
+    var url = `${origin}${pathname}?pagina=${pagina}`;
+    var href = window.location.href;
+    var fil = filtro.value.trim();
+    if (fil !== '' && href.indexOf('filtro') > 0)
+        url += `&filtro=${fil}`;
+    window.location.replace(encodeURI(url));
+}
+
+// genera el query string para busqueda y llamar a la página 1
+export const filtrar = (filtro) => {
+    var origin = window.location.origin;
+    var pathname = window.location.pathname;
+    var fil = filtro.trim();
+    var url = `${origin}${pathname}`;
+    if (fil !== '')
+        url += `?filtro=${filtro}`;
+    window.location.replace(encodeURI(url));
 }
 
 // eventos que generan un cambio de página
@@ -40,9 +55,15 @@ const onClickPaginas = (e) => {
     }
 };
 
+// click en la lupa de busqueda
+const onClickBuscar = (e) => {
+    filtrar(filtro.value);
+}
+
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadPaginado = () => {
     paginas.addEventListener("click", onClickPaginas);
+    buscar.addEventListener("click", onClickBuscar);
 }
 
 document.readyState === "complete" ? onLoadPaginado() : addEventListener("load", onLoadPaginado);

@@ -1,15 +1,28 @@
 //! src/rutas/producto/cambia/post.rs
 //! author: fyaniquez
 //! date: 30/09/2022
-//! purpose: procesa el formulario de alta de producto
+//! purpose: procesa el formulario de modificacion de producto
+
+use crate::domain::inventariado::{
+    Inventariado,
+    Nuevo as Inventariado_Nuevo,
+    inserta as inventariado_inserta,
+};
+use crate::domain::precio::{
+    Precio,
+    Nuevo as Precio_Nuevo,
+    inserta as precio_inserta,
+};
 
 use crate::domain::producto::{
-    Producto, ProductoError,
-    Contenido, Caracteristicas,
+    Producto, 
+    ProductoError,
+    Contenido, 
+    Caracteristicas,
+    actualiza as producto_actualiza,
 };
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
-use sqlx::PgPool;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
@@ -59,7 +72,7 @@ impl TryFrom<FormData> for Producto {
 pub async fn procesa(
     path: web::Path<(i64,)>, 
     form: web::Form<FormData>, 
-    pool: web::Data<PgPool>
+    pool: web::Data<sqlx::PgPool>
 ) -> Result<HttpResponse, ProductoError> {
     let (id,) = path.into_inner();
     let producto = form.0.try_into().map_err(ProductoError::Validacion)?;
@@ -72,19 +85,59 @@ pub async fn procesa(
         .finish())
 }
 
-// inserta un producto en la base de datos
-#[tracing::instrument(name = "modifica producto", skip(producto, pool))]
-pub async fn producto_actualiza(
-    pool: &PgPool,
-    producto: &Producto,
-    id: i64,
-) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query!(
-        "UPDATE productos SET nombre=$1 WHERE id=$2",
-        &producto.nombre,
-        id,
-    )
-    .execute(pool)
-    .await?;
-    Ok(())
+// extrae datos del producto del formulario, los verifica
+// e inserta en la base de datos junto al inventario y al catalogo
+#[tracing::instrument(
+    name = "Actualización de producto total",
+    skip(form, pool),
+)]
+#[post("/productotot/{id}")]
+pub async fn procesatot(
+    path: web::Path<(i64,)>, 
+    form: web::Form<FormData>, 
+    pool: web::Data<sqlx::PgPool>
+) -> Result<HttpResponse, ProductoError> {
+    let (id,) = path.into_inner();
+    let producto: Producto = form.0.try_into().map_err(ProductoError::Validacion)?;
+    
+    // lineas añadidas para ayudar la inventariación
+    let cantidadf = &producto.barras;
+    let cantidadg: &String = cantidadf.as_ref().unwrap();
+    let cantidadh: f32 = cantidadg.parse().unwrap();
+    let cantidad: i32 = (cantidadh * 100.0) as i32;
+
+    let preciof: &String = &producto.contenido;
+    let preciog: &String = preciof;
+    let precioh: f32 = preciog.parse().unwrap();
+    let precio: i32 = (precioh * 100.0) as i32;
+
+    producto_actualiza(&pool, &producto, id)
+        .await
+        .context("Error al actualizar producto en la BD")?;
+
+    let inventariado = Inventariado_Nuevo {
+        cantidad, 
+        producto_id: id,
+        inventario_id: 5,
+    };
+
+    let _iid = inventariado_inserta(&pool, &inventariado)
+        .await
+        .map_err(|e| ProductoError::Validacion(e.to_string()));
+
+    let preciobj = Precio_Nuevo {
+        precio, 
+        producto_id: id,
+        catalogo_id: 2,
+    };
+
+    let _pid = precio_inserta(&pool, &preciobj)
+        .await
+        .map(|e| ProductoError::Validacion(e.to_string()));
+
+    let url_ver =  format!("/producto/{}", id);
+    Ok(HttpResponse::Found()
+        .insert_header((header::LOCATION, url_ver))
+        .finish())
 }
+

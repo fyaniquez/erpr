@@ -19,4 +19,5 @@ pub use dml::{
     obtiene_ve,
     obtiene,
     inserta,
+    actualiza,
 };
