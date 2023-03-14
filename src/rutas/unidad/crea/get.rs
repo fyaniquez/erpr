@@ -11,7 +11,7 @@ use crate::layout;
 #[get("/unidad")]
 pub async fn muestra() -> AwResult<Markup> {
     layout::form::crea(
-        "País", "/unidades", "form.css", 
+        "Unidad", "/unidades", "form.css", 
         Some("unidad/crea.js"), contenido())
 }
 
@@ -19,10 +19,10 @@ fn contenido() -> Markup { html! {
     form method="POST" action="/unidad" {
         label for="nombre" {"Nombre:" }
         input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre país";
+            placeholder="Nombre unidad";
         label for="sigla" {"Sigla:" }
         input type="text" name="sigla" id="sigla" required
-            placeholder="Sigla país";
+            placeholder="Sigla unidad";
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

@@ -8,4 +8,8 @@ pub use unidad::UnidadError;
 pub use nombre::Nombre;
 pub use sigla::Sigla;
 pub use nuevo::Nuevo;
-pub use dml::{lista, lista_paginada};
+pub use dml::{
+    lista, 
+    lista_paginada,
+    inserta,
+};

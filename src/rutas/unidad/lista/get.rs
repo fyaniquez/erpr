@@ -5,7 +5,11 @@
 
 use crate::layout;
 use crate::layout::lista::Paginado;
-use crate::domain::unidad::Unidad;
+use crate::domain::unidad::{
+    Unidad,
+    UnidadError,
+    lista_paginada,
+};
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};
@@ -30,7 +34,7 @@ pub async fn muestra(
     if paginado.orden.is_empty() {
         paginado.orden = "nombre".to_string();
     }
-    let (filas, total_filas) = lista(&pool, &paginado)
+    let (filas, total_filas) = lista_paginada(&pool, &paginado)
         .await.context(ERROR_QRY)?;
     paginado.total_filas = Some(total_filas);
 
@@ -40,21 +44,6 @@ pub async fn muestra(
         &paginado, contenido(filas),
     );
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
-}
-
-// modelo
-// obtiene un fragmento de la tabla de unidads en la base de datos
-#[tracing::instrument(name = "query de unidades", skip(pool))]
-pub async fn lista(pool: &PgPool, paginado: &Paginado) -> Result<(Vec<Unidad>, i32), sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, sigla FROM unidades";
-    let qry = paginado.get_qry(SELECT);
-    let filas: Vec<Unidad> = sqlx::query_as(qry.as_ref())
-        .fetch_all(pool).await?;
-
-    let qry_count = paginado.get_qry_count(SELECT);
-    let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
-        .fetch_one(pool).await?;
-    Ok((filas, nro_filas.0 as i32))
 }
 
 // vista
@@ -80,30 +69,6 @@ fn contenido(filas: Vec<Unidad>) -> Option<Markup> {
             }
         }
     })
-}
-
-// errores considerados para lista de unidads
-#[derive(thiserror::Error)]
-pub enum UnidadError {
-    #[error("{0}")]
-    Validacion(String),
-    #[error(transparent)]
-    Otro(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for UnidadError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
-impl ResponseError for UnidadError {
-    fn status_code(&self) -> StatusCode {
-        match self {
-            UnidadError::Validacion(_) => StatusCode::BAD_REQUEST,
-            UnidadError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
-        }
-    }
 }
 
 pub fn error_chain_fmt(

@@ -21,7 +21,7 @@ const onClickCrea = (e) => {
 
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadLista = () => {
-    window.objeto = 'pais';
+    window.objeto = 'unidad';
     const filas = document.getElementsByClassName("lista-item");
     for (var fila of filas) {
         fila.addEventListener("click", onClickVe);

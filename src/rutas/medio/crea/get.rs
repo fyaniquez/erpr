@@ -19,10 +19,10 @@ fn contenido() -> Markup { html! {
     form method="POST" action="/medio" {
         label for="nombre" {"Nombre:" }
         input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre país";
+            placeholder="Nombre medio";
         label for="sigla" {"Sigla:" }
         input type="text" name="sigla" id="sigla" required
-            placeholder="Sigla país";
+            placeholder="Sigla medio";
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

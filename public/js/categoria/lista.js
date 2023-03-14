@@ -16,7 +16,7 @@ const onClickVe = (e) => {
 // llama al formulario de alta de objeto
 const onClickCrea = (e) => {
     var url = location.href;
-    window.location.replace(encodeURI(url.substring(0, url.lenght - 1)));
+    window.location.replace(encodeURI(url.substring(0, url.length - 1)));
 }
 
 // inicializa los eventos y listeners al terminar el cargado de la página

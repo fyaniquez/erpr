@@ -48,37 +48,25 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         "Producto", "/productos", 
-        "form.css", Some("producto/ve.js"), contenido(producto));
+        "ve.css", Some("producto/ve.js"), contenido(producto));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(producto: ProductoVe) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(producto.nombre)}
-    .form-label {"Características:" }
-    .form-field {(producto.caracteristicas)}
-    .form-label {"Capítulo:" }
-    .form-field {(producto.capitulo)}
-    .form-label {"Categoría:" }
-    .form-field {(producto.categoria)}
-    .form-label {"Marca:" }
-    .form-field {(producto.marca)}
-    .form-label {"Unidad:" }
-    .form-field {(producto.unidad)}
-    .form-label {"Fábrica:" }
-    .form-field {(producto.fabrica)}
-    .form-label {"Cod.Barras:" }
-    .form-field {(producto.barras)}
-    .form-label {"Contenido:" }
-    .form-field {(producto.contenido)}
-    .form-label {"Cantidad:" }
-    .form-field {(producto.cantidad)}
-    .form-label {"Fraccionable:" }
-    .form-field {(producto.fraccionable)}
-    .form-label {"Activo:" }
-    .form-field {(producto.activo)}
+    .ve-label {strong {"Nombre: " } (producto.nombre)}
+    .ve-label {strong {"Características: " } (producto.caracteristicas)}
+    .ve-label {strong {"Capítulo: "} (producto.capitulo) }
+    .ve-label {strong {"Categoría: "} (producto.categoria)}
+    .ve-label {strong {"Marca: "} (producto.marca)}
+    .ve-label {strong {"Unidad: " } (producto.unidad)}
+    .ve-label {strong {"Fábrica: " } (producto.fabrica)}
+    .ve-label {strong {"Cod.Barras: " } (producto.barras)}
+    .ve-label {strong {"Contenido: " } (producto.contenido)}
+    .ve-label {strong {"Cantidad: " } (producto.cantidad)}
+    .ve-label {strong {"Fraccionable: " } (producto.fraccionable)}
+    .ve-label {strong {"Activo: " } (producto.activo)}
     button .form-submit #sublista type="button" { "Costos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

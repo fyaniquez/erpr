@@ -20,7 +20,7 @@ pub async fn muestra(
     pool: web::Data<PgPool>,
 ) -> AwResult<Markup> {
     let (id,) = path.into_inner();
-    let url = format!("/pais/{}/fabrica", id); 
+    let url = format!("/pais/{}/fabricas", id); 
     layout::form::crea(
         "Fábrica", &url, 
         "form.css", Some("fabrica/crea.js"), contenido(&url))

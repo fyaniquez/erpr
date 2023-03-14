@@ -1,0 +1,79 @@
+/*
+ * author: fyaniquez
+ * date 12/10/2022
+ * purpose: estilos para formulario
+ */
+
+@import "form-helper.css";
+
+.form-box {
+    width: 400px;
+    padding: 40px;
+    background-color: var(--bgc);
+    box-shadow: 3px 2px 5px 1px #969696;
+    display: table;
+}
+.form-cabecera {
+    font-size: 1.563rem;
+    color: var(--bt1);
+}
+
+.form-titulo {
+    font-size: 1.563rem;
+    color: var(--bt1);
+}
+.form-control {
+    border-bottom: solid 1px black;
+    padding: 10px 0 5px;
+}
+.ve-label {
+    top: 5px;
+}
+.ve-field {
+    top: 5px;
+}
+.form-input {
+    width: 100%;
+    height: 2rem;
+    padding: 0 0.5rem;
+    background-color: var(--bgc);
+    border: none;
+}
+.form-input:focus {
+    outline: none;
+    background-color: var(--bt1);
+}
+.form-submit {
+    width: 100px;
+    height: 3rem;
+    margin-top: 0.75rem;
+    padding: 0 1rem;
+    color: var(--bgc);
+    text-align: center;
+    background-color: var(--bt1);
+    cursor: pointer;
+}
+.form-submit:hover {
+    background-color: var(--bt2);
+}
+.form-submit:focus {
+    outline: none;
+}
+.form-lista {
+    float: right;
+}
+.form-lista:link {
+  text-decoration: none;
+}
+
+.form-lista:visited {
+  text-decoration: none;
+}
+
+.form-lista:hover {
+  text-decoration: underline;
+}
+
+.form-lista:active {
+  text-decoration: underline;
+}

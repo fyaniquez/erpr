@@ -7,11 +7,11 @@ use crate::domain::unidad::{
     Nombre, 
     Sigla,
     Nuevo,
+    inserta as unidad_inserta,
 };
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
-use sqlx::PgPool;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
@@ -43,7 +43,7 @@ impl TryFrom<FormData> for Nuevo {
 #[post("/unidad")]
 pub async fn procesa(
     form: web::Form<FormData>, 
-    pool: web::Data<PgPool>
+    pool: web::Data<sqlx::PgPool>
 ) -> Result<HttpResponse, UnidadError> {
     let unidad = form.0.try_into().map_err(UnidadError::Validacion)?;
     let id = unidad_inserta(&pool, &unidad)
@@ -77,23 +77,6 @@ impl ResponseError for UnidadError {
             UnidadError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-// inserta un unidad en la base de datos
-#[tracing::instrument(name = "Inserta unidad", skip(unidad_nuevo, pool))]
-pub async fn unidad_inserta(
-    pool: &PgPool,
-    unidad_nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-        r#"INSERT INTO unidades (nombre, sigla) 
-        VALUES ($1, $2) RETURNING id"#,
-    )
-    .bind(unidad_nuevo.nombre.as_ref())
-    .bind(unidad_nuevo.sigla.as_ref())
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
 }
 
 pub fn error_chain_fmt(

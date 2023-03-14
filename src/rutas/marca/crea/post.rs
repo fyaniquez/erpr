@@ -6,11 +6,11 @@
 use crate::domain::marca::{
     Nombre, 
     Nuevo,
+    inserta as marca_inserta,
 };
 use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
-use sqlx::PgPool;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
@@ -39,7 +39,7 @@ impl TryFrom<FormData> for Nuevo {
 #[post("/marca")]
 pub async fn procesa(
     form: web::Form<FormData>, 
-    pool: web::Data<PgPool>
+    pool: web::Data<sqlx::PgPool>
 ) -> Result<HttpResponse, MarcaError> {
     let marca = form.0.try_into().map_err(MarcaError::Validacion)?;
     let id = marca_inserta(&pool, &marca)
@@ -73,22 +73,6 @@ impl ResponseError for MarcaError {
             MarcaError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-// inserta un marca en la base de datos
-#[tracing::instrument(name = "Inserta marca", skip(marca_nuevo, pool))]
-pub async fn marca_inserta(
-    pool: &PgPool,
-    marca_nuevo: &Nuevo,
-) -> Result<i64, sqlx::Error> {
-    let (id,) = sqlx::query_as(
-        r#"INSERT INTO marcas (nombre) 
-        VALUES ($1) RETURNING id"#,
-    )
-    .bind(marca_nuevo.nombre.as_ref())
-    .fetch_one(pool)
-    .await?;
-    Ok(id)
 }
 
 pub fn error_chain_fmt(

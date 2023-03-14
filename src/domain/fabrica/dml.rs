@@ -11,11 +11,12 @@ use crate::domain::fabrica::{
 use sqlx::PgPool;
 
 const SELECT: &str = "SELECT id, nombre, pais_id FROM fabricas";
+const SELECT_JSON: &str = "SELECT id, nombre, pais_id FROM fabricas ORDER BY nombre";
 
 // obtiene una lista de objetos
 #[tracing::instrument(name = "Lista fabricas", skip(pool))]
 pub async fn lista(pool: &PgPool) -> Result<Vec<Fabrica>, sqlx::Error> {
-    let filas: Vec<Fabrica> = sqlx::query_as(SELECT)
+    let filas: Vec<Fabrica> = sqlx::query_as(SELECT_JSON)
         .fetch_all(pool).await?;
     Ok(filas)
 }

@@ -47,7 +47,7 @@ fn contenido(empresa_id: i64, catalogos: Vec<Catalogo>) -> Markup { html! {
 
         label for="nombre" {"Nombre:" }
         input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre categoría";
+            placeholder="Nombre sucursal";
 
         label for="catalogo_id" {"Catálogo:" }
         select #catalogo_id name="catalogo_id" {
