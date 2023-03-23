@@ -69,6 +69,20 @@
     },
     "query": "INSERT INTO usuarios (email, nombre, documento, estado)\n   VALUES ($1, $2, $3, $4)\n   RETURNING id"
   },
+  "2805bf6b1816690bfb73dcf76ae22751c504b33eac3b863905ca056b52435a46": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int4",
+          "Date"
+        ]
+      }
+    },
+    "query": "UPDATE inventariados \n        SET cantidad=$2, vencimiento=$3\n        WHERE id=$1"
+  },
   "2eab28a97a10e504e4092def0e1439c1bacd6123adf453febbda16fb006fcc5d": {
     "describe": {
       "columns": [],
@@ -151,19 +165,6 @@
     },
     "query": "UPDATE marcas SET nombre=$1 WHERE id=$2"
   },
-  "79bf54088453998ecc1977844ee1c0bd8d3a2db79021ae0b5bfd40e29eb7749d": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Int8"
-        ]
-      }
-    },
-    "query": "UPDATE productos SET nombre=$1 WHERE id=$2"
-  },
   "814e63d85c4c5798d38a5e17872fe9b30f15b3b2ad94c26779cfdab1b634a77d": {
     "describe": {
       "columns": [],
@@ -190,19 +191,6 @@
       }
     },
     "query": "UPDATE categorias SET nombre=$1 WHERE id=$2"
-  },
-  "87e8a3d0d9a02a6468ef193c1f76ce26e88ec06edbd5fc091bc0a2234d4282b8": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int4"
-        ]
-      }
-    },
-    "query": "UPDATE inventariados \n        SET cantidad=$2\n        WHERE id=$1"
   },
   "9d060cb117fdd1e2bc9f17a2ee85d9f12a11dfe5f46d764bc4accd09ff3911be": {
     "describe": {

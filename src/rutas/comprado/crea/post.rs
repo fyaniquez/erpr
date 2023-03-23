@@ -8,6 +8,7 @@ use actix_web::http::StatusCode;
 use actix_web::{http::header, post, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
+use chrono::NaiveDate;
 
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
@@ -16,6 +17,7 @@ pub struct FormData {
     producto_id: i64,
     cantidad: i64,
     precio: i64,
+    vencimiento: Option<NaiveDate>,
     descuento: i64,
     total: i64,
 }
@@ -30,6 +32,7 @@ impl TryFrom<FormData> for Nuevo {
             venta_id: form_data.venta_id,
             cantidad: form_data.cantidad,
             precio: form_data.precio,
+            vencimiento: form_data.vencimiento.unwrap(),
             descuento: form_data.descuento,
             total: form_data.total,
         })
@@ -90,13 +93,14 @@ pub async fn comprado_inserta(
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
         r#"INSERT INTO comprados 
-        (producto_id, venta_id, cantidad, precio, descuento, total) 
+        (producto_id, venta_id, cantidad, precio, vencimiento, descuento, total) 
         VALUES ($1, $2, $3, $4 $5, $6) RETURNING id"#
     )
     .bind(comprado_nuevo.producto_id)
     .bind(comprado_nuevo.venta_id)
     .bind(comprado_nuevo.cantidad)
     .bind(comprado_nuevo.precio)
+    .bind(comprado_nuevo.vencimiento)
     .bind(comprado_nuevo.descuento)
     .bind(comprado_nuevo.total)
     .fetch_one(pool)

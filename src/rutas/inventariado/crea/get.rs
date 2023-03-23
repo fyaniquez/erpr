@@ -20,18 +20,19 @@ use anyhow::Context;
 #[derive(serde::Deserialize)]
 #[derive(Debug)]
 pub struct QueryData {
-    pub inventario: i64,
     pub producto: i64,
 }
 
 #[tracing::instrument(name="lista de productos s/inventariado", skip(pool))]
-#[get("/inventariado")]
+#[get("/inventario/{id}/inventariado")]
 pub async fn muestra(
     query: web::Query<QueryData>, 
+    path: web::Path<(i64,)>, 
     pool: web::Data<sqlx::PgPool>, 
 ) -> Result<HttpResponse, InventariadoError> {
 
-    let inventario = inventario_obtiene(&pool, query.inventario)
+    let (inventario_id,) =  path.into_inner();
+    let inventario = inventario_obtiene(&pool, inventario_id)
         .await
         .context("Error al leer inventario")?;
 
@@ -41,7 +42,7 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         "Inventariado", 
-        format!("/inventario/{}/inventariados", query.inventario).as_ref(), 
+        format!("/inventario/{}/inventariados", inventario_id).as_ref(), 
         "form.css", Some("inventariado/crea.js"), 
         contenido(&inventario, &producto)
     );
@@ -62,6 +63,10 @@ fn contenido(inventario: &Inventario, producto: &Producto) -> Markup { html! {
         label for="cantidad" {"Cantidad:" }
         input type="number" name="cantidad" id="cantidad" required
             placeholder="Cantidad en existencia";
+
+        label for="vencimiento" {"F.Vencimiento:" }
+        input type="date" name="vencimiento" id="vencimiento" required
+            placeholder="Fecha de vencimiento";
 
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }

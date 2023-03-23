@@ -11,8 +11,7 @@ use crate::domain::unidad::{
     lista_paginada,
 };
 use actix_web::get;
-use actix_web::http::StatusCode;
-use actix_web::{web, HttpResponse, ResponseError};
+use actix_web::{web, HttpResponse, };
 use anyhow::Context;
 use maud::{html, Markup};
 use sqlx::PgPool;

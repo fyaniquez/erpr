@@ -9,8 +9,12 @@ use crate::domain::capitulo::{
 };
 use crate::domain::categoria::{Categoria, lista as categoria_lista};
 use crate::domain::fabrica::{Fabrica, lista as fabrica_lista};
-use crate::domain::marca::{Marca, lista as marca_lista};
+use crate::domain::categoria_marca::{
+    CategoriaMarcaNombres, 
+    lista as categoria_marca_lista,
+};
 use crate::domain::unidad::{Unidad, lista as unidad_lista};
+use crate::domain::pais::{Pais, lista as pais_lista};
 use crate::layout;
 use actix_web::Result as AwResult;
 use actix_web::{get, web, HttpResponse};
@@ -33,11 +37,11 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
         .unwrap();
     let categoria_default = categorias[0].id.unwrap();
 
-    let marcas = marca_lista(&pool)
+    let categorias_marcas = categoria_marca_lista(&pool, categoria_default)
         .await
         .map_err(|_e| HttpResponse::InternalServerError().finish())
         .unwrap();
-    let marca_default = marcas[0].id.unwrap();
+    let categorias_marcas_default = categorias_marcas[0].marca_id;
 
     let unidades = unidad_lista(&pool)
         .await
@@ -45,7 +49,13 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
         .unwrap();
     let unidad_default = unidades[0].id.unwrap();
 
-    let fabricas = fabrica_lista(&pool)
+    let paises = pais_lista(&pool)
+        .await
+        .map_err(|_e| HttpResponse::InternalServerError().finish())
+        .unwrap();
+    let pais_default = paises[0].id.unwrap();
+
+    let fabricas = fabrica_lista(&pool, pais_default)
         .await
         .map_err(|_e| HttpResponse::InternalServerError().finish())
         .unwrap();
@@ -57,9 +67,9 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
         "form.css",
         Some("producto/crea.js"),
         contenido(
-            capitulos, categorias, marcas, unidades, fabricas,
-            capitulo_default, categoria_default, marca_default,
-            unidad_default, fabrica_default,
+            capitulos, categorias, categorias_marcas, unidades, fabricas, paises,
+            capitulo_default, categoria_default, categorias_marcas_default,
+            unidad_default, fabrica_default, pais_default,
         ),
     )
 }
@@ -67,14 +77,16 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
 fn contenido(
     capitulos: Vec<Capitulo>,
     categorias: Vec<Categoria>,
-    marcas: Vec<Marca>,
+    categorias_marcas: Vec<CategoriaMarcaNombres>,
     unidades: Vec<Unidad>,
     fabricas: Vec<Fabrica>,
+    paises: Vec<Pais>,
     capitulo_default: i64,
     categoria_default: i64,
-    marca_default: i64,
+    categoria_marca_default: i64,
     unidad_default: i64,
     fabrica_default: i64,
+    pais_default: i64,
 ) -> Markup { html! {
     //form method="POST" action="/producto" {
     form method="POST" action="/productotot" {
@@ -107,10 +119,10 @@ fn contenido(
 
         label for="marca" {"Marca:" }
         select #marca_id name="marca_id" {
-            @for marca in marcas.into_iter() {
-                option value=(marca.id.unwrap())
-                selected[marca.id == Some(marca_default)] 
-                    {(marca.nombre)}
+            @for marca in categorias_marcas.into_iter() {
+                option value=(marca.marca_id)
+                selected[marca.marca_id == categoria_marca_default] 
+                    {(marca.marca_nombre)}
             }
         }
 
@@ -120,6 +132,15 @@ fn contenido(
                 option value=(unidad.id.unwrap())
                 selected[unidad.id == Some(unidad_default)] 
                     {(unidad.nombre)}
+            }
+        }
+
+        label for="pais" {"Pais:" }
+        select #pais_id {
+            @for pais in paises.into_iter() {
+                option value=(pais.id.unwrap())
+                selected[pais.id == Some(pais_default)] 
+                    {(pais.nombre)}
             }
         }
 

@@ -23,3 +23,4 @@ pub mod distribuidora;
 pub mod compra;
 pub mod comprado;
 pub mod vendedor;
+pub mod categoria_marca;

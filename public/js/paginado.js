@@ -14,7 +14,7 @@ export const paginar = (pagina) => {
     var fil = filtro.value.trim();
     if (fil !== '' && href.indexOf('filtro') > 0)
         url += `&filtro=${fil}`;
-    window.location.replace(encodeURI(url));
+    window.location.href = encodeURI(url);
 }
 
 // genera el query string para busqueda y llamar a la página 1
@@ -25,7 +25,7 @@ export const filtrar = (filtro) => {
     var url = `${origin}${pathname}`;
     if (fil !== '')
         url += `?filtro=${filtro}`;
-    window.location.replace(encodeURI(url));
+    window.location.href = encodeURI(url);
 }
 
 // eventos que generan un cambio de página

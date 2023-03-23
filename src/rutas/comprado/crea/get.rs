@@ -39,6 +39,10 @@ fn contenido(venta_id: i64) -> Markup { html! {
         input type="text" name="precio" id="precio" required
             placeholder="Precio";
 
+        label for="vencimiento" {"Vencimiento:" }
+        input type="text" name="vencimiento" id="vencimiento" required
+            placeholder="Vencimiento";
+
         label for="total" {"SubTotal:" }
         input type="text" name="subtotal" id="subtotal" required
             placeholder="Sub Total";

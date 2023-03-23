@@ -20,18 +20,19 @@ use anyhow::Context;
 #[derive(serde::Deserialize)]
 #[derive(Debug)]
 pub struct QueryData {
-    pub catalogo: i64,
     pub producto: i64,
 }
 
 #[tracing::instrument(name="lista de productos s/precio", skip(pool))]
-#[get("/precio")]
+#[get("/catalogo/{id}/precio")]
 pub async fn muestra(
+    path: web::Path<(i64,)>, 
     query: web::Query<QueryData>, 
     pool: web::Data<sqlx::PgPool>, 
 ) -> Result<HttpResponse, PrecioError> {
 
-    let catalogo = catalogo_obtiene(&pool, query.catalogo)
+    let (catalogo_id,) = path.into_inner();
+    let catalogo = catalogo_obtiene(&pool, catalogo_id)
         .await
         .context("Error al leer catalogo")?;
 
@@ -41,7 +42,7 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         "Precio", 
-        format!("/catalogo/{}/precios", query.catalogo).as_ref(), 
+        format!("/catalogo/{}/precios", catalogo_id).as_ref(), 
         "form.css", Some("precio/crea.js"), 
         contenido(&catalogo, &producto)
     );
@@ -61,10 +62,6 @@ fn contenido(catalogo: &Catalogo, producto: &Producto) -> Markup { html! {
         label for="precio" {"Precio:" }
         input type="number" name="precio" id="precio" required
             placeholder="Precio de venta";
-
-        label for="costo" {"Costo:" }
-        input type="number" name="costo" id="costo" required
-            placeholder="Costo de compra";
 
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }

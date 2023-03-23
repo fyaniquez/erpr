@@ -29,6 +29,7 @@ use crate::rutas::distribuidora;
 use crate::rutas::compra;
 use crate::rutas::comprado;
 use crate::rutas::vendedor;
+use crate::rutas::categoria_marca;
 // fin-objetos
 
 use crate::rutas::public::home;
@@ -103,6 +104,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(producto::lista::get::muestra_json)
             .service(producto::lista::get::muestra)
             .service(producto::lista_sin_precio::get::muestra)
+            .service(producto::lista_sin_inventariado::get::muestra)
             .service(producto::ve::get::muestra)
             .service(producto::crea::get::muestra)
             .service(producto::crea::post::procesa)
@@ -215,6 +217,11 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .service(vendedor::cambia::get::muestra)
             .service(vendedor::cambia::post::procesa)
             .service(vendedor::borra::delete::procesa)
+            .service(categoria_marca::lista::get::muestra)
+            .service(categoria_marca::ve::get::muestra)
+            .service(categoria_marca::crea::get::muestra)
+            .service(categoria_marca::crea::post::procesa)
+            .service(categoria_marca::borra::delete::procesa)
             // fin-servicios
             //.service(Files::new("/public", "./public")
             //.path_filter(|path, _| {

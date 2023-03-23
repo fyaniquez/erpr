@@ -52,6 +52,15 @@ fn contenido(inventariado: &Inventariado)
             placeholder="cantidad en existencia" 
             value=(inventariado.cantidad);
 
+        @let vencimiento = inventariado.vencimiento
+            .map(|date| date.format("%Y-%m-%d").to_string())
+            .unwrap_or_default();
+
+        label for="vencimiento" {"Vencimiento:" }
+        input type="date" name="vencimiento" id="vencimiento"
+            placeholder="vencimiento" 
+            value=(vencimiento);
+
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

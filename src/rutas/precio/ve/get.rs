@@ -43,16 +43,15 @@ pub async fn muestra(
     let pagina = layout::form::crea(
         "Precio", 
         format!("/catalogo/{}/precios", precio.catalogo_id).as_ref(), 
-        "form.css", Some("precio/ve.js"), contenido(precio));
+        "ve.css", Some("precio/ve.js"), contenido(precio));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(precio: Precio) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #precio {(precio.nombre)}
-    .form-label {"Precio:" }
-    .form-field #precio {(precio.precio)}
+    @let prc = precio.precio as f32 / 100.0;
+    .ve-label { strong { "Nombre: " } (precio.nombre) }
+    .ve-label { strong { "Precio: " } (prc) }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}

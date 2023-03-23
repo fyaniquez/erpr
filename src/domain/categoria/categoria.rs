@@ -24,12 +24,6 @@ pub enum CategoriaError {
     Lookups(#[from] sqlx::Error),
 }
 
-impl std::fmt::Debug for CategoriaError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
 impl ResponseError for CategoriaError {
     fn status_code(&self) -> StatusCode {
         match self {
@@ -37,6 +31,12 @@ impl ResponseError for CategoriaError {
             CategoriaError::Otro(_) => StatusCode::INTERNAL_SERVER_ERROR,
             CategoriaError::Lookups(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
+    }
+}
+
+impl std::fmt::Debug for CategoriaError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        error_chain_fmt(self, f)
     }
 }
 

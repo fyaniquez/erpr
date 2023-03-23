@@ -3,7 +3,11 @@
 //! date: 30/09/2022
 //! purpose: procesa el formulario de alta de inventariado
 
-use crate::domain::inventariado::{Inventariado, InventariadoError};
+use crate::domain::inventariado::{
+    Inventariado, 
+    InventariadoError,
+    actualiza as inventariado_actualiza,
+};
 use actix_web::{http::header, post, web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;
@@ -11,7 +15,8 @@ use sqlx::PgPool;
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
-    cantidad: i32,
+    cantidad: f32,
+    vencimiento: chrono::NaiveDate,
 }
 
 // valida y contruye el objeto FormData
@@ -22,7 +27,8 @@ impl TryFrom<FormData> for Inventariado {
             id: None, 
             nombre: String::from(""),
             producto_id: 0,
-            cantidad: form_data.cantidad,
+            vencimiento: Some(form_data.vencimiento),
+            cantidad: (form_data.cantidad * 100.0) as i32,
             inventario_id: 0,
         })
     }
@@ -52,21 +58,4 @@ pub async fn procesa(
         .finish())
 }
 
-// inserta un inventariado en la base de datos
-#[tracing::instrument(name = "modifica inventariado", skip(inventariado, pool))]
-pub async fn inventariado_actualiza(
-    pool: &PgPool,
-    inventariado: &Inventariado,
-    id: i64,
-) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query!(
-        r#"UPDATE inventariados 
-        SET cantidad=$2
-        WHERE id=$1"#,
-        id,
-        inventariado.cantidad,
-    )
-    .execute(pool)
-    .await?;
-    Ok(())
-}
+

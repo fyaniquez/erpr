@@ -9,4 +9,5 @@ pub use dml::{
     lista_paginada,
     obtiene,
     inserta,
+    actualiza,
 };

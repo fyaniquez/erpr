@@ -35,8 +35,7 @@ const onClickSubLista = (e) => {
 const onLoadVe = () => {
     window.hijos = 'productos';
     
-    var nombre = document.getElementById('nombre').innerText;
-    var confirmacion = `¿Esta seguro de eliminar la fábrica: ${nombre}?`;
+    var confirmacion = `¿Esta seguro de eliminar la fábrica?`;
 
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);

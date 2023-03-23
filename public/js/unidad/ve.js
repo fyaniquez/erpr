@@ -25,22 +25,14 @@ const onClickCambia = (e) => {
     window.location.replace(encodeURI(url));
 }
 
-// lista de objetos hijos del actual
-const onClickSubLista = (e) => {
-    var url = `${location.href}/${hijos}`;
-    window.location.replace(encodeURI(url));
-}
-
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadVe = () => {
     window.hijos = 'fabricas';
     
-    var nombre = document.getElementById('nombre').innerText;
-    var confirmacion = `¿Esta seguro de eliminar el capítulo: ${nombre}?`;
+    var confirmacion = `¿Esta seguro de eliminar el registro?`;
 
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);
-    sublista.addEventListener("click", onClickSubLista);
 }
 
 document.readyState === "complete" ? 

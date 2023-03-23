@@ -4,12 +4,10 @@
 //! purpose: procesa el formulario de modificacion de producto
 
 use crate::domain::inventariado::{
-    Inventariado,
     Nuevo as Inventariado_Nuevo,
     inserta as inventariado_inserta,
 };
 use crate::domain::precio::{
-    Precio,
     Nuevo as Precio_Nuevo,
     inserta as precio_inserta,
 };
@@ -84,6 +82,15 @@ pub async fn procesa(
         .insert_header((header::LOCATION, url_ver))
         .finish())
 }
+fn parse_string(input: &str) -> (i32, chrono::NaiveDate) {
+    let mut parts = input.split(';');
+    let numberf: f32 = parts.next().unwrap().parse().unwrap();
+    let number = (numberf * 100.0) as i32;
+    //let datef = parts.next().unwrap().to_string();
+    let datef = parts.next().unwrap();
+    let date = chrono::NaiveDate::parse_from_str(datef, "%d/%m/%Y").unwrap();
+    (number, date)
+}
 
 // extrae datos del producto del formulario, los verifica
 // e inserta en la base de datos junto al inventario y al catalogo
@@ -101,11 +108,13 @@ pub async fn procesatot(
     let producto: Producto = form.0.try_into().map_err(ProductoError::Validacion)?;
     
     // lineas añadidas para ayudar la inventariación
-    let cantidadf = &producto.barras;
-    let cantidadg: &String = cantidadf.as_ref().unwrap();
-    let cantidadh: f32 = cantidadg.parse().unwrap();
-    let cantidad: i32 = (cantidadh * 100.0) as i32;
-
+    let barras = producto.barras.as_ref().unwrap();
+    let (cantidad, vencimiento) = parse_string(&barras);
+    //let cantidadf = &producto.barras;
+    //let cantidadg: &String = cantidadf.as_ref().unwrap();
+    //let cantidadh: f32 = cantidadg.parse().unwrap();
+    //let cantidad: i32 = (cantidadh * 100.0) as i32;
+//
     let preciof: &String = &producto.contenido;
     let preciog: &String = preciof;
     let precioh: f32 = preciog.parse().unwrap();
@@ -116,8 +125,9 @@ pub async fn procesatot(
         .context("Error al actualizar producto en la BD")?;
 
     let inventariado = Inventariado_Nuevo {
-        cantidad, 
         producto_id: id,
+        cantidad, 
+        vencimiento, 
         inventario_id: 5,
     };
 

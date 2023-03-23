@@ -10,13 +10,13 @@ import {paginar} from "../paginado.js";
 // responde a un click en la fila de objetos
 const onClickVe = (e) => {
     var url = `${window.origin}/${objeto}/${e.target.parentElement.id}`;
-    window.location.replace(encodeURI(url));
+    window.location.href = encodeURI(url);
 }
 
 // llama al formulario de alta de objeto
 const onClickCrea = (e) => {
     var url = `${window.origin}/${objeto}`;
-    window.location.replace(encodeURI(url));
+    window.location.href = encodeURI(url);
 }
 
 // inicializa los eventos y listeners al terminar el cargado de la página

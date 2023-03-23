@@ -12,6 +12,7 @@ pub struct Inventariado {
     pub nombre: String,
     pub producto_id: i64,
     pub cantidad: i32,
+    pub vencimiento: Option<chrono::NaiveDate>,
     pub inventario_id: i64,
 }
 

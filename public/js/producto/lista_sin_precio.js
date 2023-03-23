@@ -9,12 +9,15 @@ import {paginar} from "../paginado.js";
 
 // responde a un click en la fila de objetos y crea un precio
 const onClickCrea = (e) => {
-    var path = window.location.pathname;
-    var partes = path.split('/');
-    var catalogo = partes[partes.length - 2];
+ var pos_int = location.href.indexOf('?');
+    var path;
+    if ( pos_int >= 0 )
+        path = location.href.substr(0, pos_int);
+    else
+        path = location.href;
+    var urlpath = path.replace('productos', 'precio');
     var producto = e.target.parentElement.id;
-    var query = `catalogo=${catalogo}&producto=${producto}`; 
-    var url = `${window.origin}/${objeto}?${query}`;
+    var url = `${urlpath}?producto=${producto}`;
     window.location.replace(encodeURI(url));
 }
 

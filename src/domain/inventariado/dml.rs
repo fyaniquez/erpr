@@ -12,7 +12,7 @@ use sqlx::PgPool;
 
 const SELECT: &str = 
     r#"SELECT inv.id, pro.nombre, inv.producto_id, 
-        inv.cantidad, inv.inventario_id
+        inv.cantidad, inv.vencimiento, inv.inventario_id
     FROM inventariados inv INNER JOIN productos pro 
     ON inv.producto_id = pro.id
     WHERE inv.inventario_id=$1"#;
@@ -54,7 +54,7 @@ pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Inventariado, sqlx::Error
     let fila: Inventariado =
         sqlx::query_as(
         r#"SELECT inv.id, pro.nombre, inv.producto_id, 
-            inv.cantidad, inv.inventario_id
+            inv.cantidad, inv.vencimiento, inv.inventario_id
         FROM inventariados inv INNER JOIN productos pro 
         ON inv.producto_id = pro.id
         WHERE inv.id=$1"#)
@@ -72,12 +72,32 @@ pub async fn inserta(
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
     r#"INSERT INTO inventariados 
-    (producto_id, cantidad, inventario_id) 
-    VALUES ($1, $2, $3) RETURNING id"#)
+    (producto_id, cantidad, vencimiento, inventario_id) 
+    VALUES ($1, $2, $3, $4) RETURNING id"#)
     .bind(inventariado_nuevo.producto_id)
     .bind(inventariado_nuevo.cantidad)
+    .bind(inventariado_nuevo.vencimiento)
     .bind(inventariado_nuevo.inventario_id)
     .fetch_one(pool)
     .await?;
     Ok(id)
+}
+// inserta un inventariado en la base de datos
+#[tracing::instrument(name = "modifica inventariado", skip(inventariado, pool))]
+pub async fn actualiza(
+    pool: &PgPool,
+    inventariado: &Inventariado,
+    id: i64,
+) -> Result<(), sqlx::Error> {
+    let _ = sqlx::query!(
+        r#"UPDATE inventariados 
+        SET cantidad=$2, vencimiento=$3
+        WHERE id=$1"#,
+        id,
+        inventariado.cantidad,
+        inventariado.vencimiento,
+    )
+    .execute(pool)
+    .await?;
+    Ok(())
 }

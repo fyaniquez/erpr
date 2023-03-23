@@ -10,14 +10,20 @@ use crate::domain::fabrica::{
 };
 use sqlx::PgPool;
 
-const SELECT: &str = "SELECT id, nombre, pais_id FROM fabricas";
-const SELECT_JSON: &str = "SELECT id, nombre, pais_id FROM fabricas ORDER BY nombre";
+const SELECT: &str = r#"SELECT id, nombre, pais_id 
+    FROM fabricas WHERE pais_id = $1"#;
+const SELECT_JSON: &str = r#"SELECT id, nombre, pais_id 
+    FROM fabricas WHERE pais_id=$1
+    ORDER BY nombre"#;
 
 // obtiene una lista de objetos
 #[tracing::instrument(name = "Lista fabricas", skip(pool))]
-pub async fn lista(pool: &PgPool) -> Result<Vec<Fabrica>, sqlx::Error> {
+pub async fn lista(pool: &PgPool, pais_id: i64) 
+-> Result<Vec<Fabrica>, sqlx::Error> {
     let filas: Vec<Fabrica> = sqlx::query_as(SELECT_JSON)
-        .fetch_all(pool).await?;
+        .bind(pais_id)
+        .fetch_all(pool)
+        .await?;
     Ok(filas)
 }
 
@@ -25,14 +31,18 @@ pub async fn lista(pool: &PgPool) -> Result<Vec<Fabrica>, sqlx::Error> {
 #[tracing::instrument(name = "Lista fabricas", skip(pool))]
 pub async fn lista_paginada(
     pool: &PgPool, 
-    paginado: &Paginado
+    paginado: &Paginado,
+    pais_id: i64,
 ) -> Result<(Vec<Fabrica>, i32), sqlx::Error> {
     let qry = paginado.get_qry(SELECT);
     let filas: Vec<Fabrica> = sqlx::query_as(qry.as_ref())
-        .fetch_all(pool).await?;
+        .bind(pais_id)
+        .fetch_all(pool)
+        .await?;
 
     let qry_count = paginado.get_qry_count(SELECT);
     let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
+        .bind(pais_id)
         .fetch_one(pool).await?;
     Ok((filas, nro_filas.0 as i32))
 }
@@ -51,4 +61,15 @@ pub async fn inserta(
     .await?;
     Ok(id)
 }
-
+// obtiene un pais de la base de datos
+#[tracing::instrument(name = "ve fabrica", skip(pool))]
+pub async fn obtiene(
+    pool: &PgPool, id: i64
+) -> Result<Fabrica, sqlx::Error> {
+    const SELECT: &str = "SELECT id, nombre, pais_id FROM fabricas WHERE id=$1";
+    let fila: Fabrica = sqlx::query_as(SELECT.as_ref())
+        .bind(id)
+        .fetch_one(pool)
+        .await?;
+    Ok(fila)
+}

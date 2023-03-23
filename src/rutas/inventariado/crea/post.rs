@@ -16,7 +16,8 @@ use sqlx::PgPool;
 #[derive(serde::Deserialize)]
 pub struct FormData {
     producto_id: i64,
-    cantidad: i32,
+    cantidad: f32,
+    vencimiento: chrono::NaiveDate,
     inventario_id: i64,
 }
 
@@ -26,7 +27,8 @@ impl TryFrom<FormData> for Nuevo {
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         Ok( Self{ 
             producto_id: form_data.producto_id,
-            cantidad: form_data.cantidad,
+            cantidad: (form_data.cantidad * 100.0) as i32,
+            vencimiento: form_data.vencimiento,
             inventario_id: form_data.inventario_id,
         })
     }

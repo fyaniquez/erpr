@@ -5,7 +5,7 @@
 use serde::{Serialize, Deserialize};
 use actix_web::http::StatusCode;
 use actix_web::ResponseError;
-use chrono::NaiveDateTime;
+use chrono::NaiveDate;
 
 #[derive(Serialize, Deserialize, sqlx::FromRow, Debug)]
 pub struct Comprado {
@@ -16,7 +16,7 @@ pub struct Comprado {
     pub costo: i32,
     pub descuento: i32,
     pub total: i32,
-    pub vencimiento: Option<NaiveDateTime>,
+    pub vencimiento: Option<NaiveDate>,
 }
 
 #[derive(Serialize, sqlx::FromRow)]
@@ -28,7 +28,7 @@ pub struct CompradoVe {
     pub costo: i32,
     pub descuento: i32,
     pub total: i32,
-    pub vencimiento: NaiveDateTime,
+    pub vencimiento: NaiveDate,
 }
 
 #[derive(Serialize, Deserialize)]

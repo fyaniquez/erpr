@@ -5,8 +5,14 @@
 
 use crate::layout::lista;
 use crate::layout::lista::Paginado;
-use crate::domain::pais::Pais;
-use crate::domain::fabrica::Fabrica;
+use crate::domain::pais::{
+    Pais,
+    obtiene as pais_obtiene,
+};
+use crate::domain::fabrica::{
+    Fabrica,
+    lista_paginada,
+};
 use actix_web::get;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, ResponseError};
@@ -29,12 +35,12 @@ pub async fn muestra(
         paginado.orden = "nombre".to_string();
     }
 
-    let (filas, total_filas) = lista(&pool, &paginado, pais_id)
+    let (filas, total_filas) = lista_paginada(&pool, &paginado, pais_id)
         .await
         .context("Error al leer fabricas de la BD")?;
     paginado.total_filas = Some(total_filas);
 
-    let pais = obtiene(&pool, pais_id).await
+    let pais = pais_obtiene(&pool, pais_id).await
         .context("Error al leer pais")?;
     
     let pagina = lista::crea(
@@ -46,29 +52,6 @@ pub async fn muestra(
         contenido(filas, &pais),
     );
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
-}
-
-// modelo
-// obtiene un fragmento de la tabla de fabricas en la base de datos
-#[tracing::instrument(name = "Lista fabricas", skip(pool))]
-pub async fn lista(
-    pool: &PgPool, 
-    paginado: &Paginado, 
-    pais_id: i64
-) -> Result<(Vec<Fabrica>, i32), sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, pais_id FROM fabricas where pais_id = $1";
-    
-    let qry = paginado.get_qry(SELECT);
-    let filas: Vec<Fabrica> = sqlx::query_as(qry.as_ref())
-        .bind(pais_id)
-        .fetch_all(pool).await?;
-
-    let qry_count = paginado.get_qry_count(SELECT);
-    let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
-        .bind(pais_id)
-        .fetch_one(pool).await?;
-
-    Ok((filas, nro_filas.0 as i32))
 }
 
 // vista
@@ -131,16 +114,4 @@ pub fn error_chain_fmt(
     Ok(())
 }
 
-// modelo
-// obtiene un pais de la base de datos
-#[tracing::instrument(name = "ve pais", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Pais, sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, sigla FROM paises WHERE id=$1";
-    let fila: Pais = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
-}
+

@@ -8,6 +8,7 @@ pub struct Nuevo {
     pub producto_id: i64,
     pub cantidad: i64,
     pub precio: i64,
+    pub vencimiento: chrono::NaiveDate,
     pub descuento: i64,
     pub total: i64,
 }

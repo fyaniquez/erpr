@@ -28,7 +28,7 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         LOCAL_MAYUSCULA, &format!("/{}", OBJETOS), 
-        "form.css", Some(&format!("{}/ve.js", OBJETO)), 
+        "ve.css", Some(&format!("{}/ve.js", OBJETO)), 
         contenido(unidad));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
@@ -36,10 +36,8 @@ pub async fn muestra(
 
 // vista
 fn contenido(unidad: Unidad) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(unidad.nombre)}
-    .form-label {"Sigla:" }
-    .form-field #sigla {(unidad.sigla)}
+    .ve-label {strong{"Nombre: " } (unidad.nombre)}
+    .ve-label {strong{"Sigla: " } (unidad.sigla)}
     button .form-submit #sublista type="button" { "Productos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

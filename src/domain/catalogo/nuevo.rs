@@ -4,7 +4,6 @@
 //! estructura para procesar catalogo nuevo
 
 use crate::domain::catalogo::nombre::Nombre;
-use chrono::NaiveDateTime;
 
 pub struct Nuevo {
     pub nombre: Nombre,

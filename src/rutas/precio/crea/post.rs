@@ -4,7 +4,6 @@
 //! purpose: procesa el formulario crea precio
 
 use crate::domain::precio::{
-    Precio,
     inserta as precio_inserta,
     Nuevo,
 };
@@ -17,7 +16,7 @@ use sqlx::PgPool;
 #[derive(serde::Deserialize)]
 pub struct FormData {
     producto_id: i64,
-    precio: i32,
+    precio: f32,
     catalogo_id: i64,
 }
 
@@ -27,7 +26,7 @@ impl TryFrom<FormData> for Nuevo {
     fn try_from(form_data: FormData) -> Result<Self, Self::Error> {
         Ok( Self{ 
             producto_id: form_data.producto_id,
-            precio: form_data.precio,
+            precio: (form_data.precio * 100.0) as i32,
             catalogo_id: form_data.catalogo_id,
         })
     }

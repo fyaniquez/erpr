@@ -15,7 +15,7 @@ const onClickCrea = (e) => {
     var producto = e.target.parentElement.id;
     var query = `catalogo=${catalogo}&producto=${producto}`; 
     var url = `${window.origin}/${objeto}?${query}`;
-    window.location.replace(encodeURI(url));
+    window.location.href = encodeURI(url);
 }
 
 // inicializa los eventos y listeners al terminar el cargado de la página

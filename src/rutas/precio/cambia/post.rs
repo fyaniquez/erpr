@@ -11,7 +11,7 @@ use sqlx::PgPool;
 // información que recopila el formulario de alta
 #[derive(serde::Deserialize)]
 pub struct FormData {
-    precio: i32,
+    precio: f32,
 }
 
 // valida y contruye el objeto FormData
@@ -22,7 +22,7 @@ impl TryFrom<FormData> for Precio {
             id: None, 
             nombre: String::from(""),
             producto_id: 0,
-            precio: form_data.precio,
+            precio: (form_data.precio * 100.0) as i32,
             catalogo_id: 0,
         })
     }

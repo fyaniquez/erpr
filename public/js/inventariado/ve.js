@@ -7,6 +7,7 @@
 
 // elimina el objeto
 const onClickBorra = async (e) => {
+    var confirmacion = `¿Esta seguro de eliminar el registro?`;
     if (!confirm(confirmacion))
         return;
     const response = await fetch(
@@ -25,22 +26,10 @@ const onClickCambia = (e) => {
     window.location.replace(encodeURI(url));
 }
 
-// lista de marcas del inventariado
-const onClickSubLista = (e) => {
-    var url = `${location.href}/${hijos}`;
-    window.location.replace(encodeURI(url));
-}
-
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadVe = () => {
-    window.hijos = 'ventas';
-    
-    var nombre = document.getElementById('nombre').innerText;
-    var confirmacion = `¿Esta seguro de eliminar el inventariado: ${nombre}?`;
-
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);
-    sublista.addEventListener("click", onClickSubLista);
 }
 
 document.readyState === "complete" ? 

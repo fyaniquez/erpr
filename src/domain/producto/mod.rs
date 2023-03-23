@@ -16,6 +16,7 @@ pub use dml::{
     lista_paginada,
     lista_sin_precio, 
     lista_paginada_sin_precio,
+    lista_paginada_sin_inventariado,
     obtiene_ve,
     obtiene,
     inserta,

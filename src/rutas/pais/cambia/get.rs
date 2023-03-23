@@ -7,7 +7,7 @@ use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup};
 use crate::layout;
 use sqlx::PgPool;
-use crate::domain::pais::{Pais, PaisError};
+use crate::domain::pais::{Pais, PaisError, obtiene};
 use anyhow::Context;
 
 //const OBJETO: &str = "pais";
@@ -47,17 +47,3 @@ fn contenido(pais: &Pais) -> Markup { html! {
         button .form-submit #cancela type="button" { "Cancela" }
     }
 }}
-// modelo
-// obtiene un pais de la base de datos
-#[tracing::instrument(name = "ve pais", skip(pool))]
-pub async fn obtiene(
-    pool: &PgPool, id: i64
-) -> Result<Pais, sqlx::Error> {
-    const SELECT: &str 
-        = "SELECT id, nombre, sigla FROM paises WHERE id=$1";
-    let fila: Pais = sqlx::query_as(SELECT.as_ref())
-        .bind(id)
-        .fetch_one(pool)
-        .await?;
-    Ok(fila)
-}

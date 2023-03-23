@@ -9,7 +9,12 @@ use crate::domain::categoria::{
     obtiene as categoria_obtiene, 
     Categoria
 };
-use crate::domain::fabrica::{lista as fabrica_lista, Fabrica};
+use crate::domain::pais::{lista as pais_lista, Pais};
+use crate::domain::fabrica::{
+    lista as fabrica_lista, 
+    Fabrica,
+    obtiene as fabrica_obtiene,
+};
 use crate::domain::marca::{lista as marca_lista, Marca};
 use crate::domain::producto::{
     obtiene as producto_obtiene, 
@@ -39,6 +44,11 @@ pub async fn muestra(
         .context("Error al leer categoria")
         .unwrap();
 
+    let fabrica = fabrica_obtiene(&pool, producto.fabrica_id)
+        .await
+        .context("Error al leer fabrica")
+        .unwrap();
+
     let capitulos = capitulo_lista(&pool)
         .await
         .context("Error al leer capitulos")
@@ -59,7 +69,12 @@ pub async fn muestra(
         .context("Error al leer unidades")
         .unwrap();
 
-    let fabricas = fabrica_lista(&pool)
+    let paises = pais_lista(&pool)
+        .await
+        .context("Error al leer paises")
+        .unwrap();
+
+    let fabricas = fabrica_lista(&pool, fabrica.pais_id)
         .await
         .context("Error al leer fabricas")
         .unwrap();
@@ -76,7 +91,9 @@ pub async fn muestra(
             marcas,
             unidades,
             fabricas,
+            paises,
             categoria.capitulo_id,
+            fabrica.pais_id,
         ),
     );
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
@@ -89,7 +106,9 @@ fn contenido(
     marcas: Vec<Marca>,
     unidades: Vec<Unidad>,
     fabricas: Vec<Fabrica>,
+    paises: Vec<Pais>,
     capitulo_id: i64,
+    pais_id: i64,
 ) -> Markup {
     html! {
         form method="POST" action={"/producto/"(producto.id.unwrap())} {
@@ -136,6 +155,15 @@ fn contenido(
                     option value=(unidad.id.unwrap())
                     selected[unidad.id == Some(producto.unidad_id)]
                         {(unidad.nombre)}
+                }
+            }
+
+            label for="pais" {"Paises:" }
+            select #pais_id {
+                @for pais in paises.into_iter() {
+                    option value=(pais.id.unwrap())
+                    selected[pais.id == Some(pais_id)]
+                        {(pais.nombre)}
                 }
             }
 

@@ -23,16 +23,19 @@ pub async fn muestra(
     let pagina = layout::form::crea(
         "Inventariado", 
         format!("/inventario/{}/inventariados", inventariado.inventario_id).as_ref(), 
-        "form.css", Some("inventariado/ve.js"), contenido(inventariado));
+        "ve.css", Some("inventariado/ve.js"), contenido(inventariado));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(inventariado: Inventariado) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #inventariado {(inventariado.nombre)}
-    .form-label {"Cantidad:" }
-    .form-field #cantidad {(inventariado.cantidad)}
+    @let vencimiento = inventariado.vencimiento
+        .map(|date| date.format("%d/%m/%Y").to_string())
+        .unwrap_or_default();
+    @let cantidad = inventariado.cantidad as f32 / 100.0;
+    .ve-label { strong { "Nombre: " } (inventariado.nombre)}
+    .ve-label { strong { "Cantidad: "} (cantidad)}
+    .ve-label { strong { "Vencimiento: "} (vencimiento)}
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
 }}

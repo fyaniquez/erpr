@@ -80,6 +80,37 @@ pub async fn lista_paginada_sin_precio(
         .fetch_one(pool).await?;
     Ok((filas, nro_filas.0 as i32))
 }
+
+// lista los productos sin precios en el catalogo proporcionado
+const SELECT_SI: &str = 
+    r#"SELECT pro.id, pro.nombre, pro.caracteristicas, pro.categoria_id,
+        pro.marca_id, pro.unidad_id, pro.fabrica_id, pro.contenido, 
+        pro.cantidad, pro.fraccionable, pro.barras, pro.activo
+    FROM productos AS pro
+    WHERE pro.id NOT IN
+        (SELECT inv.producto_id FROM inventariados AS inv
+        WHERE inv.inventario_id = $1)"#;
+
+// obtiene una pagina de la tabla de objetos
+#[tracing::instrument(
+    name = "Lista paginada productos sin inventariado", skip(pool))]
+pub async fn lista_paginada_sin_inventariado(
+    pool: &PgPool, 
+    paginado: &Paginado,
+    inventario_id: i64,
+) -> Result<(Vec<Producto>, i32), sqlx::Error> {
+    let qry = paginado.get_qry(SELECT_SI);
+    let filas: Vec<Producto> = sqlx::query_as(qry.as_ref())
+        .bind(inventario_id)
+        .fetch_all(pool).await?;
+
+    let qry_count = paginado.get_qry_count(SELECT_SI);
+    let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
+        .bind(inventario_id)
+        .fetch_one(pool).await?;
+    Ok((filas, nro_filas.0 as i32))
+}
+
 // obtiene un producto de la base de datos
 #[tracing::instrument(name = "ve producto ve", skip(pool))]
 pub async fn obtiene_ve(

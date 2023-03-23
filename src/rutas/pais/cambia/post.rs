@@ -6,6 +6,7 @@
 use crate::domain::pais::{
     Nombre, 
     Sigla,
+    actualiza,
 };
 use crate::domain::pais::{Pais, PaisError};
 use actix_web::{http::header, post, web, HttpResponse};
@@ -50,7 +51,7 @@ pub async fn procesa(
 ) -> Result<HttpResponse, PaisError> {
     let (id,) = path.into_inner();
     let pais = form.0.try_into().map_err(PaisError::Validacion)?;
-    pais_actualiza(&pool, &pais, id)
+    actualiza(&pool, &pais, id)
         .await
         .context("Error al actualizar pais en la BD")?;
     let url_ver =  format!("/pais/{}", id);
@@ -59,20 +60,3 @@ pub async fn procesa(
         .finish())
 }
 
-// inserta un pais en la base de datos
-#[tracing::instrument(name = "modifica pais", skip(pais, pool))]
-pub async fn pais_actualiza(
-    pool: &PgPool,
-    pais: &Pais,
-    id: i64,
-) -> Result<(), sqlx::Error> {
-    let _ = sqlx::query!(
-        "UPDATE paises SET nombre=$1, sigla=$2 WHERE id=$3",
-        &pais.nombre,
-        &pais.sigla,
-        id,
-    )
-    .execute(pool)
-    .await?;
-    Ok(())
-}
