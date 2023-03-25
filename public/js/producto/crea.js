@@ -42,15 +42,18 @@ function marcasXcategoria(categoria_id) {
 // llena el select con ellas
 function categoriasXcapitulo(capitulo_id) {
     const url = `/capitulo/${capitulo_id}/categorias.json`;
-    const select_categorias = document.getElementById("categoria_id");
+    let select_categorias = document.getElementById("categoria_id");
     loadJSON(url, generaSelect, select_categorias);
+    select_categorias = document.getElementById("categoria_id");
+    const categoria_id = select_categorias.value;
+    marcasXcategoria(categoria_id);
 }
 
 // obtiene las fabricas del pais proporcionado como parametro
 // llena el select con ellas
 function fabricasXpais(pais_id) {
     const url = `/pais/${pais_id}/fabricas.json`;
-    const select_paises = document.getElementById("pais_id");
+    const select_paises = document.getElementById("fabrica_id");
     loadJSON(url, generaSelect, select_paises);
 }
 // vuelve a la lista

@@ -91,8 +91,8 @@ fn contenido(filas: Vec<CategoriaMarcaNombres>, titulo: &str) -> Option<Markup> 
                 }
                 .lista-items {
                 @for fila in filas.into_iter() {
-                    .lista-item #{(fila.marca_id)} {
-                        span .nombre-largo {(fila.marca_nombre)}
+                    .lista-item #{(fila.id)} {
+                        span .nombre-largo {(fila.nombre)}
                     }
                 }}
             }

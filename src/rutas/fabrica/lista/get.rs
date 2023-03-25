@@ -11,6 +11,7 @@ use crate::domain::pais::{
 };
 use crate::domain::fabrica::{
     Fabrica,
+    lista,
     lista_paginada,
 };
 use actix_web::get;
@@ -54,6 +55,25 @@ pub async fn muestra(
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
+#[tracing::instrument(name = "Lista de fabricas en json", skip(pool))]
+#[get("/pais/{id}/fabricas.json")]
+pub async fn muestra_json(
+    path: web::Path<(i64,)>, 
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, FabricaError> {
+    let (pais_id,) = path.into_inner();
+
+    let filas = lista(&pool, pais_id)
+        .await .context("Error al leer fabricas de la BD")?;
+
+    // a json
+    let lista_json = serde_json::to_string(&filas)
+        .map_err(|err| FabricaError::Validacion(err.to_string()))
+        .unwrap();
+
+    // al browser
+    Ok(HttpResponse::Ok().body(lista_json))
+}
 // vista
 fn contenido(filas: Vec<Fabrica>, pais: &Pais) -> Option<Markup> {
     if filas.len() < 1 {

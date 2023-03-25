@@ -14,8 +14,7 @@ use sqlx::PgPool;
 #[tracing::instrument(name = "Lista categorias_marcas json", skip(pool))]
 pub async fn lista(pool: &PgPool, categoria_id: i64) 
 -> Result<Vec<CategoriaMarcaNombres>, sqlx::Error> {
-    const SELECT: &str = r#"SELECT categoria_id, c.nombre as categoria_nombre,
-        marca_id, m.nombre as marca_nombre
+    const SELECT: &str = r#"SELECT marca_id as id, m.nombre as nombre
         FROM categorias_marcas, categorias c, marcas m 
         WHERE categoria_id = c.id and marca_id = m.id and categoria_id=$1"#;
     let filas: Vec<CategoriaMarcaNombres> = sqlx::query_as(SELECT)

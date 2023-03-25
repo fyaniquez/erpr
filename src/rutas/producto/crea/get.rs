@@ -41,7 +41,7 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
         .await
         .map_err(|_e| HttpResponse::InternalServerError().finish())
         .unwrap();
-    let categorias_marcas_default = categorias_marcas[0].marca_id;
+    let categorias_marcas_default = categorias_marcas[0].id;
 
     let unidades = unidad_lista(&pool)
         .await
@@ -120,9 +120,9 @@ fn contenido(
         label for="marca" {"Marca:" }
         select #marca_id name="marca_id" {
             @for marca in categorias_marcas.into_iter() {
-                option value=(marca.marca_id)
-                selected[marca.marca_id == categoria_marca_default] 
-                    {(marca.marca_nombre)}
+                option value=(marca.id)
+                selected[marca.id == categoria_marca_default] 
+                    {(marca.nombre)}
             }
         }
 

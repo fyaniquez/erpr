@@ -12,12 +12,11 @@ pub struct CategoriaMarca {
     pub marca_id: i64,
 }
 
+// almacena las marcas asociadas a la categoria
 #[derive(Serialize, sqlx::FromRow)]
 pub struct CategoriaMarcaNombres {
-    pub categoria_id: i64,
-    pub categoria_nombre: String,
-    pub marca_id: i64,
-    pub marca_nombre: String,
+    pub id: i64,
+    pub nombre: String,
 }
 
 // errores considerados para lista de categorias
