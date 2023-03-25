@@ -7,6 +7,8 @@
 
 // elimina el objeto
 const onClickBorra = async (e) => {
+    var confirmacion = '¿Seguro de eliminar la relación categoría-marca?';
+
     if (!confirm(confirmacion))
         return;
     const response = await fetch(
@@ -35,8 +37,6 @@ const onClickSubLista = (e) => {
 const onLoadVe = () => {
     window.hijos = 'categorias_marcas';
     
-    var confirmacion = `¿Esta seguro de eliminar la categoría?`;
-
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);
     sublista.addEventListener("click", onClickSubLista);

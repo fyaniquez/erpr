@@ -16,7 +16,7 @@ const onClickVe = (e) => {
 // llama al formulario de alta de objeto
 const onClickCrea = (e) => {
     var url = location.href;
-    url = url.replace('categorias_marcas', window.objeto);
+    url = url.replace('categorias_marca', window.objeto);
     if (url.indexOf('?') >= 0 )
         url = url.substr(0, url.indexOf('?'));
     window.location.href = encodeURI(url.substring(0, url.length - 1));

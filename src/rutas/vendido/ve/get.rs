@@ -27,18 +27,18 @@ pub async fn muestra(
     let pagina = layout::form::crea(
         "Categoría", 
         format!("/venta/{}/vendidos", vendido.venta_id).as_ref(), 
-        "form.css", Some("vendido/ve.js"), contenido(vendido));
+        "ve.css", Some("vendido/ve.js"), contenido(vendido));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(vendido: VendidoVe) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #producto {(vendido.producto)}
-    .form-field #cantidad {(vendido.cantidad)}
-    .form-field #precio {(vendido.precio)}
-    .form-field #descuento {(vendido.descuento)}
-    .form-field #total {(vendido.total)}
+    .ve-label { strong { "Nombre: " }}
+    .ve-label #producto {(vendido.producto)}
+    .ve-label #cantidad {(vendido.cantidad)}
+    .ve-label #precio {(vendido.precio)}
+    .ve-label #descuento {(vendido.descuento)}
+    .ve-label #total {(vendido.total)}
     button .form-submit #sublista type="button" { "Marcas" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

@@ -7,6 +7,8 @@
 
 // elimina el objeto
 const onClickBorra = async (e) => {
+    var confirmacion = '¿Esta seguro de eliminar el registro?';
+
     if (!confirm(confirmacion))
         return;
     const response = await fetch(
@@ -29,8 +31,6 @@ const onClickCambia = (e) => {
 const onLoadVe = () => {
     window.hijos = 'fabricas';
     
-    var confirmacion = `¿Esta seguro de eliminar el registro?`;
-
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);
 }

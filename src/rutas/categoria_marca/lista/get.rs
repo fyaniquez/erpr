@@ -58,7 +58,7 @@ pub async fn muestra(
         .context("Error al leer categoria");
 
     if paginado.orden.is_empty() {
-        paginado.orden = "c.nombre, m.nombre".to_string();
+        paginado.orden = "m.nombre".to_string();
     }
 
     let (filas, total_filas) = lista_paginada( &pool, &paginado, categoria_id)

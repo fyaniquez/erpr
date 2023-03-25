@@ -23,7 +23,7 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         "País", "/medios", 
-        "form.css", Some("medio/ve.js"), 
+        "ve.css", Some("medio/ve.js"), 
         contenido(medio));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
@@ -31,10 +31,8 @@ pub async fn muestra(
 
 // vista
 fn contenido(medio: Medio) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(medio.nombre)}
-    .form-label {"Sigla:" }
-    .form-field #sigla {(medio.sigla)}
+    .ve-label { strong {"Nombre: " } (medio.nombre)}
+    .ve-label { strong {"Sigla: " } (medio.sigla)}
     button .form-submit #sublista type="button" { "Fábricas" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

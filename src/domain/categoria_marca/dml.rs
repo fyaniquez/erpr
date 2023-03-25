@@ -15,8 +15,8 @@ use sqlx::PgPool;
 pub async fn lista(pool: &PgPool, categoria_id: i64) 
 -> Result<Vec<CategoriaMarcaNombres>, sqlx::Error> {
     const SELECT: &str = r#"SELECT marca_id as id, m.nombre as nombre
-        FROM categorias_marcas, categorias c, marcas m 
-        WHERE categoria_id = c.id and marca_id = m.id and categoria_id=$1"#;
+        FROM categorias_marcas, marcas m 
+        WHERE marca_id = m.id and categoria_id=$1"#;
     let filas: Vec<CategoriaMarcaNombres> = sqlx::query_as(SELECT)
         .bind(categoria_id)
         .fetch_all(pool)
@@ -31,10 +31,9 @@ pub async fn lista_paginada(
     paginado: &Paginado,
     categoria_id: i64,
 ) -> Result<(Vec<CategoriaMarcaNombres>, i32), sqlx::Error> {
-    const SELECT: &str = r#"SELECT categoria_id, c.nombre as categoria_nombre, 
-        marca_id, m.nombre as marca_nombre
-        FROM categorias_marcas, categorias c, marcas m 
-        WHERE categoria_id = c.id and marca_id = m.id and categoria_id=$1"#;
+    const SELECT: &str = r#"SELECT marca_id as id, m.nombre as nombre
+        FROM categorias_marcas, marcas m 
+        WHERE marca_id = m.id and categoria_id=$1"#;
     let qry = paginado.get_qry(SELECT);
     let filas: Vec<CategoriaMarcaNombres> = sqlx::query_as(qry.as_ref())
         .bind(categoria_id)
@@ -53,10 +52,9 @@ pub async fn lista_paginada(
 #[tracing::instrument(name = "ve categorias_marca", skip(pool))]
 pub async fn obtiene(pool: &PgPool, categoria_id: i64, marca_id:i64) 
 -> Result<CategoriaMarcaNombres, sqlx::Error> {
-    const SEL: &str = r#"SELECT categoria_id, c.nomre, marca_id, m.nombre
-        FROM categorias_marcas, categorias c, marcas m
-        WHERE categoria_id=$1 AND categoria_id = c.id 
-        AND marca_id = m.id AND marca_id=$2"#;
+    const SEL: &str = r#"SELECT marca_id as id, m.nombre as nombre
+        FROM categorias_marcas, marcas m
+        WHERE categoria_id=$1 AND marca_id = m.id AND marca_id=$2"#;
     let fila: CategoriaMarcaNombres = sqlx::query_as(SEL.as_ref())
         .bind(categoria_id)
         .bind(marca_id)

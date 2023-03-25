@@ -23,19 +23,16 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         "Empresa", "/empresas", 
-        "form.css", Some("empresa/ve.js"), contenido(empresa));
+        "ve.css", Some("empresa/ve.js"), contenido(empresa));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(empresa: Empresa) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(empresa.nombre)}
-    .form-label {"NIT:" }
-    .form-field {(empresa.nit)}
-    .form-label {"Activa:" }
-    .form-field {@if empresa.activa {"Sí"} @else {"No"}}
+    .form-label { strong { "Nombre:" } (empresa.nombre)}
+    .form-label { strong { "NIT:" } (empresa.nit)}
+    .form-label { strong { "Activa:" } @if empresa.activa {"Sí"} @else {"No"}}
     button .form-submit #sublista type="button" { "Catálogos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

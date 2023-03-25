@@ -27,23 +27,18 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         "Distribuidora", "/distribuidoras", 
-        "form.css", Some("distribuidora/ve.js"), contenido(distribuidora));
+        "ve.css", Some("distribuidora/ve.js"), contenido(distribuidora));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(distribuidora: Distribuidora) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(distribuidora.nombre)}
-    .form-label {"NIT:" }
-    .form-field {(distribuidora.documento)}
-    .form-label {"Descripción:" }
-    .form-field {(distribuidora.descripcion)}
-    .form-label {"Preventa:" }
-    .form-field {(distribuidora.preventa)}
-    .form-label {"Activa:" }
-    .form-field {@if distribuidora.activa {"Sí"} @else {"No"}}
+    .ve-label {strong {"Nombre: " } (distribuidora.nombre)}
+    .ve-label {strong {"NIT: " } (distribuidora.documento)}
+    .ve-label {strong {"Descripción: " } (distribuidora.descripcion)}
+    .ve-label {strong {"Preventa: " } (distribuidora.preventa)}
+    .ve-label {strong {"Activa: " } @if distribuidora.activa {"Sí"} @else {"No"}}
     button .form-submit #sublista type="button" { "Contactos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

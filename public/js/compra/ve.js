@@ -7,6 +7,8 @@
 
 // elimina el objeto
 const onClickBorra = async (e) => {
+    var confirmacion = '¿Esta seguro de eliminar el compra';
+
     if (!confirm(confirmacion))
         return;
     const response = await fetch(
@@ -35,9 +37,6 @@ const onClickSubLista = (e) => {
 const onLoadVe = () => {
     window.hijos = 'proveedores';
     
-    var nombre = document.getElementById('nombre').innerText;
-    var confirmacion = `¿Esta seguro de eliminar el compra: ${nombre}?`;
-
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);
     sublista.addEventListener("click", onClickSubLista);

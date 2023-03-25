@@ -25,7 +25,7 @@ pub async fn muestra(
     let pagina = layout::form::crea(
         "Marca",
         &format!("/{}", "marcas"),
-        "form.css",
+        "ve.css",
         Some("marca/ve.js"),
         contenido(marca),
     );
@@ -36,8 +36,7 @@ pub async fn muestra(
 // vista
 fn contenido(marca: Marca) -> Markup {
     html! {
-        .form-label {"Nombre:" }
-        .form-field #nombre {(marca.nombre)}
+        .ve-label { strong {"Nombre: " } (marca.nombre)}
         button .form-submit #sublista type="button" { "Fábricas" }
         button .form-submit #cambia type="button" { "Cambiar" }
         button .form-submit #borra type="button" { "Borrar" }

@@ -7,6 +7,8 @@
 
 // elimina el objeto
 const onClickBorra = async (e) => {
+    var confirmacion = '¿Esta seguro de eliminar la fábrica?';
+
     if (!confirm(confirmacion))
         return;
     const response = await fetch(
@@ -35,8 +37,6 @@ const onClickSubLista = (e) => {
 const onLoadVe = () => {
     window.hijos = 'productos';
     
-    var confirmacion = `¿Esta seguro de eliminar la fábrica?`;
-
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);
     sublista.addEventListener("click", onClickSubLista);

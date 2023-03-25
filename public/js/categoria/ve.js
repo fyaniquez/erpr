@@ -7,6 +7,7 @@
 
 // elimina el objeto
 const onClickBorra = async (e) => {
+    const confirmacion = '¿Esta seguro de eliminar la categoría?';
     if (!confirm(confirmacion))
         return;
     const response = await fetch(
@@ -34,8 +35,6 @@ const onClickSubLista = (e) => {
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadVe = () => {
     window.hijos = 'categorias_marcas';
-    
-    var confirmacion = `¿Esta seguro de eliminar la categoría?`;
 
     borra.addEventListener("click", onClickBorra);
     cambia.addEventListener("click", onClickCambia);

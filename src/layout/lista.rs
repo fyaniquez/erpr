@@ -132,7 +132,11 @@ impl Paginado {
         let i = qry.find("FROM").unwrap();
         let v: Vec<&str> = qry[7..i].splitn(2, ',').collect();
         let f = qry[7..i].to_string();
-        let c = format!("COUNT({}) ", v[0].trim());
+        let mut columna = v[0].to_lowercase();
+        if let Some(index) = columna.find(" as ") {
+            columna.truncate(index);
+        }
+        let c = format!("COUNT({}) ", columna);
         let query = qry.replace(&f, &c);
 
         // agrega el filtro

@@ -34,14 +34,14 @@ pub async fn muestra(
         &titulo,
         format!(
             "/categoria/{}/categorias_marcas", 
-            categoria_marca.id).as_ref(), 
+            categoria_id).as_ref(), 
         "form.css", Some("categoria_marca/ve.js"), contenido(categoria_marca));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(categoria_marca: CategoriaMarcaNombres) -> Markup { html! {
-    .form-label {"Marca: " (categoria_marca.nombre)}
+    .form-label {strong{"Marca: "} (categoria_marca.nombre)}
     button .form-submit #sublista type="button" { "Productos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

@@ -30,14 +30,13 @@ pub async fn muestra(
     let pagina = layout::form::crea(
         "Inventario", 
         "/inventarios",
-        "form.css", Some("inventario/ve.js"), contenido(inventario));
+        "ve.css", Some("inventario/ve.js"), contenido(inventario));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(inventario: Inventario) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(inventario.nombre)}
+    .ve-label { strong {"Nombre: " } (inventario.nombre)}
     button .form-submit #sublista type="button" { "Productos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

@@ -23,14 +23,13 @@ pub async fn muestra(
     let pagina = layout::form::crea(
         "Catálogo", 
         format!("/sucursal/{}/catalogos", catalogo.sucursal_id).as_ref(), 
-        "form.css", Some("catalogo/ve.js"), contenido(catalogo));
+        "ve.css", Some("catalogo/ve.js"), contenido(catalogo));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(catalogo: Catalogo) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(catalogo.nombre)}
+    .ve-label { strong {"Nombre: " } (catalogo.nombre)}
     button .form-submit #sublista type="button" { "Precios" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

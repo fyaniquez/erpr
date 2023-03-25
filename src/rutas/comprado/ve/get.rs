@@ -27,18 +27,18 @@ pub async fn muestra(
     let pagina = layout::form::crea(
         "Categoría", 
         format!("/compra/{}/comprados", comprado.compra_id).as_ref(), 
-        "form.css", Some("comprado/ve.js"), contenido(comprado));
+        "ve.css", Some("comprado/ve.js"), contenido(comprado));
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(comprado: CompradoVe) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #producto {(comprado.producto)}
-    .form-field #cantidad {(comprado.cantidad)}
-    .form-field #costo {(comprado.costo)}
-    .form-field #descuento {(comprado.descuento)}
-    .form-field #total {(comprado.total)}
+    .ve-label { strong { "Nombre:" }}
+    .ve-label { (comprado.producto)}
+    .ve-label {(comprado.cantidad)}
+    .ve-label {(comprado.costo)}
+    .ve-label {(comprado.descuento)}
+    .ve-label {(comprado.total)}
     button .form-submit #sublista type="button" { "Marcas" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

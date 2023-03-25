@@ -23,17 +23,15 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         "Capítulo", "/capitulos", 
-        "form.css", Some("capitulo/ve.js"), contenido(capitulo));
+        "ve.css", Some("capitulo/ve.js"), contenido(capitulo));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(capitulo: Capitulo) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(capitulo.nombre)}
-    .form-label {"Descripción:" }
-    .form-field #descripcion {(capitulo.descripcion)}
+    .ve-label { strong {"Nombre: " } (capitulo.nombre)}
+    .ve-label { strong {"Descripción: " } (capitulo.descripcion)}
     button .form-submit #sublista type="button" { "Categorias" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

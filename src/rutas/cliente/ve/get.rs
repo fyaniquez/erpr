@@ -28,7 +28,7 @@ pub async fn muestra(
 
     let pagina = layout::form::crea(
         "Cliente", "/clientes", 
-        "form.css", Some("cliente/ve.js"), contenido(cliente));
+        "ve.css", Some("cliente/ve.js"), contenido(cliente));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
@@ -75,10 +75,8 @@ pub async fn muestra_documento_json(
 
 // vista
 fn contenido(cliente: Cliente) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(cliente.nombre)}
-    .form-label {"Documento:" }
-    .form-field #documento {(cliente.documento)}
+    .ve-label { strong {"Nombre: " } (cliente.nombre)}
+    .ve-label { strong {"Documento: " } (cliente.documento)}
     button .form-submit #sublista type="button" { "Datos" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

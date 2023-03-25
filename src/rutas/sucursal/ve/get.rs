@@ -30,15 +30,14 @@ pub async fn muestra(
     let pagina = layout::form::crea(
         "Sucursal", 
         format!("/empresa/{}/sucursales", sucursal.empresa_id).as_ref(), 
-        "form.css", Some("sucursal/ve.js"), contenido(sucursal));
+        "ve.css", Some("sucursal/ve.js"), contenido(sucursal));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
 }
 
 // vista
 fn contenido(sucursal: Sucursal) -> Markup { html! {
-    .form-label {"Nombre:" }
-    .form-field #nombre {(sucursal.nombre)}
+    .ve-label { strong { "Nombre:" } (sucursal.nombre)}
     button .form-submit #sublista type="button" { "Marcas" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }
