@@ -38,22 +38,26 @@ fn contenido(vendido: &VendidoVe) -> Markup { html! {
     form method="POST" action={"/vendido/"(id)} {
         input type="hidden" name="id" value={(vendido.venta_id)}
 
-        label for="producto_id" {"Producto:" }
-        input type="text" name="producto_id" id="producto_id" required
-            placeholder="Nombre capítulo" value=(vendido.producto);
-
-        label for="cantidad" {"Cantidad:" }
-        input type="text" name="cantidad" id="cantidad" required
-            placeholder="Nombre capítulo" value=(vendido.cantidad);
-
-        label for="precio" {"Precio:" }
-        input type="text" name="precio" id="precio" required
-            placeholder="Nombre capítulo" value=(vendido.precio);
-
-        label for="total" {"Total:" }
-        input type="text" name="total" id="total" required
-            placeholder="Nombre capítulo" value=(vendido.total);
-
+        .form-fila {
+            label for="producto_id" {"Producto:" }
+            input type="text" name="producto_id" id="producto_id" required
+                placeholder="Nombre capítulo" value=(vendido.producto);
+        }
+        .form-fila {
+            label for="cantidad" {"Cantidad:" }
+            input type="text" name="cantidad" id="cantidad" required
+                placeholder="Nombre capítulo" value=(vendido.cantidad);
+        }
+        .form-fila {
+            label for="precio" {"Precio:" }
+            input type="text" name="precio" id="precio" required
+                placeholder="Nombre capítulo" value=(vendido.precio);
+        }
+        .form-fila {
+            label for="total" {"Total:" }
+            input type="text" name="total" id="total" required
+                placeholder="Nombre capítulo" value=(vendido.total);
+        }
 
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }

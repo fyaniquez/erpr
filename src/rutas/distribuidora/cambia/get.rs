@@ -27,23 +27,27 @@ pub async fn muestra(
 
 fn contenido(distribuidora: &Distribuidora) -> Markup { html! {
     form method="POST" action={"/distribuidora/"(distribuidora.id.unwrap())} {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre capítulo" value=(distribuidora.nombre);
-
-        label for="NIT" {"NIT:" }
-        input type="text" name="documento" id="documento" required
-            placeholder="# Iden. tributaria" value=(distribuidora.documento);
-
-        fieldset {
-            legend { "¿Está activo?"}
-            input type="radio" name="activa" id="activo_si" value="true"
-                checked[distribuidora.activa];
-            label for="activo_si" {"Si"}
-            input type="radio" name="activa" id="activo_no" value="false"
-                checked[!distribuidora.activa];
-            label for="activo_no" {"No"}
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre capítulo" value=(distribuidora.nombre);
+        }
+        .form-fila {
+            label for="NIT" {"NIT:" }
+            input type="text" name="documento" id="documento" required
+                placeholder="# Iden. tributaria" value=(distribuidora.documento);
+        }
+        .form-fila {
+            fieldset {
+                legend { "¿Está activo?"}
+                input type="radio" name="activa" id="activo_si" value="true"
+                    checked[distribuidora.activa];
+                label for="activo_si" {"Si"}
+                input type="radio" name="activa" id="activo_no" value="false"
+                    checked[!distribuidora.activa];
+                label for="activo_no" {"No"}
             }
+        }
 
    button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }

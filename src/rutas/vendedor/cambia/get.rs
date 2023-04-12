@@ -34,21 +34,24 @@ pub async fn muestra(
 fn contenido(vendedor: &Vendedor) -> Markup { html! {
     form method="POST" action={"/vendedor/"(vendedor.id.unwrap())} {
 
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre vendedor" value=(vendedor.nombre);
-
-        label for="cargo" {"Cargo:" }
-        select #cargo name="cargo" {
-            option value="Preventista" selected {"Preventista"}
-            option value="Camionero" {"Camionero"}
-            option value="Supervisor" {"Supervisor"}
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre vendedor" value=(vendedor.nombre);
         }
-
-        label for="contactos" {"Contactos:" }
-        input type="text" name="contactos" id="contactos" required
-            placeholder="Contactos" value=(vendedor.contactos);
-
+        .form-fila {
+            label for="cargo" {"Cargo:" }
+            select #cargo name="cargo" {
+                option value="Preventista" selected {"Preventista"}
+                option value="Camionero" {"Camionero"}
+                option value="Supervisor" {"Supervisor"}
+            }
+        }
+        .form-fila {
+            label for="contactos" {"Contactos:" }
+            input type="text" name="contactos" id="contactos" required
+                placeholder="Contactos" value=(vendedor.contactos);
+        }
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

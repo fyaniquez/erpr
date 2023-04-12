@@ -41,13 +41,15 @@ fn contenido(precio: &Precio)
 
         input type="hidden" name="catalogo_id" value=(precio.catalogo_id);
         input type="hidden" name="producto_id" value=(precio.producto_id);
-
-        label for="producto" {"Producto:" }
-        .form-field #precio {(precio.nombre)}
-
-        label for="precio" {"Precio:" }
-        input type="text" name="precio" id="precio" required
-            placeholder="precio p/venta" value=(precio.precio);
+        .form-fila {
+            label for="producto" {"Producto:" }
+            .form-field #precio {(precio.nombre)}
+        }
+        .form-fila {
+            label for="precio" {"Precio:" }
+            input type="text" name="precio" id="precio" required
+                placeholder="precio p/venta" value=(precio.precio);
+        }
 
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }

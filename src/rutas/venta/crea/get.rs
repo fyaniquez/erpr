@@ -8,7 +8,7 @@ use crate::domain::medio::{lista as medio_lista, Medio};
 use crate::layout;
 use actix_web::Result as AwResult;
 use actix_web::{get, web, HttpResponse};
-use maud::{html, Markup};
+use maud::{html, Markup, PreEscaped};
 use sqlx::PgPool;
 
 #[tracing::instrument(name = "formulario crea venta", skip(pool))]
@@ -16,7 +16,7 @@ use sqlx::PgPool;
 pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
     let puesto_id: i64 = 1;
     let usuario_id: i64 = 1;
-    let catalogo_id: i64 = 1;
+    let catalogo_id: i64 = 2;
 
     let medios = medio_lista(&pool)
         .await
@@ -26,7 +26,7 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
     layout::form::crea(
         "Venta",
         &format!("/puest/{}/ventas", puesto_id),
-        "maestro-detalle.css",
+        "maedet.css",
         Some("venta/crea.js"),
         contenido(medios, puesto_id, usuario_id, catalogo_id),
     )
@@ -37,138 +37,104 @@ fn contenido(
     puesto_id: i64,
     usuario_id: i64,
     catalogo_id: i64,
-) -> Markup {
-    html! {
-        form method="POST" action="/venta" {
+) -> Markup { html! {
+    .busqueda-box #busqueda-box {
+        .busqueda_titulo #busqueda_titulo {};
+        .busqueda #busqueda {};
+    }
 
-            input #puesto_id type="hidden" 
-                name="puesto_id" value=(puesto_id);
-            input #usuario_id type="hidden" 
-                name="usuario_id" value=(usuario_id);
-            input #catalogo_id type="hidden" 
-                name="catalogo_id" value=(catalogo_id);
-            .busqueda-box #busqueda-box {
-                .busqueda_titulo #busqueda_titulo {};
-                .busqueda #busqueda {};
+    table .form-tabla { colgroup { col; col; col; col; col; col; col; }
+        (formulario_detalle())
+        (formulario_maestro(medios))
+    }
+
+    (formulario_cliente())
+
+    .bar-cmd {
+        button .btn .accion #agrega_item type="button" { "Graba venta" }
+        button .btn .peligro #borra_item type="button" { "Cancela venta" }
+    }
+} }
+
+fn formulario_detalle() -> Markup { html! {
+    tr .form-tabla-cabecera {
+        th {"id"} th {"Producto"} th {"Prc."} 
+        th {"Ctd."} th {"Dsc."} th {"Tot."} th;
+    }
+    tr .form-tabla-fila {
+        td { input #frm_id type="text"; }
+        td { input #frm_nombre type="text"; }
+        td { span #frm_prc; }
+        td { input #frm_cantidad type="text" required; }
+        td { input #frm_descuento type="text" required; }
+        td { input #frm_total type="text" required; }
+        td { .cmd { #frm_cmd .btn-min .accion { (PreEscaped("&#x2714")) } } }
+    }
+}}
+
+fn formulario_maestro(medios: Vec<Medio>) -> Markup { html! {
+    tr .form-tabla-fila {
+        td .tot-label colspan="5" { "Subtotal" }
+        td #mas_subotal .tot-monto;
+        td;
+    }
+    tr .form-tabla-fila {
+        td .tot-label colspan="5" { "Descuento" }
+        td { input #mas_descuento type="text" required; }
+        td;
+    }
+    tr .form-tabla-fila {
+        td .tot-label colspan="2" { "Tipo Pago" }
+        td {
+            select #medio name="medio" {
+                @for medio in medios.into_iter() {
+                    option value=(medio.id.unwrap()) 
+                        selected[medio.nombre == "efectivo"] {(medio.nombre)}
+                }
             }
+        }
+        td;
+        td .tot-label { "Total" }
+        td #mas_total .tot-monto;
+        td;
+    }
+    tr .form-tabla-fila {
+        td .tot-label colspan="5" { "Pago" }
+        td { input #mas_pago type="text" required; }
+        td;
+    }
+    tr .form-tabla-fila {
+        td .tot-label colspan="5" { "Cambio" }
+        td #mas_cambio .tot-monto;
+        td;
+    }
+} }
 
-            (formulario_detalle())
-
-            .maestro-box {
-                label for="cliente_id" {"Código:" }
-                input type="text" name="cliente_id"
-                    id="cliente_id" required placeholder="cliente";
-
-                label for="documento" {"NIT/CI/CEX:" }
-                input type="text"
-                    id="documento" required placeholder="NIT/CI/CEX";
-
-                label for="nombre" {"Nombres:" }
-                input type="text"
-                    id="nombre" required placeholder="Nombres/Razón Social";
-
-                label for="subtotal" {"Sub Total:" }
-                input type="text"
-                    id="subtotal" required placeholder="Suma de items";
-
-                label for="descuento" {"Descuento:" }
-                input type="text" name="descuento" id="descuento"
-                    required placeholder="Descuento";
-
-                label for="total" {"Total:" }
-                input type="text" name="total" id="total"
-                    required placeholder="Total a pagar";
-
-                label for="pago" {"Pago:" }
-                input type="text" id="pago";
-
-                label for="cambio" {"Cambio:" }
-                input type="text" id="cambio";
-
-                select #medio name="medio" {
-                    @for medio in medios.into_iter() {
-                        option value=(medio.id.unwrap())
-                        selected[medio.nombre == "efectivo"]
-                            {(medio.nombre)}
+fn formulario_cliente() -> Markup { html! {
+    fieldset { legend { "Cliente" }
+        table {
+            tr {
+                td { 
+                    input #cli_id type="text" name="cliente_id" required
+                        placeholder="Nro.Cliente"; 
+                }
+                td { 
+                    input #cli_documento type="text" required
+                        placeholder="NIT/CI/CEX";
+                }
+                td rowspan="2" { .cmd {
+                    button .btn .accion .centrado .disabled type="button" {
+                        "Crea cliente"
                     }
+                } }
+            }
+            tr {
+                td rowspan="2" {
+                    input #cli_nombre type="text" required
+                        placeholder="Apellidos, Nombres / Razón Social";
                 }
-            }
-
-            button #crea .form-submit type="button" { "Crear" }
-            button #cancela .form-submit type="button" { "Cancelar" }
-        }
-    }
-}
-
-fn formulario_detalle() -> Markup {
-    html! {
-        .det-box #detalle {
-            .det-fila {
-                .det-item {
-                    input .det-corto type="text" id="producto_id"
-                        placeholder="id prod.";
-                    input .det-largo #producto type="text"
-                        placeholder="nombre producto";
-                    img .det-btn #"borra"
-                        src="/img/waste-24.png" alt="Agrega";
-                }
-                .det-item {
-                    .lit-corto #precio {}
-                    input .det-corto type="text" id="cantidad"
-                        placeholder="cantidad" required;
-                    input .det-corto type="text" id="descuento"
-                        placeholder="descuento" required;
-                    input .det-corto type="text" id="total"
-                        placeholder="total" required;
-                }
-            }
-            .det-cell {
-                button .btn #agrega_item type="button" {
-                    img src="/img/si.png" alt="Agrega";
-                }
-            }
-            .det-cell {
-                button .btn #borra_item type="button" {
-                    img src="/img/no.png" alt="Cancela";
-                }
-            }
-        }
-        (tabla_detalle())
-    }
-}
-
-fn tabla_detalle() -> Markup {
-    html! {
-        .det-tabla #det_tabla {
-            div {
-                div { "id" }
-                div { "Producto" }
-                div { "Prc." }
-                div { "Ctd." }
-                div { "Dsc." }
-                div { "Tot." }
-                div { img src="/img/gear.png"; }
-            }
-
-            #det_fila {
-                div { }
-                div { }
-                div { }
-                div { }
-                div { }
-                div { }
-                div { img src="/img/waste-24.png"; }
-            }
-
-            #totales {
-                div { }
-                div { "Totales" }
-                div { }
-                div { }
-                #t_descuento { }
-                #t_total { }
-                div { }
+                td;
             }
         }
     }
-}
+} }

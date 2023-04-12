@@ -35,9 +35,11 @@ fn contenido(capitulo_id: i64) -> Markup { html! {
     form method="POST" 
     action=(format!("/capitulo/{}/categoria", capitulo_id)) {
         input type="hidden" name="capitulo_id" value=(capitulo_id);
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre categoría";
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre categoría";
+        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

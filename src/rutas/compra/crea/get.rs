@@ -73,34 +73,43 @@ fn contenido(
             (formulario_detalle())
 
             .maestro-box {
-                label for="descuento" {"Descuento:" }
-                input type="text" name="descuento" id="descuento"
-                    required placeholder="Descuento";
-
-                label for="total" {"Total:" }
-                input type="text" name="total" id="total"
-                    required placeholder="Total a pagar";
-
-                label for="pago" {"Pago:" }
-                input type="text" id="pago";
-
-                label for="cambio" {"Cambio:" }
-                input type="text" id="cambio";
-
-                label for="documento" {"Factura:" }
-                input type="text"
-                    id="documento" required placeholder="Factura/Recibo";
-
-                label for="observaciones" {"Observaciones:" }
-                input type="text"
-                    id="observaciones" required 
-                    placeholder="Datos adicionales respecto a la compra";
-
-                select #medio name="medio" {
-                    @for medio in medios.into_iter() {
-                        option value=(medio.id.unwrap())
-                        selected[medio.nombre == "efectivo"]
-                            {(medio.nombre)}
+                .maestro-fila {
+                    label for="descuento" {"Descuento:" }
+                    input type="text" name="descuento" id="descuento"
+                        required placeholder="Descuento";
+                }
+                .maestro-fila {
+                    label for="total" {"Total:" }
+                    input type="text" name="total" id="total"
+                        required placeholder="Total a pagar";
+                }
+                .maestro-fila {
+                    label for="pago" {"Pago:" }
+                    input type="text" id="pago";
+                }
+                .maestro-fila {
+                    label for="cambio" {"Cambio:" }
+                    input type="text" id="cambio";
+                }
+                .maestro-fila {
+                    label for="documento" {"Factura:" }
+                    input type="text"
+                        id="documento" required placeholder="Factura/Recibo";
+                }
+                .maestro-fila {
+                    label for="observaciones" {"Observaciones:" }
+                    input type="text"
+                        id="observaciones" required 
+                        placeholder="Datos adicionales respecto a la compra";
+                }
+                .maestro-fila {
+                    label for="medio" {"M/Pago:" }
+                    select #medio name="medio" {
+                        @for medio in medios.into_iter() {
+                            option value=(medio.id.unwrap())
+                            selected[medio.nombre == "efectivo"]
+                                {(medio.nombre)}
+                        }
                     }
                 }
             }

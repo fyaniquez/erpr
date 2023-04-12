@@ -27,9 +27,11 @@ pub async fn muestra(
 
 fn contenido(marca: &Marca) -> Markup { html! {
     form method="POST" action={"/marca/"(marca.id.unwrap())} {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre país" value=(marca.nombre);
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre país" value=(marca.nombre);
+        }
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

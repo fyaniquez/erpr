@@ -48,11 +48,13 @@ pub async fn muestra(
 fn contenido(url: &str, categoria_id: i64, marcas: Vec<Marca>) -> Markup { html! {
     form method="POST" action=(url) {
         input type="hidden" name="categoria_id" value=(categoria_id);
-        label for="marca" {"Marca: " }
-        select #marca_id name="marca_id" {
-            @for marca in marcas.into_iter() {
-                option value=(marca.id.unwrap())
-                    {(marca.nombre)}
+        .form-fila {
+            label for="marca" {"Marca: " }
+            select #marca_id name="marca_id" {
+                @for marca in marcas.into_iter() {
+                    option value=(marca.id.unwrap())
+                        {(marca.nombre)}
+                }
             }
         }
         button #crea .form-submit type="submit" { "Crear" }

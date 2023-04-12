@@ -6,32 +6,32 @@
  */
 // valida detalle ingresado
 const validaDetalle = () => {
-    const producto_id_val = validaEntero(window.producto_id);
+    const producto_id_val = validaEntero(window.producto_id_frm);
     if (producto_id_val < 1) {
         alert("Debe introducir un id del producto válido");
         producto_id.value = producto_id_val;
         producto_id.focus();
         return null;
     }
-    const cantidad = document.getElementById("cantidad");
-    const cantidad_val = validaDecimal("cantidad");
+    const cantidad = document.getElementById("cantidad_frm");
+    const cantidad_val = validaDecimal("cantidad_frm");
     if ( cantidad_val <= 0.0 ) {
         alert("Debe introducir la cantidad del producto vendido");
         cantidad.value = cantidad_val;
         cantidad.focus();
         return null;
     }
-    const descuento = document.getElementById("descuento");
-    const descuento_val = validaDecimal("descuento");
+    const descuento = document.getElementById("descuento_frm");
+    const descuento_val = validaDecimal("descuento_frm");
     if ( descuento_val < 0.0 ) {
         alert("Debe introducir un descuento mayor o igual a cero");
         descuento.value = descuento_val;
         descuento.focus();
         return null;
     }
-    const precio = document.getElementById("precio").innerText;
-    const producto = document.getElementById("producto").innerText;
-    const total = document.getElementById("total").value;
+    const precio = document.getElementById("precio_frm").innerText;
+    const producto = document.getElementById("producto_frm").innerText;
+    const total = document.getElementById("total_frm").value;
     return {
         producto_id: producto_id_val,
         producto: producto,
@@ -63,10 +63,10 @@ const validaDec = (numero, defa) => {
 // agrega item a la tabla de vendidos
 const agregaItem = (detalle) => {
     var fila = window.fila + 1;
-    var precio = parseFloat(detalle.precio).toFixed(2);
-    var cantidad = parseFloat(detalle.cantidad).toFixed(2);
-    var descuento = parseFloat(detalle.descuento).toFixed(2);
-    var total = parseFloat(detalle.total).toFixed(2);
+    var precio = parseFloat(detalle.precio);
+    var cantidad = parseFloat(detalle.cantidad);
+    var descuento = parseFloat(detalle.descuento);
+    var total = parseFloat(detalle.total);
     const nuevo_item = `<div><div>${detalle.producto_id}</div>
         <div>${detalle.producto}</div><div>${precio}</div>
         <div>${cantidad}</div><div>${descuento}</div>
@@ -87,8 +87,8 @@ const muestraTotalTabla = (detalle) => {
     t_total += detalle.total;
     t_descuento += detalle.descuento;
 
-    window.t_total.innerText = parseFloat(t_total).toFixed(2);
-    window.t_descuento.innerText = parseFloat(t_descuento).toFixed(2);
+    window.t_total.innerText = parseFloat(t_total);
+    window.t_descuento.innerText = parseFloat(t_descuento);
 }
 
 // obtiene producto
@@ -131,12 +131,12 @@ const calculaCampos = (producto) => {
 // muestra producto en formulario
 const muestraProductoFrm = producto => {
     var campos = calculaCampos(producto);
-    window.producto_id.value = producto.producto_id;
-    window.producto.value = producto.nombre;
-    window.precio.innerText = campos.precio;
-    window.cantidad.value = campos.cantidad;
-    window.descuento.value = campos.descuento;
-    window.total.value = campos.total;
+    window.producto_id_frm.value = producto.id;
+    window.producto_frm.value = producto.nombre;
+    window.precio_frm.innerText = campos.precio;
+    window.cantidad_frm.value = campos.cantidad;
+    window.descuento_frm.value = campos.descuento;
+    window.total_frm.value = campos.total;
 }
 
 // muestra cliente en formulario
@@ -196,7 +196,7 @@ const creaJsonVenta = () => {
     return {
         venta: {
             total: +window.total.value,
-            descuento: +window.descuento.value,
+            descuento: +window.descuento_tot.value,
             cliente_id: +window.cliente_id.value,
             puesto_id: +window.puesto_id.value,
             usuario_id: +window.usuario_id.value,
@@ -264,15 +264,15 @@ const onKeyupProducto = async e => {
 
 const onChangeCantidad = e => {
     var cantidad = validaDec(e.target.value, 1);   
-    var precio = validaDec(window.precio.innerText, 0);
-    var descuento = validaDec(window.descuento.innerText, 0);
+    var precio = validaDec(window.precio_frm.innerText, 0);
+    var descuento = validaDec(window.descuento_frm.innerText, 0);
     window.total.value = cantidad * precio - descuento;
 }
 
 const onChangeDescuento = e => {
     var descuento = validaDec(e.target.value, 1);   
-    var precio = validaDec(window.precio.innerText, 0);
-    var cantidad = validaDec(window.cantidad.innerText, 0);
+    var precio = validaDec(window.precio_frm.innerText, 0);
+    var cantidad = validaDec(window.cantidad_frm.innerText, 0);
     window.total.value = cantidad * precio - descuento;
 }
 
@@ -337,12 +337,12 @@ const onClickCrea = async e => {
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadCrea = () => {
     window.agrega_item.addEventListener("click", onClickAgregaItem);
-    window.producto_id.addEventListener("change", onChangeProductoId);
+    window.producto_id_frm.addEventListener("change", onChangeProductoId);
+    window.producto_frm.addEventListener("keyup", onKeyupProducto);
+    window.cantidad_frm.addEventListener("change", onChangeCantidad);
+    window.descuento_frm.addEventListener("change", onChangeDescuento);
     window.cliente_id.addEventListener("change", onChangeClienteId);
     window.documento.addEventListener("change", onChangeDocumento);
-    window.producto.addEventListener("keyup", onKeyupProducto);
-    window.cantidad.addEventListener("change", onChangeCantidad);
-    window.descuento.addEventListener("change", onChangeDescuento);
     window.busqueda.addEventListener("click", onClickBusqueda);
     window.nombre.addEventListener("keyup", onKeyupNombre);
     window.crea.addEventListener("click", onClickCrea);

@@ -34,21 +34,24 @@ pub async fn muestra(
 fn contenido(distribuidora_id: i64) -> Markup { html! {
     @let url = format!("/distribuidora/{}/vendedor", distribuidora_id);
     form method="POST" action=(url) {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre vendedor";
-
-        label for="cargo" {"Cargo:" }
-        select #cargo name="cargo" {
-            option value="Preventista" selected {"Preventista"}
-            option value="Camionero" {"Camionero"}
-            option value="Supervisor" {"Supervisor"}
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre vendedor";
         }
-
-        label for="contactos" {"Contactos:" }
-        input type="text" name="contactos" id="contactos" required
-            placeholder="Contactos";
-
+        .form-fila {
+            label for="cargo" {"Cargo:" }
+            select #cargo name="cargo" {
+                option value="Preventista" selected {"Preventista"}
+                option value="Camionero" {"Camionero"}
+                option value="Supervisor" {"Supervisor"}
+            }
+        }
+        .form-fila {
+            label for="contactos" {"Contactos:" }
+            input type="text" name="contactos" id="contactos" required
+                placeholder="Contactos";
+        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

@@ -17,14 +17,16 @@ pub async fn muestra() -> AwResult<Markup> {
 
 fn contenido() -> Markup { html! {
     form method="POST" action="/empresa" {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre empresa";
-
-        label for="nit" {"NIT:" }
-        input type="text" name="nit" id="nit" required
-            placeholder="# Iden. Tributaria";
-
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre empresa";
+        }
+        .form-fila {
+            label for="nit" {"NIT:" }
+            input type="text" name="nit" id="nit" required
+                placeholder="# Iden. Tributaria";
+        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

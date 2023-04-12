@@ -31,15 +31,16 @@ pub async fn muestra(
 
 fn contenido(cliente: &Cliente) -> Markup { html! {
     form method="POST" action={"/cliente/"(cliente.id.unwrap())} {
-
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre capítulo" value=(cliente.nombre);
-
-        label for="documento" {"Documento:" }
-        input type="text" name="documento" id="documento" required
-            placeholder="Documento" value=(cliente.documento);
-
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre capítulo" value=(cliente.nombre);
+        }
+        .form-fila {
+            label for="documento" {"Documento:" }
+            input type="text" name="documento" id="documento" required
+                placeholder="Documento" value=(cliente.documento);
+        }
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

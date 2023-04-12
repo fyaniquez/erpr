@@ -36,11 +36,11 @@ pub async fn muestra(
 fn contenido(inventario: &Inventario) -> Markup {
     html! {
         form method="POST" action={"/inventario/"(inventario.id.unwrap())} {
-
-            label for="nombre" {"Nombre:" }
-            input type="text" name="nombre" id="nombre" required
-                placeholder="Nombre inventario" value=(inventario.nombre);
-
+            .form-fila {
+                label for="nombre" {"Nombre:" }
+                input type="text" name="nombre" id="nombre" required
+                    placeholder="Nombre inventario" value=(inventario.nombre);
+            }
             button .form-submit #graba type="submit" { "Graba" }
             button .form-submit #cancela type="button" { "Cancela" }
         }

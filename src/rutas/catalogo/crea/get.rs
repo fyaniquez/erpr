@@ -31,10 +31,11 @@ fn contenido(sucursal_id: i64) -> Markup {
         form method="POST" action="/catalogo" {
 
             input type="hidden" name="sucursal_id" value=(sucursal_id);
-
-            label for="nombre" {"Nombre:" }
-            input type="text" name="nombre" id="nombre" required
-                placeholder="Nombre catálogo";
+            .form-fila {
+                label for="nombre" {"Nombre:" }
+                input type="text" name="nombre" id="nombre" required
+                    placeholder="Nombre catálogo";
+            }
 
             button #crea .form-submit type="submit" { "Crear" }
             button #cancela .form-submit type="button" { "Cancelar" }

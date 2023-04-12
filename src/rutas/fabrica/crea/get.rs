@@ -28,9 +28,11 @@ pub async fn muestra(
 
 fn contenido(url: &str) -> Markup { html! {
     form method="POST" action=(url) {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre fabrica";
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre fabrica";
+        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

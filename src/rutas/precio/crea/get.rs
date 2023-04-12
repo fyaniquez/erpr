@@ -55,14 +55,15 @@ fn contenido(catalogo: &Catalogo, producto: &Producto) -> Markup { html! {
     form method="POST" action="/precio" {
         input type="hidden" name="catalogo_id" value=(catalogo.id.unwrap());
         input type="hidden" name="producto_id" value=(producto.id.unwrap());
-
-        label for="nombre" {"Nombre:" }
-        .form-field {(producto.nombre)}
-
-        label for="precio" {"Precio:" }
-        input type="number" name="precio" id="precio" required
-            placeholder="Precio de venta";
-
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            .form-field {(producto.nombre)}
+        }
+        .form-fila {
+            label for="precio" {"Precio:" }
+            input type="number" name="precio" id="precio" required
+                placeholder="Precio de venta";
+        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

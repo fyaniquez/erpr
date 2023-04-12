@@ -17,9 +17,11 @@ pub async fn muestra() -> AwResult<Markup> {
 
 fn contenido() -> Markup { html! {
     form method="POST" action="/marca" {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre marca";
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre marca";
+        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

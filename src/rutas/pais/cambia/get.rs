@@ -37,12 +37,16 @@ pub async fn muestra(
 
 fn contenido(pais: &Pais) -> Markup { html! {
     form method="POST" action={"/pais/"(pais.id.unwrap())} {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre país" value=(pais.nombre);
-        label for="sigla" {"Sigla:" }
-        input type="text" name="sigla" id="sigla" required
-            placeholder="Sigla país" value=(pais.sigla);
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre país" value=(pais.nombre);
+        }
+        .form-fila {
+            label for="sigla" {"Sigla:" }
+            input type="text" name="sigla" id="sigla" required
+                placeholder="Sigla país" value=(pais.sigla);
+        }
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

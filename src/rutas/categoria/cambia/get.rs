@@ -28,9 +28,11 @@ pub async fn muestra(
 
 fn contenido(categoria: &Categoria) -> Markup { html! {
     form method="POST" action={"/categoria/"(categoria.id.unwrap())} {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre capítulo" value=(categoria.nombre);
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre capítulo" value=(categoria.nombre);
+        }
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

@@ -33,12 +33,16 @@ pub async fn muestra(
 
 fn contenido(medio: &Medio) -> Markup { html! {
     form method="POST" action={"/medio/"(medio.id.unwrap())} {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre medio" value=(medio.nombre);
-        label for="sigla" {"Sigla:" }
-        input type="text" name="sigla" id="sigla" required
-            placeholder="Sigla medio" value=(medio.sigla);
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre medio" value=(medio.nombre);
+        }
+        .form-fila {
+            label for="sigla" {"Sigla:" }
+            input type="text" name="sigla" id="sigla" required
+                placeholder="Sigla medio" value=(medio.sigla);
+        }
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

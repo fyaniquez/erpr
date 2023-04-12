@@ -38,19 +38,21 @@ fn contenido(puesto: &Puesto) -> Markup {
         form method="POST" action={"/puesto/"(puesto.id.unwrap())} {
 
             input type="hidden" name="sucursal_id" value=(puesto.sucursal_id);
-
-            label for="nombre" {"Nombre:" }
-            input type="text" name="nombre" id="nombre" required
-                placeholder="Nombre puesto" value=(puesto.nombre);
-
-            label for="sigla" {"Sigla:" }
-            input type="text" name="sigla" id="sigla" required
-                placeholder="Sigla puesto" value=(puesto.sigla);
-
-            label for="descripcion" {"Descripción:" }
-            input type="text" name="descripcion" id="descripcion" required
-                placeholder="Descripción" value=(puesto.descripcion);
-
+            .form-fila {
+                label for="nombre" {"Nombre:" }
+                input type="text" name="nombre" id="nombre" required
+                    placeholder="Nombre puesto" value=(puesto.nombre);
+            }
+            .form-fila {
+                label for="sigla" {"Sigla:" }
+                input type="text" name="sigla" id="sigla" required
+                    placeholder="Sigla puesto" value=(puesto.sigla);
+            }
+            .form-fila {
+                label for="descripcion" {"Descripción:" }
+                input type="text" name="descripcion" id="descripcion" required
+                    placeholder="Descripción" value=(puesto.descripcion);
+            }
             button .form-submit #graba type="submit" { "Graba" }
             button .form-submit #cancela type="button" { "Cancela" }
         }

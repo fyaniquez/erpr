@@ -32,12 +32,16 @@ pub async fn muestra(
 
 fn contenido(unidad: &Unidad) -> Markup { html! {
     form method="POST" action={"/unidad/"(unidad.id.unwrap())} {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre país" value=(unidad.nombre);
-        label for="sigla" {"Sigla:" }
-        input type="text" name="sigla" id="sigla" required
-            placeholder="Sigla país" value=(unidad.sigla);
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre país" value=(unidad.nombre);
+        }
+        .form-fila {
+            label for="sigla" {"Sigla:" }
+            input type="text" name="sigla" id="sigla" required
+                placeholder="Sigla país" value=(unidad.sigla);
+        }
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }
     }

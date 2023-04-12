@@ -90,91 +90,102 @@ fn contenido(
 ) -> Markup { html! {
     //form method="POST" action="/producto" {
     form method="POST" action="/productotot" {
-
-        label for="nombre" {"Nombre:" }
-        input type="text" id="nombre" 
-            placeholder="Nombre categoría";
-
-        label for="caracteristicas" {"Características:" }
-        input type="text" name="caracteristicas" id="caracteristicas"
-            required placeholder="Características adicionales";
-
-        label for="capitulo" {"Capítulo:" }
-        select #capitulo_id name="capitulo_id" {
-            @for capitulo in capitulos.into_iter() {
-                option value=(capitulo.id.unwrap())
-                selected[capitulo.id == Some(capitulo_default)] 
-                    {(capitulo.nombre)}
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" id="nombre" 
+                placeholder="Nombre categoría";
+        }
+        .form-fila {
+            label for="caracteristicas" {"Características:" }
+            input type="text" name="caracteristicas" id="caracteristicas"
+                required placeholder="Características adicionales";
+        }
+        .form-fila {
+            label for="capitulo" {"Capítulo:" }
+            select #capitulo_id name="capitulo_id" {
+                @for capitulo in capitulos.into_iter() {
+                    option value=(capitulo.id.unwrap())
+                    selected[capitulo.id == Some(capitulo_default)] 
+                        {(capitulo.nombre)}
+                }
             }
         }
-
-        label for="categoria" {"Categoría:" }
-        select #categoria_id name="categoria_id" {
-            @for categoria in categorias.into_iter() {
-                option value=(categoria.id.unwrap())
-                selected[categoria.id == Some(categoria_default)] 
-                    {(categoria.nombre)}
+        .form-fila {
+            label for="categoria" {"Categoría:" }
+            select #categoria_id name="categoria_id" {
+                @for categoria in categorias.into_iter() {
+                    option value=(categoria.id.unwrap())
+                    selected[categoria.id == Some(categoria_default)] 
+                        {(categoria.nombre)}
+                }
             }
         }
-
-        label for="marca" {"Marca:" }
-        select #marca_id name="marca_id" {
-            @for marca in categorias_marcas.into_iter() {
-                option value=(marca.id)
-                selected[marca.id == categoria_marca_default] 
-                    {(marca.nombre)}
+        .form-fila {
+            label for="marca" {"Marca:" }
+            select #marca_id name="marca_id" {
+                @for marca in categorias_marcas.into_iter() {
+                    option value=(marca.id)
+                    selected[marca.id == categoria_marca_default] 
+                        {(marca.nombre)}
+                }
             }
         }
-
-        label for="unidad" {"Unidad:" }
-        select #unidad_id name="unidad_id" {
-            @for unidad in unidades.into_iter() {
-                option value=(unidad.id.unwrap())
-                selected[unidad.id == Some(unidad_default)] 
-                    {(unidad.nombre)}
+        .form-fila {
+            label for="unidad" {"Unidad:" }
+            select #unidad_id name="unidad_id" {
+                @for unidad in unidades.into_iter() {
+                    option value=(unidad.id.unwrap())
+                    selected[unidad.id == Some(unidad_default)] 
+                        {(unidad.nombre)}
+                }
             }
         }
-
-        label for="pais" {"Pais:" }
-        select #pais_id {
-            @for pais in paises.into_iter() {
-                option value=(pais.id.unwrap())
-                selected[pais.id == Some(pais_default)] 
-                    {(pais.nombre)}
+        .form-fila {
+            label for="pais" {"Pais:" }
+            select #pais_id {
+                @for pais in paises.into_iter() {
+                    option value=(pais.id.unwrap())
+                    selected[pais.id == Some(pais_default)] 
+                        {(pais.nombre)}
+                }
             }
         }
-
-        label for="fabrica_id" {"Fábrica:" }
-        select #fabrica_id name="fabrica_id" {
-            @for fabrica in fabricas.into_iter() {
-                option value=(fabrica.id.unwrap())
-                selected[fabrica.id == Some(fabrica_default)] 
-                    {(fabrica.nombre)}
+        .form-fila {
+            label for="fabrica_id" {"Fábrica:" }
+            select #fabrica_id name="fabrica_id" {
+                @for fabrica in fabricas.into_iter() {
+                    option value=(fabrica.id.unwrap())
+                    selected[fabrica.id == Some(fabrica_default)] 
+                        {(fabrica.nombre)}
+                }
             }
         }
-
-        label for="barras" {"Cod.Barras:" }
-        input type="text" name="barras" id="barras"
-            required placeholder="Código de barras";
-
-        label for="contenido" {"Contenido:" }
-        input type="text" name="contenido" id="contenido"
-            required placeholder="Contenido sin unidad";
-
-        label for="cantidad" {"Cantidad:" }
-        input type="number" name="cantidad" id="cantidad"
-            required placeholder="Cantidad p/mayor";
-
-        fieldset {
-            legend { "¿Es fraccionable?"}
-            input type="radio" name="fraccionable"
-                id="fraccionable_si" value="true"
-            label for="fraccionable_si" {"Si"}
-            input type="radio" name="fraccionable"
-                id="fraccionable_no" value="false"
-            label for="fraccionable_no" {"No"}
+        .form-fila {
+            label for="barras" {"Cod.Barras:" }
+            input type="text" name="barras" id="barras"
+                required placeholder="Código de barras";
         }
-
+        .form-fila {
+            label for="contenido" {"Contenido:" }
+            input type="text" name="contenido" id="contenido"
+                required placeholder="Contenido sin unidad";
+        }
+        .form-fila {
+            label for="cantidad" {"Cantidad:" }
+            input type="number" name="cantidad" id="cantidad"
+                required placeholder="Cantidad p/mayor";
+        }
+        .form-fila {
+            fieldset {
+                legend { "¿Es fraccionable?"}
+                input type="radio" name="fraccionable"
+                    id="fraccionable_si" value="true"
+                label for="fraccionable_si" {"Si"}
+                input type="radio" name="fraccionable"
+                    id="fraccionable_no" value="false"
+                label for="fraccionable_no" {"No"}
+            }
+        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

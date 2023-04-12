@@ -57,17 +57,20 @@ fn contenido(inventario: &Inventario, producto: &Producto) -> Markup { html! {
             value=(inventario.id.unwrap());
         input type="hidden" name="producto_id" value=(producto.id.unwrap());
 
-        label for="nombre" {"Nombre:" }
-        .form-field {(producto.nombre)}
-
-        label for="cantidad" {"Cantidad:" }
-        input type="number" name="cantidad" id="cantidad" required
-            placeholder="Cantidad en existencia";
-
-        label for="vencimiento" {"F.Vencimiento:" }
-        input type="date" name="vencimiento" id="vencimiento" required
-            placeholder="Fecha de vencimiento";
-
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            .form-field {(producto.nombre)}
+        }
+        .form-fila {
+            label for="cantidad" {"Cantidad:" }
+            input type="number" name="cantidad" id="cantidad" required
+                placeholder="Cantidad en existencia";
+        }
+        .form-fila {
+            label for="vencimiento" {"F.Vencimiento:" }
+            input type="date" name="vencimiento" id="vencimiento" required
+                placeholder="Fecha de vencimiento";
+        }
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }
     }

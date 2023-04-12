@@ -38,10 +38,11 @@ pub async fn muestra(
 fn contenido(sucursal: &Sucursal) 
 -> Markup { html! {
     form method="POST" action={"/sucursal/"(sucursal.id.unwrap())} {
-
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre sucursal" value=(sucursal.nombre);
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre sucursal" value=(sucursal.nombre);
+        }
 
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }

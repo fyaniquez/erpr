@@ -13,6 +13,13 @@
     box-shadow: 3px 2px 5px 1px #969696;
     display: table;
 }
+.maestro-fila {
+    display: block;
+}
+.maestro-fila label {
+    width: 8rem;
+    display: inline-block;
+}
 .det-box {
     width: 400px;
     height: auto;
@@ -39,6 +46,28 @@
 .det-largo {
     width: 82%;
     margin: 1px;
+}
+.det_tabla_titulo {
+    display: block;
+    width: 100%;
+    background-color: var(--bgc);
+    color: white;
+    text-align: center;
+}
+.det_titulo_id {
+    display: inline-block;
+    width: 2rem;
+    text-align: center;
+}
+.det_titulo_nombre {
+    display: inline-block;
+    width: 4rem;
+    text-align: center;
+}
+.det_titulo_monto {
+    display: inline-block;
+    width: 3rem;
+    text-align: center;
 }
 .lit-corto {
     width: 18%;

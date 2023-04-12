@@ -27,33 +27,41 @@ fn contenido(venta_id: i64) -> Markup { html! {
     form method="POST" action="/comprado" {
         input type="hidden" name="venta_id" value=(venta_id);
 
-        label for="producto_id" {"Producto:" }
-        input type="text" name="producto_id" id="producto_id" required
-            placeholder="Producto";
-
-        label for="cantidad" {"Cantidad:" }
-        input type="text" name="cantidad" id="cantidad" required
-            placeholder="Cantidad";
-
-        label for="precio" {"Precio:" }
-        input type="text" name="precio" id="precio" required
-            placeholder="Precio";
-
-        label for="vencimiento" {"Vencimiento:" }
-        input type="text" name="vencimiento" id="vencimiento" required
-            placeholder="Vencimiento";
-
-        label for="total" {"SubTotal:" }
-        input type="text" name="subtotal" id="subtotal" required
-            placeholder="Sub Total";
-
-        label for="total" {"Descuento:" }
-        input type="text" name="descuento" id="descuento" required
-            placeholder="Descuento";
-
-        label for="total" {"Total:" }
-        input type="text" name="total" id="total" required
-            placeholder="Total";
+        .form-fila {
+            label for="producto_id" {"Producto:" }
+            input type="text" name="producto_id" id="producto_id" required
+                placeholder="Producto";
+        }
+        .form-fila {
+            label for="cantidad" {"Cantidad:" }
+            input type="text" name="cantidad" id="cantidad" required
+                placeholder="Cantidad";
+        }
+        .form-fila {
+            label for="precio" {"Precio:" }
+            input type="text" name="precio" id="precio" required
+                placeholder="Precio";
+        }
+        .form-fila {
+            label for="vencimiento" {"Vencimiento:" }
+            input type="text" name="vencimiento" id="vencimiento" required
+                placeholder="Vencimiento";
+        }
+        .form-fila {
+            label for="total" {"SubTotal:" }
+            input type="text" name="subtotal" id="subtotal" required
+                placeholder="Sub Total";
+        }
+        .form-fila {
+            label for="total" {"Descuento:" }
+            input type="text" name="descuento" id="descuento" required
+                placeholder="Descuento";
+        }
+        .form-fila {
+            label for="total" {"Total:" }
+            input type="text" name="total" id="total" required
+                placeholder="Total";
+        }
 
         button #crea .form-submit type="submit" { "Crear" }
         button #cancela .form-submit type="button" { "Cancelar" }

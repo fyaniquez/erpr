@@ -44,22 +44,27 @@ fn contenido(inventariado: &Inventariado)
         input type="hidden" name="producto_id" 
             value=(inventariado.producto_id);
 
-        label for="producto" {"Producto:" }
-        .form-field #inventariado {(inventariado.nombre)}
-
-        label for="cantidad" {"Cantidad:" }
-        input type="text" name="cantidad" id="cantidad"
-            placeholder="cantidad en existencia" 
-            value=(inventariado.cantidad);
+        .form-fila {
+            label for="producto" {"Producto:" }
+            .form-field #inventariado {(inventariado.nombre)}
+        }
+        .form-fila {
+            label for="cantidad" {"Cantidad:" }
+            input type="text" name="cantidad" id="cantidad"
+                placeholder="cantidad en existencia" 
+                value=(inventariado.cantidad);
+        }
 
         @let vencimiento = inventariado.vencimiento
             .map(|date| date.format("%Y-%m-%d").to_string())
             .unwrap_or_default();
 
-        label for="vencimiento" {"Vencimiento:" }
-        input type="date" name="vencimiento" id="vencimiento"
-            placeholder="vencimiento" 
-            value=(vencimiento);
+        .form-fila {
+            label for="vencimiento" {"Vencimiento:" }
+            input type="date" name="vencimiento" id="vencimiento"
+                placeholder="vencimiento" 
+                value=(vencimiento);
+        }
 
         button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }

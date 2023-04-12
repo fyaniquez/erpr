@@ -31,19 +31,21 @@ fn contenido(sucursal_id: i64) -> Markup {
         form method="POST" action="/puesto" {
 
             input type="hidden" name="sucursal_id" value=(sucursal_id);
-
-            label for="nombre" {"Nombre:" }
-            input type="text" name="nombre" id="nombre" required
-                placeholder="Nombre puesto";
-
-            label for="sigla" {"Sigla:" }
-            input type="text" name="sigla" id="sigla" required
-                placeholder="Sigla puesto";
-
-            label for="descripcion" {"Descripción:" }
-            input type="text" name="descripcion" id="descripcion" required
-                placeholder="Descripción puesto";
-
+            .form-fila {
+                label for="nombre" {"Nombre:" }
+                input type="text" name="nombre" id="nombre" required
+                    placeholder="Nombre puesto";
+            }
+            .form-fila {
+                label for="sigla" {"Sigla:" }
+                input type="text" name="sigla" id="sigla" required
+                    placeholder="Sigla puesto";
+            }
+            .form-fila {
+                label for="descripcion" {"Descripción:" }
+                input type="text" name="descripcion" id="descripcion" required
+                    placeholder="Descripción puesto";
+            }
             button #crea .form-submit type="submit" { "Crear" }
             button #cancela .form-submit type="button" { "Cancelar" }
         }

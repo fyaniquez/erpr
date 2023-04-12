@@ -38,10 +38,11 @@ fn contenido(catalogo: &Catalogo) -> Markup {
         form method="POST" action={"/catalogo/"(catalogo.id.unwrap())} {
 
             input type="hidden" name="sucursal_id" value=(catalogo.sucursal_id);
-
-            label for="nombre" {"Nombre:" }
-            input type="text" name="nombre" id="nombre" required
-                placeholder="Nombre catálogo" value=(catalogo.nombre);
+            .form-fila {
+                label for="nombre" {"Nombre:" }
+                input type="text" name="nombre" id="nombre" required
+                    placeholder="Nombre catálogo" value=(catalogo.nombre);
+            }
 
             button .form-submit #graba type="submit" { "Graba" }
             button .form-submit #cancela type="button" { "Cancela" }

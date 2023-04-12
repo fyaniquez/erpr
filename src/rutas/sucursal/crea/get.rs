@@ -44,15 +44,17 @@ fn contenido(empresa_id: i64, catalogos: Vec<Catalogo>) -> Markup { html! {
     form method="POST" action="/sucursal" {
 
         input type="hidden" name="empresa_id" value=(empresa_id);
-
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre sucursal";
-
-        label for="catalogo_id" {"Catálogo:" }
-        select #catalogo_id name="catalogo_id" {
-            @for catalogo in catalogos.into_iter() {
-                option value=(catalogo.id.unwrap());
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre sucursal";
+        }
+        .form-fila {
+            label for="catalogo_id" {"Catálogo:" }
+            select #catalogo_id name="catalogo_id" {
+                @for catalogo in catalogos.into_iter() {
+                    option value=(catalogo.id.unwrap());
+                }
             }
         }
 

@@ -27,23 +27,27 @@ pub async fn muestra(
 
 fn contenido(empresa: &Empresa) -> Markup { html! {
     form method="POST" action={"/empresa/"(empresa.id.unwrap())} {
-        label for="nombre" {"Nombre:" }
-        input type="text" name="nombre" id="nombre" required
-            placeholder="Nombre capítulo" value=(empresa.nombre);
-
-        label for="NIT" {"NIT:" }
-        input type="text" name="nit" id="nit" required
-            placeholder="# Iden. tributaria" value=(empresa.nit);
-
-        fieldset {
-            legend { "¿Está activo?"}
-            input type="radio" name="activa" id="activo_si" value="true"
-                checked[empresa.activa];
-            label for="activo_si" {"Si"}
-            input type="radio" name="activa" id="activo_no" value="false"
-                checked[!empresa.activa];
-            label for="activo_no" {"No"}
+        .form-fila {
+            label for="nombre" {"Nombre:" }
+            input type="text" name="nombre" id="nombre" required
+                placeholder="Nombre capítulo" value=(empresa.nombre);
+        }
+        .form-fila {
+            label for="NIT" {"NIT:" }
+            input type="text" name="nit" id="nit" required
+                placeholder="# Iden. tributaria" value=(empresa.nit);
+        }
+        .form-fila {
+            fieldset {
+                legend { "¿Está activo?"}
+                input type="radio" name="activa" id="activo_si" value="true"
+                    checked[empresa.activa];
+                label for="activo_si" {"Si"}
+                input type="radio" name="activa" id="activo_no" value="false"
+                    checked[!empresa.activa];
+                label for="activo_no" {"No"}
             }
+        }
 
    button .form-submit #graba type="submit" { "Graba" }
         button .form-submit #cancela type="button" { "Cancela" }

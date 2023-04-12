@@ -23,7 +23,7 @@ pub fn crea(
 // con el layout para formularios
 fn combina(titulo: &str, atras: &str, contenido: Markup) -> Markup { html! {
     .cabecera {
-        img .cabecera-logo src="/img/logo.png";
+        img .cabecera-logo src="/img/logo.png" alt="Almacén Don Coco";
         .cabecera-nav {
             a href="/login_email_form" { "Ingresar" } }
         .cabecera-nav {
@@ -33,8 +33,10 @@ fn combina(titulo: &str, atras: &str, contenido: Markup) -> Markup { html! {
         .form-box {
             .form-cabecera {
                 span .form-titulo {(titulo)}
-                a .form-atras #atras href=(atras) { 
-                    img src="/img/lista-24.png"; }
+                .form-iconos {
+                    a #atras href=(atras) { 
+                        img src="/img/lista-24.png"; }
+                }
             }
             (contenido) 
         }

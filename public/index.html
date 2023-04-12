@@ -1,7 +1,344 @@
+<!DOCTYPE html>
 <html>
+
+<head>
+	<meta charset="utf-8" />
+	<style>
+		:root {
+			--bar-fondo: #669bbc;
+			--cue-fondo: #ffffff;
+			--cue-frente: #686868;
+			--cue-alterno: #e6e6e6;
+			--btn-accion: #00cc00;
+			--btn-accion-hov: #009900;
+			--btn-peligro: #ff0000;
+			--btn-peligro-hov: #cc3300;
+			--btn-guarda: #6699ff;
+			--btn-guarda-hov: #6666ff;
+			--btn-color: #ffffff;
+			--btn-borde: var(--cue-frente);
+
+			--tab-cab-fdo: var(--bar-fondo);
+			--tab-cab-frn: var(--cue-fondo);
+			--tab-cue-fdo: var(--cue-fondo);
+			--tab-cue-frn: var(--cue-frente);
+			--tab-cue-alt: var(--cue-alterno);
+			--tab-alt-fdo: var(--cue-fondo);
+			--tab-alt-frn: var(--cue-frente);
+			--tab-pie-fdo: var(--bar-fondo);
+			--tab-pie-frn: var(--cue-fondo);
+			--inp-border: var(--bar-fondo);
+			--inp-border-sel: var(--bar-fondo);
+			--inp-back: var(--cue-fondo);
+			--inp-color: var(--cue-frente);
+
+		}
+
+		body {
+			font-family: 'Source sans pro', sans-serif;
+			font-size: 0.889rem;
+		}
+
+		input[type="text"] {
+			border: 1px solid var(--inp-border);
+			height: auto;
+			width: 100%;
+			outline: 0;
+			padding: 0.3em;
+			background-color: var(--inp-back);
+			color: var(--inp-color);
+			box-sizing: border-box;
+			border-radius: 5px;
+		}
+
+		input[type="text"]:hover {
+			border: 2px solid var(--inp-border);
+			box-sizing: border-box;
+		}
+
+		input[type="text"]:focus {
+			border: 2px solid var(--inp-border-sel);
+			box-sizing: border-box;
+		}
+
+		.bar-cmd {
+			display: block;
+			background-color: var(--tab-cue-fdo);
+			line-height: 3.5;
+		}
+
+		.btn {
+			display: inline-block;
+			line-height: 2rem;
+			width: 8rem;
+			border-radius: .5em;
+			cursor: pointer;
+			text-align: center;
+			font-weight: bold;
+			color: var(--btn-color);
+			outline: none;
+			border-right: 2px solid var(--btn-borde);
+			border-bottom: 2px solid var(--btn-borde);
+			border-top: transparent;
+			border-left: transparent;
+		}
+
+		.btn-min {
+			display: block;
+			line-height: 1.2rem;
+			width: 1.2rem;
+			height: 1.2rem;
+			border-radius: 50%;
+			cursor: pointer;
+			margin-left: auto;
+			margin-right: auto;
+			font-weight: bold;
+			color: var(--btn-color);
+			border-right: 2px solid var(--btn-borde);
+			border-bottom: 2px solid var(--btn-borde);
+			border-top: transparent;
+			border-left: transparent;
+		}
+
+		.disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		.cmd {
+			display: block;
+			width: 100%;
+		}
+
+		.centrado {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.accion {
+			background-color: var(--btn-accion);
+		}
+
+		.accion:hover {
+			background-color: var(--btn-accion-hov);
+		}
+
+		.peligro {
+			background-color: var(--btn-peligro);
+			color: var(--btn-color);
+		}
+
+		.peligro:hover {
+			background-color: var(--btn-peligro-hov);
+		}
+
+		.tabla {
+			table-layout: fixed;
+			background-color: var(--tab-cue-fdo);
+			color: var(--tab-cue-frn);
+			border-bottom: 1px solid var(--tab-alt-fdo);
+			line-height: 1.46rem;
+		}
+
+		col:nth-child(1),
+		col:nth-child(7) {
+			width: 3rem;
+		}
+
+		col:nth-child(2) {
+			width: 9rem;
+		}
+
+		col:nth-child(3),
+		col:nth-child(4),
+		col:nth-child(5),
+		col:nth-child(6) {
+			width: 4rem;
+		}
+
+		.cabecera {
+			text-align: center;
+			background-color: var(--tab-cab-fdo);
+			color: var(--tab-cab-frn);
+			font-weight: bold;
+		}
+
+		.fila {
+			text-align: center;
+		}
+
+		.fila:nth-child(odd) {
+			background-color: var(--tab-cue-alt);
+			color: var(--tab-cue-frn);
+		}
+
+		.fila:nth-child(even) {
+			background-color: var(--tab-cue-fnd);
+			color: var(--tab-cue-frn);
+		}
+
+		.det-nombre {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			width: 9rem;
+		}
+
+		.tot-label {
+			font-weight: bold;
+			text-align: right;
+		}
+
+		.tot-monto {
+			font-weight: bold;
+			text-align: center;
+		}
+        .titulo {
+            line-height: 1.81rem;
+            font-size: 1.14rem;
+            font-family: Times;
+            font-weight: bold;
+            text-align: left;
+            background-color: navy;
+            color: white;
+        }
+	</style>
+</head>
+
 <body>
-<h1>
-	kamisaki world!
-</h1>
+    <div class="titulo">Venta</div>
+	<table class="tabla">
+		<colgroup>
+			<col />
+			<col />
+			<col />
+			<col />
+			<col />
+			<col />
+			<col />
+		</colgroup>
+		<tr class="cabecera">
+			<th>id</th>
+			<th>Producto</th>
+			<th>Prc.</th>
+			<th>Ctd.</th>
+			<th>Dsc.</th>
+			<th>Tot.</th>
+			<th></th>
+		</tr>
+		<tr class="fila">
+			<td><input type="text" id="id_frm" /></td>
+			<td><input id="nombre_frm" type="text" /></td>
+			<td><span id="prc_frm">24</span></td>
+			<td><input id="cantidad_frm" type="text" required /></td>
+			<td><input id="descuento_frm" type="text" required /></td>
+			<td><input id="total_frm" type="text" required /></td>
+			<td>
+				<div class="cmd">
+					<div class="btn-min accion" id="cmd_frm">&#x2714</div>
+				</div>
+			</td>
+		</tr>
+		<tr class="fila">
+			<td>1985</td>
+			<td>
+				<div class="det-nombre">Medias Naylon Textilon cafe</div>
+			</td>
+			<td>12</td>
+			<td>2</td>
+			<td>0</td>
+			<td class="tot-monto">24</td>
+			<td><span class="btn-min peligro" id="cmd_1985">&#x2715</span></td>
+		</tr>
+		<tr class="fila">
+			<td>7</td>
+			<td>
+				<div class="det-nombre">Gaseosa Coca Cola 3L</div>
+			</td>
+			<td>13</td>
+			<td>1</td>
+			<td>0</td>
+			<td class="tot-monto">13</td>
+			<td><span class="btn-min peligro" id="cmd_7">&#x2715</span></td>
+		</tr>
+		<tr class="fila">
+			<td>7</td>
+			<td>
+				<div class="det-nombre">Pegamento gotita 2gr ind china</div>
+			</td>
+			<td>2</td>
+			<td>1</td>
+			<td>0</td>
+			<td class="tot-monto">2</td>
+			<td><span class="btn-min peligro" id="cmd_8">&#x2715</span></td>
+		</tr>
+		<tr class="fila">
+			<td colspan="5" class="tot-label">Subtotal</div>
+			<td class="tot-monto">39</div>
+			<td></td>
+			</div>
+
+		<tr class="fila">
+			<td colspan="5" class="tot-label">Descuento</td>
+			<td>
+				<input id="mas_descuento" type="text" placeholder="descuento" required />
+			</td>
+			<td></td>
+		</tr>
+		<tr class="fila">
+			<td colspan="5" class="tot-label">Total</td>
+			<td class="tot-monto">34</td>
+			<td></td>
+		</tr>
+		<tr class="fila">
+			<td colspan="5" class="tot-label">Pago</td>
+			<td>
+				<input id="mas_pago" type="text" placeholder="pago" required />
+			</td>
+			<td></td>
+		</tr>
+		<tr class="fila">
+			<td colspan="5" class="tot-label">Cambio</td>
+			<td class="tot-monto">16</td>
+			<td></td>
+		</tr>
+	</table>
+	<fieldset>
+		<legend>Cliente</legend>
+		<table>
+			<tr>
+				<td>
+					<input type="text" name="cliente_id" id="cliente_id" required placeholder="Nro.Cliente" />
+				</td>
+				<td>
+					<input type="text" id="documento" required placeholder="NIT/CI/CEX" />
+				</td>
+				<td rowspan="2">
+					<div class="cmd">
+						<button class="btn accion centrado disabled" type="button">
+							Crea cliente
+						</button>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="text" id="nombre" required placeholder="Apellidos, Nombres/Razón Social" />
+				</td>
+				<td></td>
+			</tr>
+
+		</table>
+	</fieldset>
+	<div class="bar-cmd">
+		<button class="btn accion" type="button">
+			Graba venta
+		</button>
+		<button class="btn peligro" type="button">
+			Cancela venta
+		</button>
+	</div>
 </body>
+
 </html>

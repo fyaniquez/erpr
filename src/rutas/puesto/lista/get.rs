@@ -16,16 +16,15 @@ use sqlx::PgPool;
 
 // controlador
 #[tracing::instrument(name = "Lista de puestos", skip(pool))]
-#[get("/sucursal/{id}/puestos")]
+#[get("/puestos")]
 pub async fn muestra(
-    path: web::Path<(i64,)>, 
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, PuestoError> {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
     //
-    let (sucursal_id,) = path.into_inner();
+    let sucursal_id = 1;
 
     if paginado.orden.is_empty() {
         paginado.orden = "nombre".to_string();

@@ -1,0 +1,287 @@
+/*
+ * css/maedet.css
+ * author: fyaniquez
+ * date: 11/04/2023
+ * purpose: estilos para formularios maestro-detalle
+ */
+:root {
+    --cab-fondo: navy;
+    --bar-fondo: #669bbc;
+    --cue-fondo: #ffffff;
+    --cue-frente: #686868;
+    --cue-alterno: #e6e6e6;
+    --btn-accion: #00cc00;
+    --btn-accion-hov: #009900;
+    --btn-peligro: #ff0000;
+    --btn-peligro-hov: #cc3300;
+    --btn-guarda: #04aa6d;
+    --btn-guarda-hov: #6666ff;
+
+    --btn-color: var(--cue-fondo);
+    --btn-borde: var(--cue-frente);
+    --tab-cab-fdo: var(--bar-fondo);
+    --tab-cab-frn: var(--cue-fondo);
+    --tab-cue-fdo: var(--cue-fondo);
+    --tab-cue-frn: var(--cue-frente);
+    --tab-cue-alt: var(--cue-alterno);
+    --tab-alt-fdo: var(--cue-fondo);
+    --tab-alt-frn: var(--cue-frente);
+    --tab-pie-fdo: var(--bar-fondo);
+    --tab-pie-frn: var(--cue-fondo);
+    --inp-border: var(--bar-fondo);
+    --inp-border-sel: var(--bar-fondo);
+    --inp-back: var(--cue-fondo);
+    --inp-color: var(--cue-frente);
+    --body-fdo: var(--cue-fondo);
+    --cabecera-fdo: var(--cab-fondo);
+    --cabecera-frn: var(--cue-fondo);
+    --cabecera-shd: var(--cue-alterno);
+    --form-fdo: var(--cue-fondo);
+    --form-frn: var(--cue-frente);
+    --form-shd: var(--cue-alterno);
+    --form-cab-fdo: var(--cab-fondo);
+    --form-cab-frn: var(--cue-fondo);
+    --form-tab-cab-fdo: var(--bar-fondo);
+    --form-tab-cab-frn: var(--cue-fondo);
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    background: var(--body-fdo);
+}
+
+html {
+    font-size: 0.889rem;
+    font-family: 'Source sans pro', sans-serif;
+    height: 100%;
+}
+
+
+input[type="text"] {
+    border-bottom: 1px solid var(--inp-border);
+    height: auto;
+    width: 100%;
+    outline: 0;
+    padding: 0.3em;
+    background-color: var(--inp-back);
+    color: var(--inp-color);
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+input[type="text"]:hover, 
+select:hover {
+    border: 2px solid var(--inp-border);
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+    border: 2px solid var(--inp-border-sel);
+    box-sizing: border-box;
+}
+
+select {
+    height: auto;
+    border-bottom: 1px solid var(--inp-border);
+    border-radius: 5px;
+}
+/* fin comunes */
+
+.principal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+/* fin main */
+
+
+/* cabecera */
+.cabecera {
+  background-color: var(--cabecera-fdo);
+  color: var(--cabecera-frn);
+  height: 3rem;
+  line-height: 3rem;
+}
+
+.cabecera-logo {
+  padding: 5px 0 5px 0;
+}
+
+.cabecera-nav {
+    float: right;
+}
+ .cabecera-nav a {
+    color: var(--cabecera-frn);
+    margin-left: 5px;
+    margin-right: 5px;
+    text-decoration: none;
+    font-weight: bold;
+ }
+/* fin cabecera */
+
+/* formulario */
+.form-box {
+    width: 640px;
+    padding: 40px;
+    background-color: var(--form-fdo);
+    box-shadow: 3px 2px 5px 1px var(--form-shd);
+    display: table;
+}
+
+.form-cabecera {
+    background-color: var(--form-cab-fdo);
+    color: var(--form-cab-frn);
+    font-family: verdana;
+    font-size: 1.46rem;
+    font-weight: bolder;
+    line-height: 2.5rem;
+}
+
+.form-titulo {
+    color: var(--form-cab-frn);
+}
+
+.form-iconos {
+    display: inline-block;
+    float: right;
+}
+/* fin formulario */
+/* tabla dentro de formulario */
+.form-tabla {
+    table-layout: fixed;
+    background-color: var(--tab-cue-fdo);
+    color: var(--tab-cue-frn);
+    border-bottom: 1px solid var(--tab-alt-fdo);
+    line-height: 2rem;
+}
+.form-tabla-cabecera {
+    background-color: var(--form-tab-cab-fdo);
+    color: var(--form-tab-cab-frn);
+}
+}
+.form-tabla-fila {
+    text-align: center;
+}
+.form-tabla-fila:nth-child(odd) {
+    background-color: var(--tab-cue-alt);
+    color: var(--tab-cue-frn);
+}
+
+.form-tabla-fila:nth-child(even) {
+    background-color: var(--tab-cue-fnd);
+    color: var(--tab-cue-frn);
+}
+/* fin tabla dentro de formulario */
+/* columnas de tabla para venta */
+col:nth-child(1),
+col:nth-child(7) {
+    width: 3rem;
+}
+
+col:nth-child(2) {
+    width: 9rem;
+}
+
+col:nth-child(3),
+col:nth-child(4),
+col:nth-child(5),
+col:nth-child(6) {
+    width: 4rem;
+}
+/* fin columnas de tabla para venta */
+
+.bar-cmd {
+    display: block;
+    background-color: var(--tab-cue-fdo);
+    line-height: 3.5;
+}
+
+.btn {
+    display: inline-block;
+    line-height: 2rem;
+    width: 8rem;
+    border-radius: .5em;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    color: var(--btn-color);
+    outline: none;
+    border-right: 2px solid var(--btn-borde);
+    border-bottom: 2px solid var(--btn-borde);
+    border-top: transparent;
+    border-left: transparent;
+}
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cmd {
+    display: block;
+    width: 100%;
+}
+
+.btn-min {
+    display: block;
+    line-height: 1.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: bold;
+    color: var(--btn-color);
+    border-right: 2px solid var(--btn-borde);
+    border-bottom: 2px solid var(--btn-borde);
+    border-top: transparent;
+    border-left: transparent;
+}
+
+.centrado {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.accion {
+    background-color: var(--btn-accion);
+}
+
+.accion:hover {
+    background-color: var(--btn-accion-hov);
+}
+
+.peligro {
+    background-color: var(--btn-peligro);
+    color: var(--btn-color);
+}
+
+.peligro:hover {
+    background-color: var(--btn-peligro-hov);
+}
+
+.det-nombre {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 9rem;
+}
+
+.tot-label {
+    font-weight: bold;
+    text-align: right;
+}
+
+.tot-monto {
+    font-weight: bold;
+    text-align: center;
+}
