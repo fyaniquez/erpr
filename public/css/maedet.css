@@ -45,6 +45,44 @@
     --form-tab-cab-frn: var(--cue-fondo);
 }
 
+.modal {
+    display: none;
+    position:fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+.busqueda {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.busqueda-titulo {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
+    background-color: var(--tab-cab-fdo);
+}
+/* fin busqueda */
 * {
     margin: 0px;
     padding: 0px;
@@ -59,7 +97,6 @@ html {
     font-family: 'Source sans pro', sans-serif;
     height: 100%;
 }
-
 
 input[type="text"] {
     border-bottom: 1px solid var(--inp-border);
@@ -91,7 +128,7 @@ select {
 }
 /* fin comunes */
 
-.principal {
+main {
     width: 100%;
     height: 100%;
     display: flex;
@@ -103,11 +140,16 @@ select {
 
 
 /* cabecera */
-.cabecera {
+header {
   background-color: var(--cabecera-fdo);
   color: var(--cabecera-frn);
   height: 3rem;
   line-height: 3rem;
+}
+
+footer {
+  background-color: var(--cabecera-fdo);
+  color: var(--cabecera-frn);
 }
 
 .cabecera-logo {
@@ -150,7 +192,7 @@ select {
 
 .form-iconos {
     display: inline-block;
-    float: right;
+    /*float: right;*/
 }
 /* fin formulario */
 /* tabla dentro de formulario */
@@ -164,7 +206,6 @@ select {
 .form-tabla-cabecera {
     background-color: var(--form-tab-cab-fdo);
     color: var(--form-tab-cab-frn);
-}
 }
 .form-tabla-fila {
     text-align: center;
@@ -180,19 +221,19 @@ select {
 }
 /* fin tabla dentro de formulario */
 /* columnas de tabla para venta */
-col:nth-child(1),
-col:nth-child(7) {
+.form-tabla col:nth-child(1),
+.form-tabla col:nth-child(7) {
     width: 3rem;
 }
 
-col:nth-child(2) {
+.form-tabla col:nth-child(2) {
     width: 9rem;
 }
 
-col:nth-child(3),
-col:nth-child(4),
-col:nth-child(5),
-col:nth-child(6) {
+.form-tabla col:nth-child(3),
+.form-tabla col:nth-child(4),
+.form-tabla col:nth-child(5),
+.form-tabla col:nth-child(6) {
     width: 4rem;
 }
 /* fin columnas de tabla para venta */
@@ -244,6 +285,12 @@ col:nth-child(6) {
     border-bottom: 2px solid var(--btn-borde);
     border-top: transparent;
     border-left: transparent;
+}
+
+button:hover,
+button:focus,
+button:active {
+  filter: brightness(150%);
 }
 
 .centrado {

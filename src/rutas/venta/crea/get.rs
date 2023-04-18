@@ -38,12 +38,15 @@ fn contenido(
     usuario_id: i64,
     catalogo_id: i64,
 ) -> Markup { html! {
-    .busqueda-box #busqueda-box {
-        .busqueda_titulo #busqueda_titulo {};
-        .busqueda #busqueda {};
+    .modal #busqueda_box {
+        div {
+            .busqueda-titulo #busqueda_titulo {};
+            span .busqueda-close #busqueda_close { (PreEscaped("&times;")) }
+        }
     }
 
-    table .form-tabla { colgroup { col; col; col; col; col; col; col; }
+    table .form-tabla #form_tabla { 
+        colgroup { col; col; col; col; col; col; col; }
         (formulario_detalle())
         (formulario_maestro(medios))
     }
@@ -51,8 +54,8 @@ fn contenido(
     (formulario_cliente())
 
     .bar-cmd {
-        button .btn .accion #agrega_item type="button" { "Graba venta" }
-        button .btn .peligro #borra_item type="button" { "Cancela venta" }
+        button .btn .accion #btn_guarda type="button" { "Graba venta" }
+        button .btn .peligro #btn_cancela type="button" { "Cancela venta" }
     }
 } }
 
@@ -61,26 +64,26 @@ fn formulario_detalle() -> Markup { html! {
         th {"id"} th {"Producto"} th {"Prc."} 
         th {"Ctd."} th {"Dsc."} th {"Tot."} th;
     }
-    tr .form-tabla-fila {
-        td { input #frm_id type="text"; }
-        td { input #frm_nombre type="text"; }
-        td { span #frm_prc; }
-        td { input #frm_cantidad type="text" required; }
-        td { input #frm_descuento type="text" required; }
-        td { input #frm_total type="text" required; }
-        td { .cmd { #frm_cmd .btn-min .accion { (PreEscaped("&#x2714")) } } }
+    tr .form-tabla-fila #form_tabla_fila {
+        td { input #det_id type="text"; }
+        td { input #det_nombre type="text"; }
+        td { span #det_precio { "0" } }
+        td { input #det_cantidad type="text" value="1" required; }
+        td { input #det_descuento type="text" value="0"; }
+        td { span #det_total { "0" } }
+        td { .cmd { #det_agrega .btn-min .accion { (PreEscaped("&#x2714")) } } }
     }
 }}
 
 fn formulario_maestro(medios: Vec<Medio>) -> Markup { html! {
     tr .form-tabla-fila {
         td .tot-label colspan="5" { "Subtotal" }
-        td #mas_subotal .tot-monto;
+        td #mas_subtotal .tot-monto {"0"}
         td;
     }
     tr .form-tabla-fila {
         td .tot-label colspan="5" { "Descuento" }
-        td { input #mas_descuento type="text" required; }
+        td { input #mas_descuento type="text" value="0"; }
         td;
     }
     tr .form-tabla-fila {
@@ -95,7 +98,7 @@ fn formulario_maestro(medios: Vec<Medio>) -> Markup { html! {
         }
         td;
         td .tot-label { "Total" }
-        td #mas_total .tot-monto;
+        td #mas_total .tot-monto { "0" };
         td;
     }
     tr .form-tabla-fila {

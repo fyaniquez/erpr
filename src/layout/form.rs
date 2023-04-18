@@ -22,14 +22,14 @@ pub fn crea(
 // combina el contenido construido por el cliente
 // con el layout para formularios
 fn combina(titulo: &str, atras: &str, contenido: Markup) -> Markup { html! {
-    .cabecera {
+    header {
         img .cabecera-logo src="/img/logo.png" alt="Almacén Don Coco";
         .cabecera-nav {
             a href="/login_email_form" { "Ingresar" } }
         .cabecera-nav {
             a href="/" { "Registrarse" } }
     }
-    .principal { 
+    main { 
         .form-box {
             .form-cabecera {
                 span .form-titulo {(titulo)}
@@ -41,4 +41,5 @@ fn combina(titulo: &str, atras: &str, contenido: Markup) -> Markup { html! {
             (contenido) 
         }
     }
+    footer { "2023" }
 }}

@@ -16,15 +16,14 @@ use sqlx::PgPool;
 
 // controlador
 #[tracing::instrument(name = "Lista de precios json", skip(pool))]
-#[get("/catalogo/{id}/precios.json")]
+#[get("/precios.json")]
 pub async fn muestra_json(
-    path: web::Path<(i64,)>, 
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, PrecioError> {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
-    let (catalogo_id,) = path.into_inner();
+    let catalogo_id = 2;
     paginado.orden = "nombre".to_string();
 
     let (filas, total_filas) = lista_paginada(&pool, &paginado, catalogo_id)
@@ -43,15 +42,14 @@ pub async fn muestra_json(
 
 // controlador
 #[tracing::instrument(name = "Lista de precios", skip(pool))]
-#[get("/catalogo/{id}/precios")]
+#[get("/precios")]
 pub async fn muestra(
-    path: web::Path<(i64,)>, 
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, PrecioError> {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
-    let (catalogo_id,) = path.into_inner();
+    let catalogo_id = 2;
     paginado.orden = "nombre".to_string();
 
     let (filas, total_filas) = lista_paginada(&pool, &paginado, catalogo_id)
