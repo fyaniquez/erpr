@@ -20,7 +20,6 @@ use sqlx::PgPool;
 #[tracing::instrument(name = "Lista de productos json", skip(pool))]
 #[get("/productos.json")]
 pub async fn muestra_json(
-
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ProductoError> {

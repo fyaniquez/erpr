@@ -3,13 +3,16 @@
 //! date: 5/12/2022
 //! purpose: muestra el formulario de lista paginada de precios
 
-use crate::layout::lista;
+use crate::layout::{
+    lista,
+    ErrMsg,
+};
 use crate::layout::lista::Paginado;
 use crate::domain::catalogo::{Catalogo, obtiene};
 use crate::domain::precio::{Precio, lista_paginada};
 use actix_web::get;
 use actix_web::http::StatusCode;
-use actix_web::{web, HttpResponse, ResponseError};
+use actix_web::{web, HttpResponse, ResponseError, Responder};
 use anyhow::Context;
 use maud::{html, Markup};
 use sqlx::PgPool;
@@ -20,24 +23,34 @@ use sqlx::PgPool;
 pub async fn muestra_json(
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, PrecioError> {
+) -> impl Responder {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
     let catalogo_id = 2;
     paginado.orden = "nombre".to_string();
 
-    let (filas, total_filas) = lista_paginada(&pool, &paginado, catalogo_id)
-        .await
-        .context("Error al leer precios de la BD")?;
-    paginado.total_filas = Some(total_filas);
-
-    // a json
-    let lista_json = serde_json::to_string(&filas)
-        .map_err(|err| PrecioError::Validacion(err.to_string()))
-        .unwrap();
-
-    // al browser
-    Ok(HttpResponse::Ok().body(lista_json))
+    match lista_paginada(&pool, &paginado, catalogo_id).await {
+        Ok((filas, _total_filas)) => HttpResponse::Ok().json(filas),
+        Err(err) => match err {
+            sqlx::Error::Database(db_err) => 
+                HttpResponse::InternalServerError().json( ErrMsg {
+                    codigo: 500,
+                    mensaje: format!("Error en la BD: {}", db_err) ,
+                }),
+            sqlx::Error::RowNotFound => 
+                HttpResponse::NotFound().json( ErrMsg {
+                    codigo: 404,
+                    mensaje: format!(
+                        "Ningun producto con nombre: *{}*", 
+                        paginado.filtro
+                    ),
+                }),
+            _ => HttpResponse::Conflict().json( ErrMsg {
+                    codigo: 500,
+                    mensaje: format!("Error: {}", err)
+            }),
+        }
+    }
 }
 
 // controlador

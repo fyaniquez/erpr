@@ -8,5 +8,6 @@ pub use dml::{
     lista, 
     lista_paginada,
     obtiene,
+    obtiene_prod,
     inserta,
 };

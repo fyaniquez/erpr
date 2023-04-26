@@ -49,7 +49,7 @@ pub async fn obtiene(pool: &PgPool, id: i64)
 
 // obtiene un cliente por documento
 #[tracing::instrument(name = "ve cliente", skip(pool))]
-pub async fn obtiene_documento(pool: &PgPool, documento: String) 
+pub async fn obtiene_documento(pool: &PgPool, documento: &str) 
 -> Result<Cliente, sqlx::Error> {
     let fila: Cliente =
         sqlx::query_as(

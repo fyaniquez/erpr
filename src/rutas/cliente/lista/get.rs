@@ -3,12 +3,12 @@
 //! date: 21/10/2022
 //! purpose: muestra el muestra() de lista paginada de clientes
 
-use crate::layout;
+use crate::layout::ErrMsg;
 use crate::layout::lista::Paginado;
 use crate::domain::cliente::{Cliente, lista_paginada};
 use actix_web::get;
 use actix_web::http::StatusCode;
-use actix_web::{web, HttpResponse, ResponseError};
+use actix_web::{web, HttpResponse, ResponseError, Responder};
 use anyhow::Context;
 use maud::{html, Markup};
 use sqlx::PgPool;
@@ -30,7 +30,7 @@ pub async fn muestra(
         .context("Error al leer clientes de la BD")?;
     paginado.total_filas = Some(total_filas);
 
-    let pagina = layout::lista::crea(
+    let pagina = crate::layout::lista::crea(
         "Clientes", "/",
         "lista.css", Some("cliente/lista.js"),
         &paginado, contenido(filas),
@@ -44,24 +44,33 @@ pub async fn muestra(
 pub async fn muestra_json(
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ClienteError> {
+) -> impl Responder {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
     paginado.orden = "nombre".to_string();
 
-    let (filas, total_filas) = lista_paginada(&pool, &paginado)
-        .await
-        .context("Error al leer clientes de la BD")?;
-    paginado.total_filas = Some(total_filas);
-
- // a json
-    let lista_json = serde_json::to_string(&filas)
-        .map_err(|err| ClienteError::Validacion(err.to_string()))
-        .unwrap();
-
-    // al browser
-    Ok(HttpResponse::Ok().body(lista_json))
-
+    match lista_paginada(&pool, &paginado).await {
+        Ok((filas, _total_filas)) => HttpResponse::Ok().json(filas),
+        Err(err) => match err {
+            sqlx::Error::Database(db_err) => 
+                HttpResponse::InternalServerError().json( ErrMsg {
+                    codigo: 500,
+                    mensaje: format!("Error en la BD: {}", db_err) ,
+                }),
+            sqlx::Error::RowNotFound => 
+                HttpResponse::NotFound().json( ErrMsg {
+                    codigo: 404,
+                    mensaje: format!(
+                        "Ningun cliente con nombre: *{}*", 
+                        paginado.filtro
+                    ),
+                }),
+            _ => HttpResponse::Conflict().json( ErrMsg {
+                    codigo: 500,
+                    mensaje: format!("Error: {}", err)
+            }),
+        }
+    }
 }
 
 // vista

@@ -1,0 +1,95 @@
+/*
+ * css/lib/estructura.css
+ * author: fyaniquez
+ * date: 11/04/2023
+ * purpose: estilos para elementos estructurales de las paginas
+ */
+
+main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+header {
+  background-color: var(--cabecera-fdo);
+  color: var(--cabecera-frn);
+  height: 3rem;
+  line-height: 3rem;
+}
+
+footer {
+  background-color: var(--cabecera-fdo);
+  color: var(--cabecera-frn);
+}
+
+.cabecera-logo {
+  padding: 5px 0 5px 0;
+}
+
+.cabecera-nav {
+    float: right;
+}
+ .cabecera-nav a {
+    color: var(--cabecera-frn);
+    margin-left: 5px;
+    margin-right: 5px;
+    text-decoration: none;
+    font-weight: bold;
+ }
+/* fin cabecera */
+
+/* formulario */
+.form-box {
+    width: 640px;
+    padding: 40px;
+    background-color: var(--form-fdo);
+    box-shadow: 3px 2px 5px 1px var(--form-shd);
+    display: table;
+}
+
+.form-cabecera {
+    background-color: var(--form-cab-fdo);
+    color: var(--form-cab-frn);
+    font-family: verdana;
+    font-size: 1.46rem;
+    font-weight: bolder;
+    line-height: 2.5rem;
+}
+
+.form-titulo {
+    color: var(--form-cab-frn);
+}
+
+.form-iconos {
+    display: inline-block;
+    /*float: right;*/
+}
+/* fin formulario */
+/* tabla dentro de formulario */
+.form-tabla {
+    table-layout: fixed;
+    background-color: var(--tab-cue-fdo);
+    color: var(--tab-cue-frn);
+    border-bottom: 1px solid var(--tab-alt-fdo);
+    line-height: 2rem;
+}
+.form-tabla-cabecera {
+    background-color: var(--form-tab-cab-fdo);
+    color: var(--form-tab-cab-frn);
+}
+.form-tabla-fila {
+    text-align: center;
+}
+.form-tabla-fila:nth-child(odd) {
+    background-color: var(--tab-cue-alt);
+    color: var(--tab-cue-frn);
+}
+
+.form-tabla-fila:nth-child(even) {
+    background-color: var(--tab-cue-fnd);
+    color: var(--tab-cue-frn);
+}
+/* fin tabla dentro de formulario */

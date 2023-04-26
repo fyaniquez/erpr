@@ -50,6 +50,28 @@ pub async fn lista_paginada(
 }
 
 // obtiene un precio de la base de datos
+// por id del producto y del catalogo activo
+#[tracing::instrument(name = "ve precio por catalogo", skip(pool))]
+pub async fn obtiene_prod(
+    pool: &PgPool, 
+    catalogo_id: i64, 
+    producto_id: i64
+) -> Result<Precio, sqlx::Error> {
+    let fila: Precio =
+        sqlx::query_as(
+        r#"SELECT pre.id, pro.nombre, pre.producto_id, 
+        pre.precio, pre.catalogo_id
+        FROM precios pre INNER JOIN productos pro 
+        ON pre.producto_id = pro.id
+        WHERE pre.catalogo_id = $1 AND pre.producto_id=$2"#)
+            .bind(catalogo_id)
+            .bind(producto_id)
+            .fetch_one(pool)
+            .await?;
+    Ok(fila)
+}
+//
+// obtiene un precio de la base de datos
 #[tracing::instrument(name = "ve precio", skip(pool))]
 pub async fn obtiene(pool: &PgPool, id: i64) -> Result<Precio, sqlx::Error> {
     let fila: Precio =

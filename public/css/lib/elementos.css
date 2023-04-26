@@ -1,0 +1,108 @@
+/*
+ * css/lib/inputs.css
+ * author: fyaniquez
+ * date: 11/04/2023
+ * purpose: estilos para elementos de engtrada de datos
+ */
+input[type="text"] {
+    border-bottom: 1px solid var(--inp-border);
+    height: auto;
+    width: 100%;
+    outline: 0;
+    padding: 0.3em;
+    background-color: var(--inp-back);
+    color: var(--inp-color);
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+input[type="text"]:hover, 
+select:hover {
+    border: 2px solid var(--inp-border);
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+    border: 2px solid var(--inp-border-sel);
+    box-sizing: border-box;
+}
+
+select {
+    height: auto;
+    border-bottom: 1px solid var(--inp-border);
+    border-radius: 5px;
+}
+.btn {
+    display: inline-block;
+    line-height: 2rem;
+    width: 8rem;
+    border-radius: .5em;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    color: var(--btn-color);
+    outline: none;
+    border-right: 2px solid var(--btn-borde);
+    border-bottom: 2px solid var(--btn-borde);
+    border-top: transparent;
+    border-left: transparent;
+}
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cmd {
+    display: block;
+    width: 100%;
+}
+
+.btn-min {
+    display: block;
+    line-height: 1.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: bold;
+    color: var(--btn-color);
+    border-right: 2px solid var(--btn-borde);
+    border-bottom: 2px solid var(--btn-borde);
+    border-top: transparent;
+    border-left: transparent;
+}
+
+button:hover {
+  filter: saturation(50%);
+}
+button:focus {
+  border: 2px solid var(--btn-borde);
+}
+
+.centrado {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.accion {
+    background-color: var(--btn-accion);
+}
+
+.accion:hover {
+    background-color: var(--btn-accion-hov);
+}
+
+.peligro {
+    background-color: var(--btn-peligro);
+    color: var(--btn-color);
+}
+
+.peligro:hover {
+    background-color: var(--btn-peligro-hov);
+}
+
+/* fin comunes */

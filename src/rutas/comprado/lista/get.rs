@@ -56,7 +56,7 @@ fn contenido(filas: Vec<CompradoVe>, venta: &Venta) -> Option<Markup> {
     }
     Some(html! {
         .lista-box {
-            .lista-titulo { "Comprados en: "(venta.puesto_id) }
+            .lista-titulo { "Comprados en: "(venta.puesto_id.unwrap()) }
             .lista {
                 .lista-cabecera {
                     span .nombre {"Producto"}

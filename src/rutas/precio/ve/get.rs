@@ -4,30 +4,42 @@
 //! purpose: muestra una precio
 
 use crate::layout;
-use crate::domain::precio::{Precio, PrecioError, obtiene};
-use actix_web::{get, web, HttpResponse};
+use crate::layout::ErrMsg;
+use crate::domain::precio::{Precio, PrecioError, obtiene, obtiene_prod};
+use actix_web::{get, web, HttpResponse, Responder};
 use maud::{html, Markup};
 use sqlx::PgPool;
 use anyhow::Context;
 
-// controlador json
+// obtiene el precio de un producto para el catalogo en uso json
 #[tracing::instrument(name="Ve precio json", skip(pool))]
-#[get("/precio/{id}.{ext}")]
+#[get("/precio/{id}.json")]
 pub async fn muestra_json(
-    path: web::Path<(i64, String)>,
+    path: web::Path<i64>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, PrecioError> {
-    let (id, _ext) = path.into_inner();
-    let precio = obtiene(&pool, id).await
-        .context("Error al leer precio")?;
+) -> impl Responder {
+    let producto_id = path.into_inner();
+    let catalogo_id = 2;
 
-    // a json
-    let obj_json = serde_json::to_string(&precio)
-        .map_err(|err| PrecioError::Validacion(err.to_string()))
-        .unwrap();
-
-    // al browser
-    Ok(HttpResponse::Ok().body(obj_json))
+    match obtiene_prod(&pool, catalogo_id, producto_id).await {
+        Ok(producto) => HttpResponse::Ok().json(producto),
+        Err(err) => match err {
+            sqlx::Error::Database(db_err) => 
+                HttpResponse::InternalServerError().json( ErrMsg {
+                    codigo: 500,
+                    mensaje: format!("Error en la BD: {}", db_err) ,
+                }),
+            sqlx::Error::RowNotFound => 
+                HttpResponse::NotFound().json( ErrMsg {
+                    codigo: 404,
+                    mensaje: format!("No existe producto: {}", producto_id)
+                }),
+            _ => HttpResponse::Conflict().json( ErrMsg {
+                    codigo: 500,
+                    mensaje: format!("Error: {}", err)
+            }),
+        }
+    }
 }
 
 // controlador

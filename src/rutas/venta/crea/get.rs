@@ -18,6 +18,8 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
     let usuario_id: i64 = 1;
     let catalogo_id: i64 = 2;
 
+    //let medios: Vec<Medio> = Vec::new();
+    // TODO: no esta controlando errores de servidor
     let medios = medio_lista(&pool)
         .await
         .map_err(|_e| HttpResponse::InternalServerError().finish())
@@ -25,8 +27,8 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
 
     layout::form::crea(
         "Venta",
-        &format!("/puest/{}/ventas", puesto_id),
-        "maedet.css",
+        "/ventas",
+        "venta/crea.css",
         Some("venta/crea.js"),
         contenido(medios, puesto_id, usuario_id, catalogo_id),
     )
@@ -71,7 +73,8 @@ fn formulario_detalle() -> Markup { html! {
         td { input #det_cantidad type="text" value="1" required; }
         td { input #det_descuento type="text" value="0"; }
         td { span #det_total { "0" } }
-        td { .cmd { #det_agrega .btn-min .accion { (PreEscaped("&#x2714")) } } }
+        td { .cmd { button #det_agrega .btn-min .accion {
+            (PreEscaped("&#x2714"))}}}
     }
 }}
 
@@ -89,7 +92,7 @@ fn formulario_maestro(medios: Vec<Medio>) -> Markup { html! {
     tr .form-tabla-fila {
         td .tot-label colspan="2" { "Tipo Pago" }
         td {
-            select #medio name="medio" {
+            select #mas_medio {
                 @for medio in medios.into_iter() {
                     option value=(medio.id.unwrap()) 
                         selected[medio.nombre == "efectivo"] {(medio.nombre)}
@@ -118,12 +121,12 @@ fn formulario_cliente() -> Markup { html! {
         table {
             tr {
                 td { 
-                    input #cli_id type="text" name="cliente_id" required
-                        placeholder="Nro.Cliente"; 
-                }
-                td { 
                     input #cli_documento type="text" required
                         placeholder="NIT/CI/CEX";
+                }
+                td { 
+                    input #cli_id type="text" name="cliente_id" required
+                        placeholder="Nro.Cliente"; 
                 }
                 td rowspan="2" { .cmd {
                     button .btn .accion .centrado .disabled type="button" {

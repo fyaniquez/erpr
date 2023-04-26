@@ -10,29 +10,39 @@ use crate::domain::producto::{
     ProductoVe,
     ProductoError
 };
-use actix_web::{get, web, HttpResponse};
+use actix_web::{get, web, HttpResponse, Responder};
 use maud::{html, Markup};
 use sqlx::PgPool;
 use anyhow::Context;
+use serde::Serialize;
 
+// estructura del objeto json devuelto como error
+#[derive(Serialize)]
+struct Error {
+    mensaje: String,
+}
 // controlador json
 #[tracing::instrument(name="Ve producto json", skip(pool))]
-#[get("/producto/{id}.{ext}")]
+#[get("/producto/{id}.json")]
 pub async fn muestra_json(
-    path: web::Path<(i64, String)>,
+    path: web::Path<i64>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ProductoError> {
+) -> impl Responder {
 
-    let (id, _ext) = path.into_inner();
+    let id = path.into_inner();
 
-    let producto = obtiene(&pool, id).await
-        .context("Error al leer producto")?;
+    match obtiene(&pool, id).await {
+        Ok(producto) => HttpResponse::Ok().json(producto),
+        Err(err) => HttpResponse::InternalServerError().json(
+            Error { mensaje: err.to_string() }),
+    }
+        //.context("Error al leer producto")?;
 
-    let obj_json = serde_json::to_string(&producto)
-        .map_err(|err| ProductoError::Validacion(err.to_string()))
-        .unwrap();
+    //let obj_json = serde_json::to_string(&producto)
+        //.map_err(|err| ProductoError::Validacion(err.to_string()))
+        //.unwrap();
 
-    Ok(HttpResponse::Ok().body(obj_json))
+    //Ok(HttpResponse::Ok().body(obj_json))
 }
 
 // controlador

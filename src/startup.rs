@@ -34,6 +34,8 @@ use crate::rutas::categoria_marca;
 
 use crate::rutas::public::home;
 use actix_web::dev::Server;
+use actix_cors::Cors;
+use actix_web::http::header;
 use actix_web::{web, App, HttpServer};
 use actix_web_static_files::ResourceFiles;
 use sqlx::PgPool;
@@ -46,9 +48,18 @@ include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 /// directorio de páginas estaticas
 pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
     let db_pool = web::Data::new(db_pool);
+
     let server = HttpServer::new(move || {
         let generated = generate();
         App::new()
+            .wrap(
+                Cors::default()
+                    .allow_any_origin()
+                    .allowed_methods(vec!["GET", "POST"])
+                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+                    .allowed_header(header::CONTENT_TYPE)
+                    .max_age(3600) 
+            )
             .service(home::get::home)
             .service(login::email::get::login_email_form)
             .service(login::email::post::login_email)

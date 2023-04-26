@@ -31,13 +31,16 @@ pub struct JsonData {
 )]
 #[post("/venta")]
 pub async fn procesa(
-    form: web::Json<JsonData>, 
+    mut form: web::Json<JsonData>, 
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, VentaError> { 
 
     let mut tx = pool.begin()
         .await
         .context("Error al iniciar transacción")?;
+
+    form.venta.puesto_id = Some(1);
+    form.venta.usuario_id = Some(2);
         
     let venta_id = venta_inserta(&mut tx, &form.venta)
         .await

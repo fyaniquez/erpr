@@ -1,0 +1,44 @@
+/*
+ * css/venta/crea.css
+ * author: fyaniquez
+ * date: 11/04/2023
+ * purpose: estilos para el formularios crea
+ */
+@import "../lib/pagina.css";
+@import "../lib/estructura.css";
+@import "../lib/elementos.css";
+@import "../lib/busqueda.css";
+
+/* columnas de tabla para venta */
+.form-tabla col:nth-child(1),
+.form-tabla col:nth-child(7) {
+    width: 3rem;
+}
+
+.form-tabla col:nth-child(2) {
+    width: 9rem;
+}
+
+.form-tabla col:nth-child(3),
+.form-tabla col:nth-child(4),
+.form-tabla col:nth-child(5),
+.form-tabla col:nth-child(6) {
+    width: 4rem;
+}
+/* fin columnas de tabla para venta */
+.det-nombre {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 9rem;
+}
+
+.tot-label {
+    font-weight: bold;
+    text-align: right;
+}
+
+.tot-monto {
+    font-weight: bold;
+    text-align: center;
+}

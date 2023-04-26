@@ -14,8 +14,8 @@ pub struct Venta {
     pub total: i32,
     pub descuento: i32,
     pub cliente_id: i64,
-    pub puesto_id: i64,
-    pub usuario_id: i64,
+    pub puesto_id: Option<i64>,
+    pub usuario_id: Option<i64>,
     pub medio_id: i64,
     pub estado: Option<String>,
 }
