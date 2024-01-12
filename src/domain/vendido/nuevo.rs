@@ -9,5 +9,5 @@ pub struct Nuevo {
     pub cantidad: i64,
     pub precio: i64,
     pub descuento: i64,
-    pub total: i64,
+    pub subtotal: i64,
 }

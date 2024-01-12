@@ -7,6 +7,7 @@ use crate::layout::{
     lista,
     ErrMsg,
 };
+use crate::domain::login::get_estado;
 use crate::layout::lista::Paginado;
 use crate::domain::catalogo::{Catalogo, obtiene};
 use crate::domain::precio::{Precio, lista_paginada};
@@ -26,10 +27,11 @@ pub async fn muestra_json(
 ) -> impl Responder {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
-    let catalogo_id = 2;
+    let estado = get_estado();
+
     paginado.orden = "nombre".to_string();
 
-    match lista_paginada(&pool, &paginado, catalogo_id).await {
+    match lista_paginada(&pool, &paginado, &estado).await {
         Ok((filas, _total_filas)) => HttpResponse::Ok().json(filas),
         Err(err) => match err {
             sqlx::Error::Database(db_err) => 
@@ -62,15 +64,15 @@ pub async fn muestra(
 ) -> Result<HttpResponse, PrecioError> {
     // TODO: ver como implementar  un trait si no esta en el mismo archivo
     // en la implentacion de default puede colocarse los valores p/defecto
-    let catalogo_id = 2;
+    let estado = get_estado();
     paginado.orden = "nombre".to_string();
 
-    let (filas, total_filas) = lista_paginada(&pool, &paginado, catalogo_id)
+    let (filas, total_filas) = lista_paginada(&pool, &paginado, &estado)
         .await
         .context("Error al leer precios de la BD")?;
     paginado.total_filas = Some(total_filas);
 
-    let catalogo = obtiene(&pool, catalogo_id).await
+    let catalogo = obtiene(&pool, estado.catalogo_id).await
         .context("Error al leer catalogo")?;
     
     let pagina = lista::crea(
@@ -95,11 +97,14 @@ fn contenido(filas: Vec<Precio>, catalogo: &Catalogo) -> Option<Markup> {
             .lista {
                 .lista-cabecera {
                     span .nombre {"Nombre"}
+                    span .monto {"Precio"}
                 }
                 .lista-items {
                 @for fila in filas.into_iter() {
+                    @let prc = fila.precio as f32 / 100.0;
                     .lista-item #{(fila.id.unwrap())} {
                         span .nombre-largo {(fila.nombre)}
+                        span .monto {(prc)}
                     }
                 }}
             }

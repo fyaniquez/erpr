@@ -20,8 +20,8 @@ pub async fn muestra(
     mut paginado: web::Query<Paginado>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, PaisError> {
-    // TODO: ver como implementar  un trait si no esta en el mismo archivo
-    // en la implentacion de default puede colocarse los valores p/defecto
+    // TODO: implementar un trait si no esta en el mismo archivo
+    // en la implentacion default puede colocarse los valores p/defecto
     if paginado.orden.is_empty() {
         paginado.orden = "nombre".to_string();
     }
@@ -41,7 +41,8 @@ pub async fn muestra(
 // obtiene un fragmento de la tabla de paiss en la base de datos
 #[tracing::instrument(name = "query de paises", skip(pool))]
 pub async fn lista(pool: &PgPool, paginado: &Paginado) -> Result<(Vec<Pais>, i32), sqlx::Error> {
-    const SELECT: &str = "SELECT id, nombre, sigla FROM paises";
+    const SELECT: &str = 
+        r#"SELECT id, nombre, sigla FROM paises ORDER BY nombre"#;
     let qry = paginado.get_qry(SELECT);
     let filas: Vec<Pais> = sqlx::query_as(qry.as_ref())
         .fetch_all(pool).await?;

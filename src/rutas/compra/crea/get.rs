@@ -8,28 +8,23 @@ use crate::domain::medio::{
     Medio
 };
 use crate::domain::distribuidora::{
-    obtiene as distribuidora_obtiene, 
+    lista as distribuidora_lista, 
     Distribuidora
 };
 
 use crate::layout;
 use actix_web::Result as AwResult;
 use actix_web::{get, web, HttpResponse};
-use maud::{html, Markup};
+use maud::{html, Markup, PreEscaped};
 use sqlx::PgPool;
 
 #[tracing::instrument(name = "formulario crea compra", skip(pool))]
-#[get("/distribuidora/{id}/compra")]
+#[get("/compra")]
 pub async fn muestra(
-    path: web::Path<(i64,)>,
     pool: web::Data<PgPool>,
 ) -> AwResult<Markup> {
-    let sucursal_id: i64 = 1;
-    let usuario_id: i64 = 1;
-    let catalogo_id: i64 = 1;
 
-    let (distribuidora_id,) = path.into_inner();
-    let distribuidora = distribuidora_obtiene(&pool, distribuidora_id)
+    let distribuidoras = distribuidora_lista(&pool)
         .await
         .map_err(|_e| HttpResponse::InternalServerError().finish())
         .unwrap();
@@ -41,160 +36,113 @@ pub async fn muestra(
 
     layout::form::crea(
         "Compra",
-        &format!("/distribuidora/{}/compras", distribuidora_id),
-        "maestro-detalle.css",
+        "/compras",
+        "compra/crea.css",
         Some("compra/crea.js"),
-        contenido(medios, sucursal_id, usuario_id, &distribuidora),
+        contenido(medios, distribuidoras,),
     )
 }
 
 fn contenido(
     medios: Vec<Medio>,
-    sucursal_id: i64,
-    usuario_id: i64,
-    distribuidora: &Distribuidora,
-) -> Markup {
-    html! {
-        form method="POST" action="/compra" {
+    distribuidoras: Vec<Distribuidora>,
+) -> Markup { html! {
 
-            input #sucursal_id type="hidden" 
-                name="sucursal_id" value=(sucursal_id);
-            input #usuario_id type="hidden" 
-                name="usuario_id" value=(usuario_id);
-            input #distribuidora_id type="hidden" 
-                name="distribuidora_id" value=(distribuidora.id.unwrap());
+    table .form-tabla #form_tabla { 
+        colgroup { col; col; col; col; col; col; col; }
+        (formulario_detalle())
+        (formulario_maestro(medios, distribuidoras))
+    }
 
-            .busqueda-box #busqueda-box {
-                .busqueda_titulo #busqueda_titulo {};
-                .busqueda #busqueda {};
-            }
-            .nombre-largo {(distribuidora.nombre)}
+    .bar-cmd {
+        button .btn .accion #btn_guarda type="button" { "Graba compra" }
+        button .btn .peligro #btn_cancela type="button" { "Cancela compra" }
+    }
+}}
+fn formulario_detalle() -> Markup { html! {
+    tr .form-tabla-cabecera {
+        th {"id"} th {"Producto"} th {"Costo"} 
+        th {"Ctd."} th {"Dsc."} th {"Tot."} th {"Vcmto"} th;
+    }
+    tr .form-tabla-fila #form_tabla_fila {
+        td { input #det_id type="text"; }
+        td { 
+            input #det_nombre type="text" list="det_nombre_datalist"; 
+            datalist #det_nombre_datalist;
+        }
+        td { input #det_costo type="text" value="0" required; }
+        td { input #det_cantidad type="text" value="1" required; }
+        td { input #det_descuento type="text" value="0"; }
+        td { span #det_total { "0" } }
+        td { input #det_vencimiento type="date"; }
+        td { .cmd { button #det_agrega .btn-min .accion {
+            (PreEscaped("&#x2714"))}}}
+    }
+}}
 
-            (formulario_detalle())
-
-            .maestro-box {
-                .maestro-fila {
-                    label for="descuento" {"Descuento:" }
-                    input type="text" name="descuento" id="descuento"
-                        required placeholder="Descuento";
-                }
-                .maestro-fila {
-                    label for="total" {"Total:" }
-                    input type="text" name="total" id="total"
-                        required placeholder="Total a pagar";
-                }
-                .maestro-fila {
-                    label for="pago" {"Pago:" }
-                    input type="text" id="pago";
-                }
-                .maestro-fila {
-                    label for="cambio" {"Cambio:" }
-                    input type="text" id="cambio";
-                }
-                .maestro-fila {
-                    label for="documento" {"Factura:" }
-                    input type="text"
-                        id="documento" required placeholder="Factura/Recibo";
-                }
-                .maestro-fila {
-                    label for="observaciones" {"Observaciones:" }
-                    input type="text"
-                        id="observaciones" required 
-                        placeholder="Datos adicionales respecto a la compra";
-                }
-                .maestro-fila {
-                    label for="medio" {"M/Pago:" }
-                    select #medio name="medio" {
-                        @for medio in medios.into_iter() {
-                            option value=(medio.id.unwrap())
-                            selected[medio.nombre == "efectivo"]
-                                {(medio.nombre)}
-                        }
+fn formulario_maestro(
+    medios: Vec<Medio>, 
+    distribuidoras: Vec<Distribuidora>) 
+-> Markup { html! {
+    tr .form-tabla-fila {
+        td .tot-label colspan="5" { "Subtotal" }
+        td #mas_subtotal .tot-monto {"0"}
+        td;
+    }
+    tr .form-tabla-fila {
+        td .tot-label colspan="2" { "Distribuidora" }
+        td colspan="2" {
+            select #mas_distribuidora {
+                @for distribuidora in distribuidoras.into_iter() {
+                    option value=(distribuidora.id.unwrap()) {
+                        (distribuidora.nombre)
                     }
                 }
             }
-
-            button #crea .form-submit type="button" { "Crear" }
-            button #cancela .form-submit type="button" { "Cancelar" }
         }
+        td;
+        td .tot-label { "Descuento" }
+        td { input #mas_descuento type="text" value="0"; }
+        td;
     }
-}
-
-fn formulario_detalle() -> Markup {
-    html! {
-        .det-box #detalle {
-            .det-fila {
-                .det-item {
-                    input .det-corto type="text" id="producto_id"
-                        placeholder="id prod.";
-                    input .det-largo #producto type="text"
-                        placeholder="nombre producto";
-                    img .det-btn #"borra"
-                        src="/img/waste-24.png" alt="Agrega";
-                }
-                .det-item {
-                    input .det-corto type="text" id="costo"
-                        placeholder="costo" required;
-                    input .det-corto type="text" id="cantidad"
-                        placeholder="cantidad" required;
-                    input .det-corto type="text" id="descuento_detalle"
-                        placeholder="descuento" required;
-                    input .det-corto type="text" id="total_detalle"
-                        placeholder="total" required;
-                    input .det-corto type="date" id="vencimiento"
-                        placeholder="vencimiento" required;
-                }
-            }
-            .det-cell {
-                button .btn #agrega_item type="button" {
-                    img src="/img/si.png" alt="Agrega";
-                }
-            }
-            .det-cell {
-                button .btn #borra_item type="button" {
-                    img src="/img/no.png" alt="Cancela";
+    tr .form-tabla-fila {
+        td .tot-label colspan="2" { "Tipo Pago" }
+        td colspan="2" {
+            select #mas_medio {
+                @for medio in medios.into_iter() {
+                    option value=(medio.id.unwrap()) 
+                        selected[medio.nombre == "efectivo"] {
+                            (medio.nombre)
+                        }
                 }
             }
         }
-        (tabla_detalle())
+        td;
+        td .tot-label { "Total" }
+        td #mas_total .tot-monto { "0" };
+        td;
     }
-}
-
-fn tabla_detalle() -> Markup {
-    html! {
-        .det-tabla #det_tabla {
-            div {
-                div { "id" }
-                div { "Producto" }
-                div { "Prc." }
-                div { "Ctd." }
-                div { "Dsc." }
-                div { "Ven." }
-                div { "Tot." }
-                div { img src="/img/gear.png"; }
-            }
-
-            #det_fila {
-                div { }
-                div { }
-                div { }
-                div { }
-                div { }
-                div { }
-                div { }
-                div { img src="/img/waste-24.png"; }
-            }
-
-            #totales {
-                div { }
-                div { }
-                div { "Totales" }
-                div { }
-                div { }
-                #t_descuento { }
-                #t_total { }
-                div { }
-            }
+    tr .form-tabla-fila {
+        td .tot-label colspan="2" { "Factura/Recibo" }
+        td colspan="2" {
+            input type="text" #mas_documento required 
+                placeholder="Factura/Recibo";
         }
+        td;
+        td .tot-label { "Pago" }
+        td { input #mas_pago type="text" required; }
+        td;
     }
-}
+    tr .form-tabla-fila {
+        td .tot-label colspan="2" { "Observaciones" }
+        td colspan="2" {
+            input type="text" id="mas_observaciones" required 
+                placeholder="Datos adicionales respecto a la compra";
+        }
+        td;
+        td .tot-label { "Cambio" }
+        td #mas_cambio .tot-monto;
+        td;
+    }
+} }
+

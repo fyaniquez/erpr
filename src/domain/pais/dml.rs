@@ -17,7 +17,8 @@ const SELECT: &str =
 #[tracing::instrument(name = "Lista paises", skip(pool))]
 pub async fn lista(pool: &PgPool) 
 -> Result<Vec<Pais>, sqlx::Error> {
-    let filas: Vec<Pais> = sqlx::query_as(SELECT)
+    let lista_ordenada = SELECT.to_owned() + " ORDER BY nombre";
+    let filas: Vec<Pais> = sqlx::query_as(lista_ordenada.as_str())
         .fetch_all(pool)
         .await?;
     Ok(filas)

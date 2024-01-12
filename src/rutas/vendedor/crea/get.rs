@@ -17,7 +17,6 @@ pub struct QueryData {
 
 #[get("/vendedor")]
 pub async fn muestra(
-    pool: web::Data<sqlx::PgPool>,
     query: web::Query<QueryData>,
 ) -> Result<HttpResponse, VendedorError> {
 

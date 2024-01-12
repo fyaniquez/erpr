@@ -29,6 +29,7 @@ fn combina(titulo: &str, atras: &str, contenido: Markup) -> Markup { html! {
         .cabecera-nav {
             a href="/" { "Registrarse" } }
     }
+    (layout::menu::muestra())
     main { 
         .form-box {
             .form-cabecera {

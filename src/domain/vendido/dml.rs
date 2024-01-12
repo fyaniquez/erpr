@@ -12,7 +12,7 @@ use crate::layout::lista::Paginado;
 use sqlx::{PgPool, Transaction};
 
 const SELECT: &str = r#"SELECT id, cantidad, precio, 
-    total, producto_id venta_id 
+    subtotal, producto_id venta_id 
     FROM vendidos WHERE venta_id=$1"#;
 
 // obtiene una lista de objetos
@@ -52,7 +52,7 @@ pub async fn obtiene(pool: &PgPool, id: i64)
 -> Result<Vendido, sqlx::Error> {
     let fila: Vendido =
         sqlx::query_as(
-            r#"SELECT id, cantidad, precio, total, descuento,
+            r#"SELECT id, cantidad, precio, subtotal, descuento,
             producto_id, venta_id
             FROM vendidos 
             WHERE id=$1"#)
@@ -68,8 +68,8 @@ pub async fn obtiene_ve(pool: &PgPool, id: i64)
 -> Result<VendidoVe, sqlx::Error> {
     let fila: VendidoVe =
         sqlx::query_as(
-            r#"SELECT v.id, v.cantidad, v.precio, v.descuento, v.total,
-            p.nombre as producto, venta_id
+            r#"SELECT v.id, v.cantidad, v.precio, v.descuento, 
+            v.subtotal, p.nombre as producto, venta_id
             FROM vendidos v INNER JOIN porductos p
             ON v.producto_id = p.id
             WHERE id=$1"#)
@@ -90,7 +90,7 @@ pub async fn inserta(
 
     let (id,) = sqlx::query_as(
     r#"INSERT INTO vendidos 
-        (producto_id, venta_id, cantidad, precio, descuento, total)
+        (producto_id, venta_id, cantidad, precio, descuento, subtotal)
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id"#,
     )
@@ -99,7 +99,7 @@ pub async fn inserta(
     .bind(vendido.cantidad)
     .bind(vendido.precio)
     .bind(vendido.descuento)
-    .bind(vendido.total)
+    .bind(vendido.subtotal)
     .fetch_one(tx)
     .await?;
     Ok(id)
@@ -118,7 +118,7 @@ pub async fn inserta_mul(
 
     sqlx::query( 
     r#"INSERT INTO vendidos 
-        (producto_id, venta_id, cantidad, precio, descuento, total)
+        (producto_id, venta_id, cantidad, precio, descuento, subtotal)
         SELECT * FROM UNNEST($1::bigint[], $2::bigint[], $3::integer[], 
         $4::integer[], $5::integer[], $6::integer[])
         "#)
@@ -127,7 +127,7 @@ pub async fn inserta_mul(
     .bind(&vendidos.cantidads[..])
     .bind(&vendidos.precios[..])
     .bind(&vendidos.descuentos[..])
-    .bind(&vendidos.totals[..])
+    .bind(&vendidos.subtotals[..])
     .execute(tx)
     .await?;
     Ok(1)

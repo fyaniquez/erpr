@@ -36,13 +36,6 @@ pub async fn muestra_json(
         Err(err) => HttpResponse::InternalServerError().json(
             Error { mensaje: err.to_string() }),
     }
-        //.context("Error al leer producto")?;
-
-    //let obj_json = serde_json::to_string(&producto)
-        //.map_err(|err| ProductoError::Validacion(err.to_string()))
-        //.unwrap();
-
-    //Ok(HttpResponse::Ok().body(obj_json))
 }
 
 // controlador

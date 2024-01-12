@@ -163,31 +163,12 @@ pub struct PaginadoInt<T> {
     pub nro_filas: i32,
 }
 
-// Barra con los parametros de búsqueda
-fn barra_busqueda(paginado: &Paginado, filtro_bar: Markup) -> Markup {
-    html! {
-        searchbar {
-            .longitud_bar {
-                label for="longitud" { "Mostrar " }
-                select name="longitud" id="longitud" {
-                    option selected[paginado.longitud=="10"] {"10"}
-                    option selected[paginado.longitud=="25"] {"25"}
-                    option selected[paginado.longitud=="50"] {"50"}
-                    option selected[paginado.longitud=="todos"] {"todos"}
-                }
-                span {" registros"}
-            }
-            (filtro_bar)
-        }
-    }
-}
-
 // barra con los controles para avanzar por páginas
 fn barra_paginado(contenido: bool, paginado: &Paginado) -> Markup {
     html! {
         .paginado-barra #pagebar {
-            @if contenido {
             #paginas .paginas {
+            @if contenido {
                 span .pagina #primero { "<<" }
                 span .pagina #previo { "<" }
                 @for p in paginado.get_inferior()..=
@@ -216,9 +197,6 @@ pub fn crea(
     estilo: &str,
     script: Option<&str>,
     paginado: &Paginado,
-    //errores: Option<&str>,
-    //filtro_bar: Markup,
-    //nro_filas: i32,
     contenido: Option<Markup>,
 ) -> AwResult<Markup> {
     let formulario = combina(titulo, atras, contenido, paginado);
@@ -240,6 +218,7 @@ fn combina(
         .cabecera-nav {
             a href="/" { "Registrarse" } }
     }
+    (layout::menu::muestra())
     .principal {
         .lista-box {
             .lista-cabecera {
@@ -249,12 +228,6 @@ fn combina(
                 a #atras href=(atras) { 
                     img src="/img/lista-24.png"; 
                 }
-                //span .form-titulo {(titulo)}
-                //input .pagina-filtro #filtro;
-                //button .pagina-buscar #buscar;
-                //a .form-atras #atras href=(atras) { 
-                    //img src="/img/lista-24.png"; 
-                //}
             }
             @match contenido {
                 Some(contenido) => {
@@ -268,12 +241,3 @@ fn combina(
         }
     }
 }}
-            //h1 .main {(titulo)}
-            //@if !contenido.is_none() {
-                //(barra_busqueda(Paginado, filtro_bar))
-            //}
-            //@if let Some(errores) = errores.clone() {
-                //error-message {
-                    //span.error-text {(errores)}
-                //}
-            //}

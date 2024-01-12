@@ -17,7 +17,7 @@ pub struct FormData {
     cantidad: i64,
     precio: i64,
     descuento: i64,
-    total: i64,
+    subtotal: i64,
 }
 
 // valida y contruye el objeto FormData
@@ -31,7 +31,7 @@ impl TryFrom<FormData> for Nuevo {
             cantidad: form_data.cantidad,
             precio: form_data.precio,
             descuento: form_data.descuento,
-            total: form_data.total,
+            subtotal: form_data.subtotal,
         })
     }
 }
@@ -90,7 +90,7 @@ pub async fn vendido_inserta(
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
         r#"INSERT INTO vendidos 
-        (producto_id, venta_id, cantidad, precio, descuento, total) 
+        (producto_id, venta_id, cantidad, precio, descuento, subtotal) 
         VALUES ($1, $2, $3, $4 $5, $6) RETURNING id"#
     )
     .bind(vendido_nuevo.producto_id)
@@ -98,7 +98,7 @@ pub async fn vendido_inserta(
     .bind(vendido_nuevo.cantidad)
     .bind(vendido_nuevo.precio)
     .bind(vendido_nuevo.descuento)
-    .bind(vendido_nuevo.total)
+    .bind(vendido_nuevo.subtotal)
     .fetch_one(pool)
     .await?;
     Ok(id)

@@ -38,7 +38,7 @@ fn contenido(vendido: VendidoVe) -> Markup { html! {
     .ve-label #cantidad {(vendido.cantidad)}
     .ve-label #precio {(vendido.precio)}
     .ve-label #descuento {(vendido.descuento)}
-    .ve-label #total {(vendido.total)}
+    .ve-label #subtotal {(vendido.subtotal)}
     button .form-submit #sublista type="button" { "Marcas" }
     button .form-submit #cambia type="button" { "Cambiar" }
     button .form-submit #borra type="button" { "Borrar" }

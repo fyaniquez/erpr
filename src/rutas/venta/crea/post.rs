@@ -2,7 +2,9 @@
 //! author: fyaniquez
 //! date: 06/12/2022
 //! purpose: procesa el formulario crea venta
-
+use crate::domain::login::{
+    get_estado,
+};
 use crate::domain::venta::{
     Venta, 
     VentaError, 
@@ -31,37 +33,27 @@ pub struct JsonData {
 )]
 #[post("/venta")]
 pub async fn procesa(
-    mut form: web::Json<JsonData>, 
+    form: web::Json<JsonData>, 
     pool: web::Data<PgPool>
 ) -> Result<HttpResponse, VentaError> { 
+
+    let estado = get_estado();
 
     let mut tx = pool.begin()
         .await
         .context("Error al iniciar transacción")?;
 
-    form.venta.puesto_id = Some(1);
-    form.venta.usuario_id = Some(2);
-        
-    let venta_id = venta_inserta(&mut tx, &form.venta)
+    let venta_id = venta_inserta(&mut tx, &form.venta, &estado)
         .await
         .context("Error al insertar venta en la BD")?;
 
-    let fff = inserta_mul(&mut tx, venta_id, &form.vendidos)
+    inserta_mul(&mut tx, venta_id, &form.vendidos)
         .await
         .context("Error al insertar vendido en la BD")?;
 
     tx.commit().await?;
 
-    //let respuesta = serde_json::json!( {
-        //"status": "exito", "venta_id": venta_id
-    //});
-    //let r = {
-        //estado: "exito",
-        //venta_id: venta_id,
-    //};
-
     Ok(HttpResponse::Ok()
-   //     .content_type(ContentType::json())
         .json(venta_id))
 
 }

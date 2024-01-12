@@ -7,7 +7,6 @@ use actix_web::Result as AwResult;
 use actix_web::{get, web};
 use maud::{html, Markup};
 use crate::layout;
-use sqlx::PgPool;
 
 #[derive(serde::Deserialize)]
 pub struct QueryData {
@@ -17,7 +16,6 @@ pub struct QueryData {
 #[get("/pais/{id}/fabrica")]
 pub async fn muestra(
     path: web::Path<(i64,)>, 
-    pool: web::Data<PgPool>,
 ) -> AwResult<Markup> {
     let (id,) = path.into_inner();
     let url = format!("/pais/{}/fabrica", id); 

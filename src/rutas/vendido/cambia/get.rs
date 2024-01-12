@@ -40,7 +40,8 @@ fn contenido(vendido: &VendidoVe) -> Markup { html! {
 
         .form-fila {
             label for="producto_id" {"Producto:" }
-            input type="text" name="producto_id" id="producto_id" required
+            input type="text" name="producto_id" 
+                id="producto_id" required
                 placeholder="Nombre capítulo" value=(vendido.producto);
         }
         .form-fila {
@@ -56,7 +57,7 @@ fn contenido(vendido: &VendidoVe) -> Markup { html! {
         .form-fila {
             label for="total" {"Total:" }
             input type="text" name="total" id="total" required
-                placeholder="Nombre capítulo" value=(vendido.total);
+                placeholder="Nombre capítulo" value=(vendido.subtotal);
         }
 
         button .form-submit #graba type="submit" { "Graba" }

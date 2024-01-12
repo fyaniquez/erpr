@@ -12,7 +12,7 @@ use sqlx::PgPool;
 
 const SELECT: &str = "SELECT id, nombre FROM marcas";
 
-const SELECT_JSON: &str = "SELECT id, nombre FROM marcas ORDER BY nombre";
+const SELECT_JSON: &str = "SELECT id, nombre FROM marcas ORDER BY UPPER(nombre)";
 
 // obtiene una lista de objetos
 #[tracing::instrument(name = "Lista marcas", skip(pool))]

@@ -4,6 +4,7 @@
  * date: 11/04/2023
  * purpose: estilos para elementos estructurales de las paginas
  */
+/* cabecera */
 
 main {
     width: 100%;
@@ -32,13 +33,33 @@ footer {
 .cabecera-nav {
     float: right;
 }
- .cabecera-nav a {
+.cabecera-nav a {
     color: var(--cabecera-frn);
     margin-left: 5px;
     margin-right: 5px;
     text-decoration: none;
     font-weight: bold;
- }
+}
+.tooltip {
+    position: relative;
+    text-decoration: none;
+    color: #333;
+}
+ 
+.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.tooltip:hover::before {
+    opacity: 1;
+}
 /* fin cabecera */
 
 /* formulario */

@@ -3,6 +3,7 @@
 //! date: 30/10/2022
 //! instrucciones dml para apitulo
 
+use crate::domain::login::Estado;
 use crate::layout::lista::Paginado;
 use crate::domain::compra::{
     Compra,
@@ -69,12 +70,12 @@ pub async fn obtiene_ve(
 ) -> Result<CompraVe, sqlx::Error> {
     let fila: CompraVe = sqlx::query_as(
             r#"SELECT v.id, v.fecha, v.total, v.descuento, 
-                v.documento, v.observaciones,
-                c.nombre as cliente, p.nombre as sucursal, 
-                u.nombre as usuario, m.nombre as medio, v.estado
-            FROM compras v, clientes c, sucursales p,
+                d.nombre as distribuidora, p.nombre as sucursal, 
+                u.nombre as usuario, m.nombre as medio, 
+                v.documento, v.observaciones, v.estado
+            FROM compras v, distribuidoras d, sucursales p,
                 usuarios u, medios m
-            WHERE v.id=$1 AND v.cliente_id = c.id 
+            WHERE v.id=$1 AND v.distribuidora_id = d.id 
                 AND v.sucursal_id = p.id AND v.usuario_id = u.id
                 AND v.medio_id = m.id"#
         ).bind(id)
@@ -88,6 +89,7 @@ pub async fn obtiene_ve(
 pub async fn inserta(
     tx: &mut Transaction<'_, sqlx::Postgres>,
     compra: &Compra,
+    estado: &Estado,
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
     r#"INSERT INTO compras 
@@ -102,8 +104,8 @@ pub async fn inserta(
     .bind(&compra.documento)
     .bind(&compra.observaciones)
     .bind(compra.distribuidora_id)
-    .bind(compra.sucursal_id)
-    .bind(compra.usuario_id)
+    .bind(estado.sucursal_id)
+    .bind(estado.usuario_id)
     .bind(compra.medio_id)
     .bind("Pagado".to_string())
     .fetch_one(tx)

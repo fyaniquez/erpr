@@ -1,0 +1,39 @@
+                                            Tabla «public.productos»
+     Columna     |            Tipo             | Ordenamiento | Nulable  |              Por omisión              
+-----------------+-----------------------------+--------------+----------+---------------------------------------
+ id              | bigint                      |              | not null | nextval('productos_id_seq'::regclass)
+ nombre          | text                        |              | not null | 
+ caracteristicas | text                        |              |          | 
+ categoria_id    | bigint                      |              | not null | 
+ marca_id        | bigint                      |              | not null | 
+ unidad_id       | bigint                      |              | not null | 
+ fabrica_id      | bigint                      |              | not null | 
+ contenido       | text                        |              | not null | 
+ cantidad        | integer                     |              | not null | 1
+ fraccionable    | boolean                     |              | not null | false
+ barras          | text                        |              |          | 
+ activo          | boolean                     |              | not null | true
+ created_at      | timestamp without time zone |              | not null | 
+ updated_at      | timestamp without time zone |              | not null | 
+Índices:
+    "productos_pkey" PRIMARY KEY, btree (id)
+    "index_productos_on_categoria_id" btree (categoria_id)
+    "index_productos_on_fabrica_id" btree (fabrica_id)
+    "index_productos_on_marca_id" btree (marca_id)
+    "index_productos_on_unidad_id" btree (unidad_id)
+    "productos_nombre_key" UNIQUE CONSTRAINT, btree (nombre)
+    "uk_prd_nombre" UNIQUE CONSTRAINT, btree (categoria_id, caracteristicas, marca_id, unidad_id, fabrica_id, contenido, cantidad)
+Restricciones de llave foránea:
+    "fk_prd_ctg" FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+    "fk_prd_fbc" FOREIGN KEY (fabrica_id) REFERENCES fabricas(id)
+    "fk_prd_mrc" FOREIGN KEY (marca_id) REFERENCES marcas(id)
+    "fk_prd_und" FOREIGN KEY (unidad_id) REFERENCES unidades(id)
+Referenciada por:
+    TABLE "comprados" CONSTRAINT "fk_comprados_producto" FOREIGN KEY (producto_id) REFERENCES productos(id) ON UPDATE RESTRICT ON DELETE RESTRICT
+    TABLE "inventariados" CONSTRAINT "fk_inventariados_productos" FOREIGN KEY (producto_id) REFERENCES productos(id) ON UPDATE RESTRICT ON DELETE RESTRICT
+    TABLE "precios" CONSTRAINT "fk_precio_producto" FOREIGN KEY (producto_id) REFERENCES productos(id)
+    TABLE "vendidos" CONSTRAINT "fk_vendidos_producto" FOREIGN KEY (producto_id) REFERENCES productos(id) ON UPDATE RESTRICT ON DELETE RESTRICT
+Triggers:
+    insert_prepara BEFORE INSERT ON productos FOR EACH ROW EXECUTE PROCEDURE productos_insert_prepara()
+    update_prepara BEFORE UPDATE ON productos FOR EACH ROW EXECUTE PROCEDURE productos_update_prepara()
+

@@ -40,12 +40,12 @@ pub struct CompraVe {
     pub fecha: NaiveDateTime,
     pub total: i32,
     pub descuento: i32,
-    pub documento: String,
-    pub observaciones: String,
+    pub distribuidora: String,
     pub sucursal: String,
     pub usuario: String,
-    pub cliente: String,
     pub medio: String,
+    pub documento: String,
+    pub observaciones: String,
 }
 
 impl std::fmt::Debug for CompraError {

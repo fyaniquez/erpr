@@ -3,22 +3,27 @@
 //! date: 6/12/2022
 //! purpose: muestra el formulario de alta de venta
 //!
-use crate::domain::medio::{lista as medio_lista, Medio};
-
 use crate::layout;
+use crate::domain::medio::{
+    lista as medio_lista, 
+    Medio
+};
+
 use actix_web::Result as AwResult;
 use actix_web::{get, web, HttpResponse};
 use maud::{html, Markup, PreEscaped};
 use sqlx::PgPool;
+use serde::Serialize;
+
+// estructura del objeto json devuelto como error
+#[derive(Serialize)]
+struct Error {
+    mensaje: String,
+}
 
 #[tracing::instrument(name = "formulario crea venta", skip(pool))]
 #[get("/venta")]
 pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
-    let puesto_id: i64 = 1;
-    let usuario_id: i64 = 1;
-    let catalogo_id: i64 = 2;
-
-    //let medios: Vec<Medio> = Vec::new();
     // TODO: no esta controlando errores de servidor
     let medios = medio_lista(&pool)
         .await
@@ -27,25 +32,15 @@ pub async fn muestra(pool: web::Data<PgPool>) -> AwResult<Markup> {
 
     layout::form::crea(
         "Venta",
-        "/ventas",
+        "/venta",
         "venta/crea.css",
         Some("venta/crea.js"),
-        contenido(medios, puesto_id, usuario_id, catalogo_id),
+        contenido(medios),
     )
 }
 
-fn contenido(
-    medios: Vec<Medio>,
-    puesto_id: i64,
-    usuario_id: i64,
-    catalogo_id: i64,
-) -> Markup { html! {
-    .modal #busqueda_box {
-        div {
-            .busqueda-titulo #busqueda_titulo {};
-            span .busqueda-close #busqueda_close { (PreEscaped("&times;")) }
-        }
-    }
+fn contenido( medios: Vec<Medio>, ) -> Markup { html! {
+    (popup())
 
     table .form-tabla #form_tabla { 
         colgroup { col; col; col; col; col; col; col; }
@@ -61,6 +56,24 @@ fn contenido(
     }
 } }
 
+// ventana de popup
+fn popup() -> Markup { html! {
+    .popup #popup {
+        .popup-contenido #popup_contenido {
+            .popup-barra-titulo {
+                .popup-titulo #popup_titulo {};
+                .popup-close #popup_close { 
+                    img .popup-cruz src="img/cierra.png";
+                }
+            }
+            .popup-filtro {
+                label for="popup_nombre" { "Filtro: "}
+                input .popup-nombre #popup_nombre;
+            }
+        }
+    }
+}}
+
 fn formulario_detalle() -> Markup { html! {
     tr .form-tabla-cabecera {
         th {"id"} th {"Producto"} th {"Prc."} 
@@ -71,6 +84,7 @@ fn formulario_detalle() -> Markup { html! {
         td { input #det_nombre type="text"; }
         td { span #det_precio { "0" } }
         td { input #det_cantidad type="text" value="1" required; }
+        td { span #det_subtotal { "0" } }
         td { input #det_descuento type="text" value="0"; }
         td { span #det_total { "0" } }
         td { .cmd { button #det_agrega .btn-min .accion {

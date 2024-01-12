@@ -5,6 +5,7 @@
  */
 
 @import "form-helper.css";
+@import "menu.css";
 
 .form-box {
     width: 400px;

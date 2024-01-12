@@ -1,0 +1,90 @@
+/*
+ * css/lib/popup.css
+ * author: fyaniquez
+ * date: 11/04/2023
+ * purpose: estilos para popup de busqueda
+ */
+.popup {
+    display: none;
+    position:fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+.popup-contenido {
+    background-color: white;
+    border: 1px solid #888;
+    width: 20rem;
+}
+.popup-barra-titulo {
+    background-color: var(--tab-cab-fdo);
+    color: white;
+/* prepara el contexto para el posicionamiento de modal-close */
+    position: relative;
+/* fin prepara el contexto para el posicionamiento de modal-close */
+    box-sizing: border-box;
+    width: 100%;
+}
+.popup-titulo {
+    text-align: center;
+    font-weight: bold;
+    padding: 2px;
+    background-color: var(--tab-cab-fdo);
+    box-sizing: border-box;
+    width: 100%;
+}
+.popup-cruz {
+   margin: auto;
+}
+.popup-filtro {
+    padding: 5px;
+    display: flex;
+}
+.popup-nombre {
+    flex: 1;
+}
+.popup-tabla {
+    background-color: white;
+    border: 1px solid #888;
+    width: 100%;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+.popup-tabla th {
+    background-color: var(--tab-cab-fdo);
+    color: white;
+}
+.popup-tabla-fila:nth-child(even) {
+    background-color:lightblue;
+}
+.popup-close {
+    display: flex;
+    align-items: center;
+    background-color: red;
+    color: black;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border: 1px solid #888;
+    /* coloca el item arriba a la derecha */
+    position: absolute;
+    top: 0;
+    right: 0;
+    /* fin coloca el item arriba a la derecha */
+    box-sizing: border-box;
+    width: 1.3rem;
+    height: 1.3rem;
+    text-align: center;
+    margin: 1px;
+}
+
+.popup-close:hover,
+.popup-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* fin busqueda */

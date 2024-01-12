@@ -25,9 +25,8 @@ pub async fn muestra(
     let venta = obtiene_ve(&pool, id).await
         .context("Error al leer venta")?;
 
-    let puesto_id = 1;
     let pagina = layout::form::crea(
-        "Venta", &format!("/puesto/{}/ventas", puesto_id), 
+        "Venta", "/venta", 
         "ve.css", Some("venta/ve.js"), contenido(venta));
 
     Ok(HttpResponse::Ok().body(pagina.unwrap().into_string()))
@@ -36,14 +35,16 @@ pub async fn muestra(
 // vista
 fn contenido(venta: VentaVe) -> Markup { html! {
     @let fecha = venta.fecha.format("%d-%m-%Y %H:%M").to_string();
-    @let total_parcial = venta.total - venta.descuento;
+    @let des = venta.descuento as f32 / 100.0;
+    @let subtot = venta.subtotal as f32 / 100.0;
+    @let total = subtot - des;
     .ve-label { strong { "Fecha: " } (fecha)}
     .ve-label { strong { "Pto.Vta.: " } (venta.puesto)}
     .ve-label { strong { "Cajero: " } (venta.usuario)}
     .ve-label { strong { "Cliente: " } (venta.cliente)}
-    .ve-label { strong { "Total: " } (total_parcial)}
-    .ve-label { strong { "Descuento: " } (venta.descuento)}
-    .ve-label { strong { "Total a pagar: " } (venta.total)}
+    .ve-label { strong { "SubTotal: " } (subtot)}
+    .ve-label { strong { "Descuento: " } (des)}
+    .ve-label { strong { "Total a pagar: " } (total)}
     button .form-submit #graba type="button" { "Graba" }
     button .form-submit #cancela type="button" { "Cancela" }
 }}

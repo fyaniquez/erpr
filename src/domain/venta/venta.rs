@@ -11,7 +11,7 @@ use chrono::NaiveDateTime;
 pub struct Venta {
     pub id: Option<i64>,
     pub fecha: Option<NaiveDateTime>,
-    pub total: i32,
+    pub subtotal: i32,
     pub descuento: i32,
     pub cliente_id: i64,
     pub puesto_id: Option<i64>,
@@ -36,7 +36,7 @@ pub enum VentaError {
 pub struct VentaVe {
     pub id: i64,
     pub fecha: NaiveDateTime,
-    pub total: i32,
+    pub subtotal: i32,
     pub descuento: i32,
     pub puesto: String,
     pub usuario: String,

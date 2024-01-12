@@ -15,7 +15,7 @@ pub struct FormData {
     producto_id: i64,
     cantidad: i32,
     precio: i32,
-    total: i32,
+    subtotal: i32,
     descuento: i32,
 }
 
@@ -29,7 +29,7 @@ impl TryFrom<FormData> for Vendido {
             producto_id: form_data.producto_id,
             cantidad: form_data.cantidad,
             precio: form_data.precio,
-            total: form_data.total,
+            subtotal: form_data.subtotal,
             descuento: form_data.descuento,
         })
     }
@@ -67,13 +67,13 @@ pub async fn vendido_actualiza(
 ) -> Result<(), sqlx::Error> {
     let _ = sqlx::query(
         r#"UPDATE vendidos 
-        SET cantidad=$2, precio=$3, descuento=$4, total=$5
+        SET cantidad=$2, precio=$3, descuento=$4, subtotal=$5
         WHERE id=$1"#)
     .bind(id)
     .bind(&vendido.cantidad)
     .bind(&vendido.precio)
     .bind(&vendido.descuento)
-    .bind(&vendido.total)
+    .bind(&vendido.subtotal)
     .execute(pool)
     .await?;
     Ok(())

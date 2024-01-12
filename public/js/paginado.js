@@ -59,11 +59,17 @@ const onClickPaginas = (e) => {
 const onClickBuscar = (e) => {
     filtrar(filtro.value);
 }
-
+// enter en input filtro
+const onKeypressFiltro = (e) => {
+    if (e.key == "Enter" && e.target.value.trim() !== "") {
+        filtrar(e.target.value);
+    }
+}
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadPaginado = () => {
     paginas.addEventListener("click", onClickPaginas);
     buscar.addEventListener("click", onClickBuscar);
+    filtro.addEventListener("keypress", onKeypressFiltro);
 }
 
 document.readyState === "complete" ? onLoadPaginado() : addEventListener("load", onLoadPaginado);

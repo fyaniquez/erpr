@@ -67,7 +67,7 @@ fn contenido(filas: Vec<Venta>, puesto: &Puesto) -> Option<Markup> {
                 @for fila in filas.into_iter() {
                     .lista-item #{(fila.id.unwrap())} {
                         span .nombre {(fila.fecha.unwrap().format("%d-%m-%Y %H:%M").to_string())}
-                        span .nombre {(fila.total)}
+                        span .nombre {(fila.subtotal)}
                     }
                 }}
             }

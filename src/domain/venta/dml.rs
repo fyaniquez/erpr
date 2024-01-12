@@ -1,8 +1,9 @@
 //! src/domain/venta/dml
 //! author: fyaniquez
 //! date: 30/10/2022
-//! instrucciones dml para apitulo
+//! instrucciones dml para Ventas
 
+use crate::domain::login::Estado;
 use crate::layout::lista::Paginado;
 use crate::domain::venta::{
     Venta,
@@ -12,7 +13,7 @@ use sqlx::{PgPool, Transaction};
 use chrono::Utc;
 
 const SELECT: &str = 
-    r#"SELECT id, fecha, total, descuento, cliente_id,
+    r#"SELECT id, fecha, subtotal, descuento, cliente_id,
         puesto_id, usuario_id, medio_id, estado
     FROM ventas WHERE puesto_id=$1"#;
 
@@ -53,7 +54,7 @@ pub async fn obtiene(
     pool: &PgPool, id: i64
 ) -> Result<Venta, sqlx::Error> {
     let fila: Venta = sqlx::query_as(
-            r#"SELECT id, fecha, total, descuento, cliente_id,
+            r#"SELECT id, fecha, subtotal, descuento, cliente_id,
                 puesto_id, usuario_id, medio_id, estado
             FROM ventas WHERE id=$1"#
         ).bind(id)
@@ -68,7 +69,7 @@ pub async fn obtiene_ve(
     pool: &PgPool, id: i64
 ) -> Result<VentaVe, sqlx::Error> {
     let fila: VentaVe = sqlx::query_as(
-            r#"SELECT v.id, v.fecha, v.total, v.descuento, 
+            r#"SELECT v.id, v.fecha, v.subtotal, v.descuento, 
                 c.nombre as cliente, p.nombre as puesto, 
                 u.nombre as usuario, m.nombre as medio, v.estado
             FROM ventas v, clientes c, puestos p,
@@ -87,20 +88,21 @@ pub async fn obtiene_ve(
 pub async fn inserta(
     tx: &mut Transaction<'_, sqlx::Postgres>,
     venta: &Venta,
+    estado: &Estado,
 ) -> Result<i64, sqlx::Error> {
     let (id,) = sqlx::query_as(
     r#"INSERT INTO ventas 
-        (fecha, total, descuento, cliente_id, puesto_id, 
+        (fecha, subtotal, descuento, cliente_id, puesto_id, 
         usuario_id, medio_id, estado)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING id"#,
     )
     .bind(Utc::now().naive_utc())
-    .bind(venta.total)
+    .bind(venta.subtotal)
     .bind(venta.descuento)
     .bind(venta.cliente_id)
-    .bind(venta.puesto_id)
-    .bind(venta.usuario_id)
+    .bind(estado.puesto_id)
+    .bind(estado.usuario_id)
     .bind(venta.medio_id)
     .bind("Pagado".to_string())
     .fetch_one(tx)

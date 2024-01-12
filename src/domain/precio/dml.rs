@@ -2,7 +2,7 @@
 //! author: fyaniquez
 //! date: 30/10/2022
 //! instrucciones dml para apitulo
-
+use crate::domain::login::Estado;
 use crate::domain::precio::{
     Precio,
     Nuevo,
@@ -32,18 +32,18 @@ pub async fn lista(pool: &PgPool, catalogo_id: i64) -> Result<Vec<Precio>, sqlx:
 pub async fn lista_paginada(
     pool: &PgPool,
     paginado: &Paginado,
-    catalogo_id: i64,
+    estado: &Estado,
 ) -> Result<(Vec<Precio>, i32), sqlx::Error> {
 
     let qry = paginado.get_qry(SELECT);
     let filas: Vec<Precio> = sqlx::query_as(qry.as_ref())
-        .bind(catalogo_id)
+        .bind(estado.catalogo_id)
         .fetch_all(pool)
         .await?;
 
     let qry_count = paginado.get_qry_count(SELECT);
     let nro_filas: (i64,) = sqlx::query_as(qry_count.as_ref())
-        .bind(catalogo_id)
+        .bind(estado.catalogo_id)
         .fetch_one(pool)
         .await?;
     Ok((filas, nro_filas.0 as i32))

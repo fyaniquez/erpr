@@ -1,0 +1,46 @@
+.menu {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.menu li {
+  margin-right: 10px;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #000;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #ccc;
+}
+
+.menu li a:hover {
+  background-color: #eaeaea;
+}
+/*
+.menu > li {
+  position: relative;
+  padding: 10px;
+  background-color: #f0f0f0;
+}
+.menu ul {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  display: none;
+}
+
+.menu li:hover > ul {
+  display: block;
+  min-width: 150px;
+}
+
+.menu li ul li {
+  display: block;
+  background-color: #fff;
+}
+
+*/

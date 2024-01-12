@@ -1,3 +1,4 @@
+pub mod login;
 pub mod usuario;
 pub mod capitulo;
 pub mod categoria;

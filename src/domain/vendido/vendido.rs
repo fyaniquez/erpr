@@ -14,7 +14,7 @@ pub struct Vendido {
     pub cantidad: i32,
     pub precio: i32,
     pub descuento: i32,
-    pub total: i32,
+    pub subtotal: i32,
 }
 
 #[derive(Serialize, sqlx::FromRow)]
@@ -25,7 +25,7 @@ pub struct VendidoVe {
     pub cantidad: i32,
     pub precio: i32,
     pub descuento: i32,
-    pub total: i32,
+    pub subtotal: i32,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -34,7 +34,7 @@ pub struct Vendidos {
     pub cantidads: Vec<i32>,
     pub precios: Vec<i32>,
     pub descuentos: Vec<i32>,
-    pub totals: Vec<i32>,
+    pub subtotals: Vec<i32>,
 }
 // errores considerados para lista de vendidos
 #[derive(thiserror::Error)]

@@ -70,7 +70,7 @@ fn contenido(filas: Vec<VendidoVe>, venta: &Venta) -> Option<Markup> {
                         span .nombre-largo {(fila.producto)}
                         span .nombre {(fila.cantidad)}
                         span .nombre {(fila.precio)}
-                        span .nombre {(fila.total)}
+                        span .nombre {(fila.subtotal)}
                     }
                 }}
             }

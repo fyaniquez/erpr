@@ -1,86 +1,11 @@
+import {popupMuestra} from "../popup.js";
+import * as valida from "../lib/valida-input.js";
 /*
  * file: /public/js/venta/crea.js
  * scripts para administrar creacion de ventas
  * author: fyaniquez
  * fecha: 27/06/2022
  */
-const fila2Producto = fila => {
-    return {
-        id: fila.id,
-        nombre: fila.children[0].innerText,
-        precio: fila.children[1].innerText
-    }
-}
-const fila2Cliente = fila => {
-    return {
-        id: fila.id,
-        nombre: fila.children[0].innerText,
-        documento: fila.children[1].innerText
-    }
-}
-// valida si el valor del input es entero, identifica el input por objeto
-const validaEntero = (input, objeto) => {
-    const valor = input.value.trim();
-    if (valor === '' || isNaN(valor)) {
-        alert(`Debe introducir el ${objeto}`);
-        return false;
-    }
-    const numero = Number(valor);
-    if (!Number.isInteger(numero)) {
-        alert(`El ${objeto} no es válido`);
-        return false;
-    }
-    if (numero < 1) {
-        alert(`El ${objeto} no es válido`);
-        return false;
-    }
-    return true;
-}
-// valida decimal
-const validaDecimal = (input, objeto) => {
-    const valor = input.value.trim();
-    if (valor === '' || isNaN(valor)) {
-        alert(`Debe introducir el ${objeto}`);
-        input.value = "0";
-        return false;
-    }
-    const numero = Number(valor);
-    if (numero < 1) {
-        alert(`El ${objeto} no es válido`);
-        input.value = "0";
-        return false;
-    }
-    return true;
-}
-// valida decimal
-const validaDescuento = (input) => {
-    const valor = input.value.trim();
-    if (valor === '' || isNaN(valor)) {
-        alert("Debe introducir un número válido");
-        input.value = "0";
-        return false;
-    }
-    const numero = Number(valor);
-    if (numero < 0) {
-        alert("El descuento no es válido");
-        input.value = "0";
-        return false;
-    }
-    return true;
-}
-const validaTotal = () => {
-    const valor = window.det_total.innerText;
-    if (valor === '' || isNaN(valor)) {
-        alert('No se introdujo una venta valida');
-        return false;
-    }
-    const numero = Number(valor);
-    if (numero < 0.10) {
-        alert('No se introdujo una venta valida');
-        return false;
-    }
-    return true;
-}
 ////////////////////
 // recopila los datos y los incluye en una estructura json
 const creaJsonVenta = () => {
@@ -88,7 +13,7 @@ const creaJsonVenta = () => {
     var precios = [];
     var cantidads = [];
     var descuentos = [];
-    var totals = [];
+    var subtotals = [];
 
     const filas = window.form_tabla.getElementsByTagName('tr');
     for (var i = 0; i < filas.length; i++) {
@@ -98,11 +23,11 @@ const creaJsonVenta = () => {
         precios.push(+filas[i].children[2].innerText * 100);
         cantidads.push(+filas[i].children[3].innerText * 100);
         descuentos.push(+filas[i].children[4].innerText * 100);
-        totals.push(+filas[i].children[5].innerText * 100);
+        subtotals.push(+filas[i].children[5].innerText * 100);
     }
     return {
         venta: {
-            total: +window.mas_total.innerText * 100,
+            subtotal: +window.mas_subtotal.innerText * 100,
             descuento: +window.mas_descuento.value * 100,
             medio_id: +window.mas_medio.value,
             cliente_id: +window.cli_id.value,
@@ -112,7 +37,7 @@ const creaJsonVenta = () => {
             precios: precios,
             cantidads: cantidads,
             descuentos: descuentos,
-            totals: totals,
+            subtotals: subtotals,
         }
     }
 }
@@ -206,94 +131,72 @@ const obtieneClientes = async cliente => {
         return null;
     }
 }
-// muestra producto en formulario
-const muestraProducto = producto => {
-    window.det_id.value = producto.producto_id;
-    window.det_nombre.value = producto.nombre;
-    window.det_precio.innerText = producto.precio;
-    window.det_cantidad.value = 1;
-    window.det_descuento.value = 0;
-    window.det_total.innerText = producto.precio;
-    window.det_cantidad.focus();
-}
+
 // muestra productos en un popup
 const muestraProductos = (productos) => {
-    (window.busqueda_titulo).innerText = "Productos";
-    const tabla_ant = document.getElementById("busqueda");
-    if (tabla_ant) tabla_ant.remove();
-    const tabla = document.createElement("table");
-    tabla.classList.add("busqueda");
-    tabla.id = "busqueda";
-    busqueda_box.append(tabla);
-    const formato = document.createElement("colgroup");
-    const col1 = document.createElement("col");
-    col1.style.width = "9rem";
-    const col2 = document.createElement("col");
-    col2.style.width = "4rem";
-    formato.append(col1, col2);
-    const cabecera = document.createElement("tr");
-    cabecera.classList.add("form-tabla-fila");
-    const tit1 = document.createElement("th");
-    tit1.innerText = "Nombre";
-    const tit2 = document.createElement("th");
-    tit2.innerText = "Precio";
-    cabecera.append(tit1, tit2);
-    tabla.append(formato, cabecera);
-    for (var i = 0; i < productos.length; i++) {
-        const fila_nueva = document.createElement("tr");
-        fila_nueva.id = productos[i].producto_id
-        fila_nueva.classList.add("form-tabla-fila");
-        const det1 = document.createElement("td");
-        det1.innerText = productos[i].nombre;
-        const det2 = document.createElement("td");
-        det2.innerText = productos[i].precio;
-        fila_nueva.append(det1, det2);
-        tabla.append(fila_nueva);
-    }
-    window.busqueda_box.style.display = 'block';
+    const popupProductos = {
+        titulo: "Productos",
+        columna_id: "producto_id",
+        columnas: [ 
+            { 
+                nombre: "Nombre", 
+                ancho: "75%", 
+                columna: "nombre", 
+                alineacion: "left" },
+            { 
+                nombre: "Precio", 
+                ancho: "25%", 
+                columna: "precio", 
+                alineacion: "right" }
+        ],
+        onClickFila: function( e ) {
+   // muestra producto en formulario a partir de la fila en el popup
+            const fila = e.target.parentNode;
+            window.det_id.value = fila.id;
+            window.det_nombre.value = fila.children[0].innerText;
+            window.det_precio.innerText = fila.children[1].innerText;
+            window.det_cantidad.value = 1;
+            window.det_descuento.value = 0;
+            window.det_subtotal.innerText = fila.children[1].innerText;
+            window.popup.style.display = 'none';
+        }
+    };
+    popupMuestra(popupProductos, productos);
 }
-// muestra cliente en formulario
 const muestraCliente = cliente => {
     window.cli_id.value = cliente.id;
     window.cli_nombre.value = cliente.nombre;
     window.cli_documento.value = cliente.documento;
-    window.btn_guarda.focus();
 }
 // muestra lista de clientes en un popup
 const muestraClientes = (clientes) => {
-    (window.busqueda_titulo).innerText = 'Clientes';
-    const tabla_ant = document.getElementById("busqueda");
-    if (tabla_ant) tabla_ant.remove();
-    const tabla = document.createElement("table");
-    tabla.classList.add("busqueda");
-    tabla.id = "busqueda";
-    busqueda_box.append(tabla);
-    const formato = document.createElement("colgroup");
-    const col1 = document.createElement("col");
-    col1.style.width = "9rem";
-    const col2 = document.createElement("col");
-    col2.style.width = "4rem";
-    formato.append(col1, col2);
-    const cabecera = document.createElement("tr");
-    cabecera.classList.add("form-tabla-fila");
-    const tit1 = document.createElement("th");
-    tit1.innerText = "Nombre";
-    const tit2 = document.createElement("th");
-    tit2.innerText = "Docto.";
-    cabecera.append(tit1, tit2);
-    tabla.append(formato, cabecera);
-    for (var i = 0; i < clientes.length; i++) {
-        const fila_nueva = document.createElement("tr");
-        fila_nueva.id = clientes[i].id
-        fila_nueva.classList.add("form-tabla-fila");
-        const det1 = document.createElement("td");
-        det1.innerText = clientes[i].nombre;
-        const det2 = document.createElement("td");
-        det2.innerText = clientes[i].documento;
-        fila_nueva.append(det1, det2);
-        tabla.append(fila_nueva);
-    }
-    window.busqueda_box.style.display = 'block';
+    const popupClientes = {
+        titulo: "Clientes",
+        columna_id: "id",
+        columnas: [ 
+            { 
+                nombre: "Nombre", 
+                ancho: "75%", 
+                columna: "nombre",
+                alineacion: "left"
+            },
+            { 
+                nombre: "Docto.", 
+                ancho: "25%", 
+                columna: "documento",
+                alineacion: "left"
+            }
+        ],
+        onClickFila: function( e ) {
+      // muestra cliente en formulario a partir de la fila en el popup
+            const fila = e.target.parentNode;
+            window.cli_id.value = fila.id;
+            window.cli_nombre.value = fila.children[0].innerText;
+            window.cli_documento.value = fila.children[1].innerText;
+            window.btn_guarda.focus();
+        }
+    };
+    popupMuestra(popupClientes, clientes);
 }
 
 // agrega item a tabla de vendidos
@@ -303,13 +206,16 @@ const muestraDetalle = () => {
     fila_nueva.id = `fila_${fila}`;
     fila_nueva.classList.add("form-tabla-fila");
     fila_nueva.innerHTML = `<td>${window.det_id.value}</td>
-        <td><div class="det-nombre">${window.det_nombre.value}</div></td>
+        <td>
+		<div class="det-nombre">${window.det_nombre.value}
+		</div></td>
         <td>${window.det_precio.innerText}</td>
         <td>${window.det_cantidad.value}</td>
         <td>${window.det_descuento.value}</td>
-        <td>${window.det_total.innerText}</td>
+        <td>${window.det_subtotal.innerText}</td>
         <td><div class="cmd">
-            <div class="btn-min peligro" id="borra_${fila}">&#x2715</div>
+            <div class="btn-min peligro" id="borra_${fila}">&#x2715
+	    </div>
         </div></td>`;
     const formtabla = window.form_tabla_fila;
     formtabla.insertAdjacentElement('afterend', fila_nueva);
@@ -319,17 +225,17 @@ const muestraDetalle = () => {
 }
 // calcula los totales para el registro maestro
 const recalculaMaestro = () => {
-    var total = 0.0;
+    var subtotal = 0.0;
     const filas = window.form_tabla.getElementsByTagName('tr');
     for (var i = 0; i < filas.length; i++) {
         const id = filas[i].getAttribute("id");
         if (!(id && id.indexOf("fila") === 0)) continue;
         const columnas = filas[i].children;
-        total += Number(columnas[5].innerText);
+        subtotal += Number(columnas[5].innerText);
     }
-    window.mas_subtotal.innerText = total;
+    window.mas_subtotal.innerText = subtotal;
     const descuento = Number(window.mas_descuento.value);
-    window.mas_total.innerText = total - descuento;
+    window.mas_total.innerText = subtotal - descuento;
 }
 const recalculaDetalle = () => {
     const cantidad = Number(window.det_cantidad.value);
@@ -368,56 +274,111 @@ const onClickBorraFila = (e) => {
         window.det_id.focus();
     }
 }
-
-// obtiene producto a partir de su id
-const onChangeDetId = async e => {
-    const id = e.target.value.trim();
-    // si se deja vacio salta a nombre
-    if (id === "") {
-        window.det_nombre.select();
-        window.det_nombre.focus();
-        return;
-    }
-    // si hay error pide el codigo de nuevo
-    if (!validaEntero(e.target, "código de producto")) {
-        window.det_id.select();
-        window.det_id.focus();
-        return;
-    }
-    const producto = await obtieneProducto(e.target.value.trim());
-    //e.stopPropagation();
-    if (!producto) {
-        return;
-    }
-    muestraProducto(producto);
-    window.det_cantidad.select();
-    window.det_cantidad.focus();
+// Muestra un producto en el formulario
+const muestraProducto = (producto) => {
+    window.det_id.value = producto.producto_id;
+    window.det_nombre.value = producto.nombre;
+    window.det_precio.innerText = producto.precio;
+    window.det_cantidad.value = 1;
+    window.det_descuento.value = 0;
+    window.det_total.innerText = producto.precio;
 }
+// obtiene producto a partir de su id
+const onKeyDownDetId = async e => {
+    if(e.key === "Enter" || e.key === "Tab") {
+        e.preventDefault();
+        const id = e.target.value.trim();
+
+        // si se deja vacio salta a nombre
+        if (id === "") {
+            window.det_nombre.select();
+            window.det_nombre.focus();
+            return;
+        }
+
+        // si hay error pide el codigo de nuevo
+        if (!valida.entero(e.target, "código de producto")) {
+            window.det_id.select();
+            window.det_id.focus();
+            return;
+        }
+
+        const producto = await obtieneProducto(e.target.value.trim());
+        // si no existe el codigo lo pide de nuevo
+        if (!producto) {
+            window.det_id.select();
+            window.det_id.focus();
+            return;
+        }
+
+        // si todo ok, continua
+        muestraProducto(producto);
+        window.det_cantidad.select();
+        window.det_cantidad.focus();
+    }
+}
+
 // muestra un popup de productos a medida que el usuario teclea nombre
-const onKeyupDetNombre = async e => {
-    const producto = e.target.value.trim();
-    if (producto === "") {
-        if (window.det_id.value.trim() === "") {
-            // si id y nombre estan vacios termina introducción del detalle
+const onKeyDownDetNombre = async e => {
+    if(e.key === "Enter") {
+        // si id y nombre vacios termina introducción del detalle
+        if (e.target.value.trim() === "" 
+        && window.det_id.value.trim() === "") {
+            e.preventDefault();
             window.mas_descuento.select();
             window.mas_descuento.focus();
+        }  else {
+            window.det_cantidad.select();
+            window.det_cantidad.focus();
         }
         return;
     }
-    window.muestraBusqueda = muestraProducto;
-    window.objetoBusqueda = fila2Producto;
-    const productos = await obtieneProductos(producto);
-    if (!productos) {
-        e.target.select();
+    if(e.key === "Tab") {
         return;
     }
+
+    var producto = e.target.value.trim();
+    if (valida.alfanumerico(e) ) {
+        producto += e.key;
+    } else {
+        return;
+    }
+
+    // si la casilla es vacia 
+    if (producto === "") {
+        if (window.det_id.value.trim() === "") {
+            // si id y nombre vacios termina introducción del detalle
+            window.mas_descuento.select();
+            window.mas_descuento.focus();
+        } else {
+            // si no hay nombre cambiar de producto
+            window.det_id.select();
+            window.det_id.focus();
+        }
+        return;
+    }
+
+    // la consulta se activa si se buscan mas de 3 caracteres
+    if (producto.length < 3) {
+        return;
+    }
+
+    // buscar productos coincidentes
+    const productos = await obtieneProductos(producto);
+    
+    // si no existe el codigo lo pide de nuevo
+    if (!productos) {
+        e.target.select();
+        e.target.focus();
+        return;
+    }
+
+    // mostrar lista de productos
     muestraProductos(productos);
-    window.det_cantidad.select();
-    window.det_cantidad.focus();
 }
 // actualiza el formulario luego de cambio de cantidad
 const onChangeDetCantidad = e => {
-    if (!validaDecimal(e.target, "cantidad")) {
+    if (!valida.decimal(e.target, "cantidad")) {
         window.det_cantidad.value = 1;
         window.det_cantidad_old = 1;
         e.target.select();
@@ -425,14 +386,14 @@ const onChangeDetCantidad = e => {
     }
     recalculaDetalle();
     recalculaMaestro();
-    window.det_cantidad_old = window.dec_cantidad.value;
+    window.det_cantidad_old = window.det_cantidad.value;
     window.det_descuento.select();
     window.det_descuento.focus();
 }
 
 // actualiza el formulario luego de cambio de descuento
 const onChangeDetDescuento = e => {
-    if (!validaDescuento(e.target)) {
+    if (!valida.descuento(e.target)) {
         window.det_descuento.value = 0;
         e.target.select();
         e.target.focus();
@@ -443,12 +404,12 @@ const onChangeDetDescuento = e => {
 }
 // agrega item
 const onClickDetAgrega = (e) => {
-    if (!validaEntero(window.det_id, 'producto')) {
+    if (!valida.entero(window.det_id, 'producto')) {
         window.det_id.select();
         window.det_id.focus();
         return;
     }
-    if (!validaTotal()) {
+    if (!valida.total()) {
         window.det_cantidad.select();
         window.det_cantidad.focus();
         return;
@@ -461,7 +422,7 @@ const onClickDetAgrega = (e) => {
 }
 // valida descuento en el maestro
 const onChangeMasDescuento = e => {
-    if (!validaDescuento(e.target)) {
+    if (!valida.descuento(e.target)) {
         window.mas_descuento.value = 0;
         e.target.select();
         e.target.focus();
@@ -472,7 +433,7 @@ const onChangeMasDescuento = e => {
 }
 // valida descuento en el maestro
 const onChangeMasPago = e => {
-    if (!validaDecimal(e.target, "pago")) {
+    if (!valida.decimal(e.target, "pago")) {
         window.mas_pago.value = 0;
         e.target.select();
         e.target.focus();
@@ -483,7 +444,7 @@ const onChangeMasPago = e => {
 }
 // obtiene cliente a partir de su id
 const onChangeCliId = async e => {
-    if (!validaEntero(e.target, 'código de cliente')) {
+    if (!valida.entero(e.target, 'código de cliente')) {
         e.target.select();
         e.target.focus();
         return;
@@ -498,14 +459,12 @@ const onChangeCliId = async e => {
     muestraCliente(cliente);
 }
 // muestra un popup de clientes a medida que el usuario teclea nombre
-const onKeyupCliNombre = async e => {
+const onKeyUpCliNombre = async e => {
     const cliente = e.target.value.trim();
     if (cliente === '') {
         e.target.focus();
         return;
     }
-    window.muestraBusqueda = muestraCliente;
-    window.objetoBusqueda = fila2Cliente;
     const clientes = await obtieneClientes(cliente);
     if (!clientes) {
         e.target.focus();
@@ -527,17 +486,7 @@ const onChangeCliDocumento = async e => {
     }
     muestraCliente(cliente);
 }
-// muestra en el formulario la linea seleccionada en el popup de busqueda
-const onClickBusqueda = (e) => {
-    const fila = e.target.parentNode;
-    window.muestraBusqueda(window.objetoBusqueda(fila));
-    window.busqueda_box.style.display = 'none';
-}
-const onClickBusquedaClose = (e) => {
-    window.busqueda_box.style.display = 'none';
-    window.det_nombre.select();
-    window.det_nombre.focus();
-}
+//
 // graba la venta en la base de datos
 const onClickBtnGuarda = async e => {
     const venta = creaJsonVenta();
@@ -578,7 +527,7 @@ const onClickBtnCancela = async e => {
 // hacer que el 'Enter' funcione como 'Tab'
 // hacer que el 'End' acabe la introducción de productos
 const onKeyDownDet = async (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" || e.key == "Tab") {
         e.preventDefault();
         const tabindex = +e.target.tabIndex + 10;
         const sigele = document.querySelector(`[tabIndex="${tabindex}"]`);
@@ -591,13 +540,30 @@ const onKeyDownDet = async (e) => {
         window.mas_descuento.focus();
     }
 }
+const onBlurDetNombre = e => {
+        const producto = e.target.value.trim();
+
+        // si la casilla esta vacia 
+        if (producto === "") {
+            if (window.det_id.value.trim() === "") {
+                // si id y nombre vacios termina introducción del detalle
+                window.mas_descuento.select();
+                window.mas_descuento.focus();
+            } else {
+                // si no hay nombre cambiar de producto
+                window.det_id.select();
+                window.det_id.focus();
+            }
+            return;
+        }
+}
 // inicializa los eventos y listeners al terminar el cargado de la página
 const onLoadCrea = () => {
 
-    window.det_id.addEventListener("change", onChangeDetId);
+    window.det_id.addEventListener("keydown", onKeyDownDetId);
+    window.det_nombre.addEventListener("keydown", onKeyDownDetNombre);
 
-
-    window.det_nombre.addEventListener("keyup", onKeyupDetNombre);
+    window.det_nombre.addEventListener("blur",  onBlurDetNombre);
     window.det_cantidad.addEventListener("change", onChangeDetCantidad);
     window.det_descuento.addEventListener("change", onChangeDetDescuento);
     window.det_agrega.addEventListener("click", onClickDetAgrega);
@@ -606,16 +572,12 @@ const onLoadCrea = () => {
     window.mas_pago.addEventListener("change", onChangeMasPago);
 
     window.cli_id.addEventListener("change", onChangeCliId);
-    window.cli_nombre.addEventListener("keyup", onKeyupCliNombre);
+    window.cli_nombre.addEventListener("keyup", onKeyUpCliNombre);
     window.cli_documento.addEventListener("change", onChangeCliDocumento);
-
-    window.busqueda_box.addEventListener("click", onClickBusqueda);
-    window.busqueda_close.addEventListener("click", onClickBusquedaClose);
 
     window.btn_guarda.addEventListener("click", onClickBtnGuarda);
     window.btn_cancela.addEventListener("click", onClickBtnCancela);
 
-    window.det_id.addEventListener("keydown", onKeyDownDet);
     window.det_cantidad.addEventListener("keydown", onKeyDownDet);
     window.det_descuento.addEventListener("keydown", onKeyDownDet);
 

@@ -4,7 +4,7 @@
 //! estructura para procesar venta nuevo
 
 pub struct Nuevo {
-    pub total: i32,
+    pub subtotal: i32,
     pub descuento: i32,
     pub cliente_id: i64,
     pub puesto_id: i64,
